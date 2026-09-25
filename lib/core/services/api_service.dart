@@ -17,7 +17,7 @@ class ApiService {
 
   /// Default production Render backend URL
   static const String productionBackendUrl =
-      'https://genomic-cancer-intelligence-backend.onrender.com';
+      'https://genomic-cancer-intelligence.onrender.com';
 
   /// Local development fallback URL
   static const String localBackendUrl = 'http://127.0.0.1:8000';
