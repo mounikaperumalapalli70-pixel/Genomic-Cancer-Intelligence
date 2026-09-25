@@ -1,0 +1,702 @@
+[
+  {
+    "gene": "C21orf131",
+    "f_score": 3131.839377705579,
+    "p_value": 0.0,
+    "rank": 1,
+    "is_selected": true
+  },
+  {
+    "gene": "CFHR2",
+    "f_score": 2689.2489688741716,
+    "p_value": 0.0,
+    "rank": 2,
+    "is_selected": true
+  },
+  {
+    "gene": "C2orf80",
+    "f_score": 2668.5429083184554,
+    "p_value": 0.0,
+    "rank": 3,
+    "is_selected": true
+  },
+  {
+    "gene": "F13B",
+    "f_score": 2517.690192891553,
+    "p_value": 0.0,
+    "rank": 4,
+    "is_selected": true
+  },
+  {
+    "gene": "ACSM2B",
+    "f_score": 2239.695703151976,
+    "p_value": 0.0,
+    "rank": 5,
+    "is_selected": true
+  },
+  {
+    "gene": "MMD2",
+    "f_score": 2211.6153190291393,
+    "p_value": 0.0,
+    "rank": 6,
+    "is_selected": true
+  },
+  {
+    "gene": "ACSM2A",
+    "f_score": 2154.856108521579,
+    "p_value": 0.0,
+    "rank": 7,
+    "is_selected": true
+  },
+  {
+    "gene": "TYR",
+    "f_score": 1879.3120920549952,
+    "p_value": 0.0,
+    "rank": 8,
+    "is_selected": true
+  },
+  {
+    "gene": "CACNG7",
+    "f_score": 1791.5503999525138,
+    "p_value": 0.0,
+    "rank": 9,
+    "is_selected": true
+  },
+  {
+    "gene": "SFTA3",
+    "f_score": 1741.0573769801308,
+    "p_value": 0.0,
+    "rank": 10,
+    "is_selected": true
+  },
+  {
+    "gene": "F9",
+    "f_score": 1660.5049862124176,
+    "p_value": 0.0,
+    "rank": 11,
+    "is_selected": true
+  },
+  {
+    "gene": "APCS",
+    "f_score": 1651.659974702419,
+    "p_value": 0.0,
+    "rank": 12,
+    "is_selected": true
+  },
+  {
+    "gene": "SLC17A1",
+    "f_score": 1641.1898746840777,
+    "p_value": 0.0,
+    "rank": 13,
+    "is_selected": true
+  },
+  {
+    "gene": "SLC17A2",
+    "f_score": 1482.3182483523974,
+    "p_value": 0.0,
+    "rank": 14,
+    "is_selected": true
+  },
+  {
+    "gene": "GRHL2",
+    "f_score": 1456.2835842729642,
+    "p_value": 0.0,
+    "rank": 15,
+    "is_selected": true
+  },
+  {
+    "gene": "AP1M2",
+    "f_score": 1448.5351305242348,
+    "p_value": 0.0,
+    "rank": 16,
+    "is_selected": true
+  },
+  {
+    "gene": "SLC17A3",
+    "f_score": 1432.6927507926619,
+    "p_value": 0.0,
+    "rank": 17,
+    "is_selected": true
+  },
+  {
+    "gene": "AGXT2",
+    "f_score": 1393.0612654434024,
+    "p_value": 0.0,
+    "rank": 18,
+    "is_selected": true
+  },
+  {
+    "gene": "STMN4",
+    "f_score": 1379.3432270147389,
+    "p_value": 0.0,
+    "rank": 19,
+    "is_selected": true
+  },
+  {
+    "gene": "CFHR5",
+    "f_score": 1348.6441181922294,
+    "p_value": 0.0,
+    "rank": 20,
+    "is_selected": true
+  },
+  {
+    "gene": "OLIG2",
+    "f_score": 1346.7839782101084,
+    "p_value": 0.0,
+    "rank": 21,
+    "is_selected": true
+  },
+  {
+    "gene": "NCAN",
+    "f_score": 1322.9667836147262,
+    "p_value": 0.0,
+    "rank": 22,
+    "is_selected": true
+  },
+  {
+    "gene": "CRB3",
+    "f_score": 1317.2210001189767,
+    "p_value": 0.0,
+    "rank": 23,
+    "is_selected": true
+  },
+  {
+    "gene": "C1orf172",
+    "f_score": 1316.4384102355577,
+    "p_value": 0.0,
+    "rank": 24,
+    "is_selected": true
+  },
+  {
+    "gene": "POU3F3",
+    "f_score": 1306.6069581873664,
+    "p_value": 0.0,
+    "rank": 25,
+    "is_selected": true
+  },
+  {
+    "gene": "SLC2A2",
+    "f_score": 1305.1152280620563,
+    "p_value": 0.0,
+    "rank": 26,
+    "is_selected": true
+  },
+  {
+    "gene": "ATCAY",
+    "f_score": 1295.171406074102,
+    "p_value": 0.0,
+    "rank": 27,
+    "is_selected": true
+  },
+  {
+    "gene": "KRT8",
+    "f_score": 1288.3165758438597,
+    "p_value": 0.0,
+    "rank": 28,
+    "is_selected": true
+  },
+  {
+    "gene": "C8A",
+    "f_score": 1280.1612759534466,
+    "p_value": 0.0,
+    "rank": 29,
+    "is_selected": true
+  },
+  {
+    "gene": "ELF3",
+    "f_score": 1265.7887697878732,
+    "p_value": 0.0,
+    "rank": 30,
+    "is_selected": true
+  },
+  {
+    "gene": "OMG",
+    "f_score": 1248.0541493943927,
+    "p_value": 0.0,
+    "rank": 31,
+    "is_selected": true
+  },
+  {
+    "gene": "RAB25",
+    "f_score": 1240.1511651150267,
+    "p_value": 0.0,
+    "rank": 32,
+    "is_selected": true
+  },
+  {
+    "gene": "CHMP4C",
+    "f_score": 1229.9446183033301,
+    "p_value": 0.0,
+    "rank": 33,
+    "is_selected": true
+  },
+  {
+    "gene": "HNF4A",
+    "f_score": 1225.6549200884144,
+    "p_value": 0.0,
+    "rank": 34,
+    "is_selected": true
+  },
+  {
+    "gene": "RFX4",
+    "f_score": 1225.1667764792837,
+    "p_value": 0.0,
+    "rank": 35,
+    "is_selected": true
+  },
+  {
+    "gene": "ESRP1",
+    "f_score": 1221.0224526747313,
+    "p_value": 0.0,
+    "rank": 36,
+    "is_selected": true
+  },
+  {
+    "gene": "C1orf210",
+    "f_score": 1217.868050751954,
+    "p_value": 0.0,
+    "rank": 37,
+    "is_selected": true
+  },
+  {
+    "gene": "MBL2",
+    "f_score": 1215.0786922911714,
+    "p_value": 0.0,
+    "rank": 38,
+    "is_selected": true
+  },
+  {
+    "gene": "ITIH1",
+    "f_score": 1198.6640377341066,
+    "p_value": 0.0,
+    "rank": 39,
+    "is_selected": true
+  },
+  {
+    "gene": "MLANA",
+    "f_score": 1190.6062144446812,
+    "p_value": 0.0,
+    "rank": 40,
+    "is_selected": true
+  },
+  {
+    "gene": "PRODH2",
+    "f_score": 1189.2220791305554,
+    "p_value": 0.0,
+    "rank": 41,
+    "is_selected": true
+  },
+  {
+    "gene": "DPPA3",
+    "f_score": 1186.800239240212,
+    "p_value": 0.0,
+    "rank": 42,
+    "is_selected": true
+  },
+  {
+    "gene": "CLDN4",
+    "f_score": 1183.9947585266302,
+    "p_value": 0.0,
+    "rank": 43,
+    "is_selected": true
+  },
+  {
+    "gene": "SLC22A2",
+    "f_score": 1174.0615251396155,
+    "p_value": 0.0,
+    "rank": 44,
+    "is_selected": true
+  },
+  {
+    "gene": "OVOL2",
+    "f_score": 1167.3872817285405,
+    "p_value": 0.0,
+    "rank": 45,
+    "is_selected": true
+  },
+  {
+    "gene": "LOC157627",
+    "f_score": 1158.833734846201,
+    "p_value": 0.0,
+    "rank": 46,
+    "is_selected": true
+  },
+  {
+    "gene": "PRSS8",
+    "f_score": 1156.078901150357,
+    "p_value": 0.0,
+    "rank": 47,
+    "is_selected": true
+  },
+  {
+    "gene": "APOA5",
+    "f_score": 1138.338755452119,
+    "p_value": 0.0,
+    "rank": 48,
+    "is_selected": true
+  },
+  {
+    "gene": "LECT2",
+    "f_score": 1134.0940440162574,
+    "p_value": 0.0,
+    "rank": 49,
+    "is_selected": true
+  },
+  {
+    "gene": "PMP2",
+    "f_score": 1121.8605772943056,
+    "p_value": 0.0,
+    "rank": 50,
+    "is_selected": true
+  },
+  {
+    "gene": "HAO1",
+    "f_score": 1118.0337489269625,
+    "p_value": 0.0,
+    "rank": 51,
+    "is_selected": true
+  },
+  {
+    "gene": "KRT18",
+    "f_score": 1114.8787035493156,
+    "p_value": 0.0,
+    "rank": 52,
+    "is_selected": true
+  },
+  {
+    "gene": "GRB7",
+    "f_score": 1110.3896418669742,
+    "p_value": 0.0,
+    "rank": 53,
+    "is_selected": true
+  },
+  {
+    "gene": "ACMSD",
+    "f_score": 1110.2267521195752,
+    "p_value": 0.0,
+    "rank": 54,
+    "is_selected": true
+  },
+  {
+    "gene": "GFAP",
+    "f_score": 1094.9752561184691,
+    "p_value": 0.0,
+    "rank": 55,
+    "is_selected": true
+  },
+  {
+    "gene": "A1CF",
+    "f_score": 1092.2910370124096,
+    "p_value": 0.0,
+    "rank": 56,
+    "is_selected": true
+  },
+  {
+    "gene": "SH2D3A",
+    "f_score": 1090.682200608397,
+    "p_value": 0.0,
+    "rank": 57,
+    "is_selected": true
+  },
+  {
+    "gene": "FAM123A",
+    "f_score": 1083.83210711225,
+    "p_value": 0.0,
+    "rank": 58,
+    "is_selected": true
+  },
+  {
+    "gene": "PKP3",
+    "f_score": 1083.2029861236547,
+    "p_value": 0.0,
+    "rank": 59,
+    "is_selected": true
+  },
+  {
+    "gene": "PCA3",
+    "f_score": 1083.123460394849,
+    "p_value": 0.0,
+    "rank": 60,
+    "is_selected": true
+  },
+  {
+    "gene": "NKX2-1",
+    "f_score": 1076.6453536057243,
+    "p_value": 0.0,
+    "rank": 61,
+    "is_selected": true
+  },
+  {
+    "gene": "ACTL6B",
+    "f_score": 1074.9713716183226,
+    "p_value": 0.0,
+    "rank": 62,
+    "is_selected": true
+  },
+  {
+    "gene": "EPCAM",
+    "f_score": 1067.7558870973357,
+    "p_value": 0.0,
+    "rank": 63,
+    "is_selected": true
+  },
+  {
+    "gene": "SLC22A9",
+    "f_score": 1067.1589718245457,
+    "p_value": 0.0,
+    "rank": 64,
+    "is_selected": true
+  },
+  {
+    "gene": "SERPINC1",
+    "f_score": 1066.4019560531292,
+    "p_value": 0.0,
+    "rank": 65,
+    "is_selected": true
+  },
+  {
+    "gene": "CLDN7",
+    "f_score": 1058.926649438132,
+    "p_value": 0.0,
+    "rank": 66,
+    "is_selected": true
+  },
+  {
+    "gene": "SPP2",
+    "f_score": 1058.6198994813674,
+    "p_value": 0.0,
+    "rank": 67,
+    "is_selected": true
+  },
+  {
+    "gene": "TM4SF5",
+    "f_score": 1040.3646729638833,
+    "p_value": 0.0,
+    "rank": 68,
+    "is_selected": true
+  },
+  {
+    "gene": "CFHR4",
+    "f_score": 1034.3971561848775,
+    "p_value": 0.0,
+    "rank": 69,
+    "is_selected": true
+  },
+  {
+    "gene": "ST8SIA3",
+    "f_score": 1033.3590802895972,
+    "p_value": 0.0,
+    "rank": 70,
+    "is_selected": true
+  },
+  {
+    "gene": "APOA2",
+    "f_score": 1031.0284761321827,
+    "p_value": 0.0,
+    "rank": 71,
+    "is_selected": true
+  },
+  {
+    "gene": "CDHR5",
+    "f_score": 1012.3319629388615,
+    "p_value": 0.0,
+    "rank": 72,
+    "is_selected": true
+  },
+  {
+    "gene": "NAT8",
+    "f_score": 1006.7058230761189,
+    "p_value": 0.0,
+    "rank": 73,
+    "is_selected": true
+  },
+  {
+    "gene": "KLK3",
+    "f_score": 1004.6681777638161,
+    "p_value": 0.0,
+    "rank": 74,
+    "is_selected": true
+  },
+  {
+    "gene": "LAD1",
+    "f_score": 1003.6522470788033,
+    "p_value": 0.0,
+    "rank": 75,
+    "is_selected": true
+  },
+  {
+    "gene": "APOC3",
+    "f_score": 1002.9754896672381,
+    "p_value": 0.0,
+    "rank": 76,
+    "is_selected": true
+  },
+  {
+    "gene": "UGT2A3",
+    "f_score": 999.4844232650194,
+    "p_value": 0.0,
+    "rank": 77,
+    "is_selected": true
+  },
+  {
+    "gene": "KLK2",
+    "f_score": 998.4213709318868,
+    "p_value": 0.0,
+    "rank": 78,
+    "is_selected": true
+  },
+  {
+    "gene": "TMEFF2",
+    "f_score": 996.1041709279828,
+    "p_value": 0.0,
+    "rank": 79,
+    "is_selected": true
+  },
+  {
+    "gene": "C1orf61",
+    "f_score": 993.38587386817,
+    "p_value": 0.0,
+    "rank": 80,
+    "is_selected": true
+  },
+  {
+    "gene": "KCNJ9",
+    "f_score": 983.2520165002003,
+    "p_value": 0.0,
+    "rank": 81,
+    "is_selected": true
+  },
+  {
+    "gene": "TG",
+    "f_score": 982.6170071481251,
+    "p_value": 0.0,
+    "rank": 82,
+    "is_selected": true
+  },
+  {
+    "gene": "APC2",
+    "f_score": 979.7491535341356,
+    "p_value": 0.0,
+    "rank": 83,
+    "is_selected": true
+  },
+  {
+    "gene": "CBLC",
+    "f_score": 978.021016289235,
+    "p_value": 0.0,
+    "rank": 84,
+    "is_selected": true
+  },
+  {
+    "gene": "LOC283761",
+    "f_score": 975.5560220199199,
+    "p_value": 0.0,
+    "rank": 85,
+    "is_selected": true
+  },
+  {
+    "gene": "APOC4",
+    "f_score": 972.3187127413089,
+    "p_value": 0.0,
+    "rank": 86,
+    "is_selected": true
+  },
+  {
+    "gene": "GDEP",
+    "f_score": 962.5667841960023,
+    "p_value": 0.0,
+    "rank": 87,
+    "is_selected": true
+  },
+  {
+    "gene": "HNF1B",
+    "f_score": 959.5855511921255,
+    "p_value": 0.0,
+    "rank": 88,
+    "is_selected": true
+  },
+  {
+    "gene": "C14orf105",
+    "f_score": 959.5231329934066,
+    "p_value": 0.0,
+    "rank": 89,
+    "is_selected": true
+  },
+  {
+    "gene": "SFTPB",
+    "f_score": 956.9117332738647,
+    "p_value": 0.0,
+    "rank": 90,
+    "is_selected": true
+  },
+  {
+    "gene": "LOC285733",
+    "f_score": 956.437692142718,
+    "p_value": 0.0,
+    "rank": 91,
+    "is_selected": true
+  },
+  {
+    "gene": "SPINT1",
+    "f_score": 955.8578197962302,
+    "p_value": 0.0,
+    "rank": 92,
+    "is_selected": true
+  },
+  {
+    "gene": "ITGB6",
+    "f_score": 953.5781672244121,
+    "p_value": 0.0,
+    "rank": 93,
+    "is_selected": true
+  },
+  {
+    "gene": "GLYAT",
+    "f_score": 950.8768202269405,
+    "p_value": 0.0,
+    "rank": 94,
+    "is_selected": true
+  },
+  {
+    "gene": "C8B",
+    "f_score": 950.0796601865318,
+    "p_value": 0.0,
+    "rank": 95,
+    "is_selected": true
+  },
+  {
+    "gene": "SPRYD5",
+    "f_score": 947.4232539180915,
+    "p_value": 0.0,
+    "rank": 96,
+    "is_selected": true
+  },
+  {
+    "gene": "LOC285370",
+    "f_score": 937.8640910863138,
+    "p_value": 0.0,
+    "rank": 97,
+    "is_selected": true
+  },
+  {
+    "gene": "INS",
+    "f_score": 935.6696005716884,
+    "p_value": 0.0,
+    "rank": 98,
+    "is_selected": true
+  },
+  {
+    "gene": "ANKS4B",
+    "f_score": 935.3507936925048,
+    "p_value": 0.0,
+    "rank": 99,
+    "is_selected": true
+  },
+  {
+    "gene": "BAIAP2L1",
+    "f_score": 928.0761362402776,
+    "p_value": 0.0,
+    "rank": 100,
+    "is_selected": true
+  }
+]

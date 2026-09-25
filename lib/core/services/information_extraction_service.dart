@@ -35,6 +35,15 @@ class ExtractedBasicInfo {
   }
 }
 
+enum ConversationalIntent {
+  startScreening,
+  viewReports,
+  foodGuidance,
+  screeningHistory,
+  continueNext,
+  changeLanguage,
+}
+
 class InformationExtractionService {
   static final InformationExtractionService _instance =
       InformationExtractionService._internal();
@@ -42,51 +51,331 @@ class InformationExtractionService {
   InformationExtractionService._internal();
 
   // =========================================================================
-  // 1. LANGUAGE EXTRACTION
+  // 1. MULTILINGUAL LANGUAGE EXTRACTION (All 5 Supported Languages)
   // =========================================================================
 
   String? extractLanguage(String spokenText) {
     final lower = spokenText.toLowerCase().trim();
     if (lower.isEmpty) return null;
 
-    // Telugu
-    if (lower.contains('telugu') ||
-        lower.contains('తెలుగు') ||
-        lower.contains('theelugu') ||
-        lower.contains('telgu')) {
+    // Normalize: remove punctuation and common conversational framing
+    final normalized = lower
+        .replaceAll(RegExp(r'[\.,!?;:\-_"״]'), ' ')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+
+    // 1. Telugu (te) - Telugu script, English transliterations, cross-script
+    if (normalized.contains('telugu') ||
+        normalized.contains('తెలుగు') ||
+        normalized.contains('theelugu') ||
+        normalized.contains('telgu') ||
+        normalized.contains('thelgu') ||
+        normalized.contains('telugulo') ||
+        normalized.contains('తెలుగులో') ||
+        normalized.contains('తెలుగు కావాలి') ||
+        normalized.contains('తెలుగు భాష') ||
+        normalized.contains('తెలుగు ఎంచుకోండి') ||
+        normalized.contains('తెలుగు మాట్లాడండి') ||
+        normalized.contains('తేలుగు') ||
+        normalized.contains('ತೆಲುಗು') ||
+        normalized.contains('தெலுங்கு') ||
+        normalized.contains('तेलुगु') ||
+        normalized.contains('तेलगु')) {
       return 'te';
     }
 
-    // Tamil
-    if (lower.contains('tamil') ||
-        lower.contains('தமிழ்') ||
-        lower.contains('thamizh') ||
-        lower.contains('tamizh')) {
-      return 'ta';
-    }
-
-    // Kannada
-    if (lower.contains('kannada') ||
-        lower.contains('ಕನ್ನಡ') ||
-        lower.contains('kanada')) {
-      return 'kn';
-    }
-
-    // Hindi
-    if (lower.contains('hindi') ||
-        lower.contains('हिंदी') ||
-        lower.contains('हिन्दी')) {
+    // 2. Hindi (hi) - Devanagari script, English transliterations, cross-script
+    if (normalized.contains('hindi') ||
+        normalized.contains('हिंदी') ||
+        normalized.contains('हिन्दी') ||
+        normalized.contains('hindee') ||
+        normalized.contains('hindi me') ||
+        normalized.contains('hindi bhasha') ||
+        normalized.contains('hindi chahiye') ||
+        normalized.contains('हिंदी भाषा') ||
+        normalized.contains('मुझे हिंदी') ||
+        normalized.contains('हिंदी में') ||
+        normalized.contains('हिंदी चुनो') ||
+        normalized.contains('हिन्दी भाषा') ||
+        normalized.contains('హిందీ') ||
+        normalized.contains('இந்தி') ||
+        normalized.contains('ಹಿಂದಿ')) {
       return 'hi';
     }
 
-    // English
-    if (lower.contains('english') ||
-        lower.contains('ఇంగ్లీష్') ||
-        lower.contains('ஆங்கிலம்') ||
-        lower.contains('ಇಂಗ್ಲಿಷ್') ||
-        lower.contains('अंग्रेजी') ||
-        lower.contains('इंग्लिश')) {
+    // 3. Tamil (ta) - Tamil script, English transliterations, cross-script
+    if (normalized.contains('tamil') ||
+        normalized.contains('தமிழ்') ||
+        normalized.contains('thamizh') ||
+        normalized.contains('tamizh') ||
+        normalized.contains('thamil') ||
+        normalized.contains('tamilil') ||
+        normalized.contains('tamil bhasha') ||
+        normalized.contains('tamil venum') ||
+        normalized.contains('தமிழ் மொழி') ||
+        normalized.contains('எனக்கு தமிழ்') ||
+        normalized.contains('தமிழில்') ||
+        normalized.contains('தமிழை') ||
+        normalized.contains('தமீழ்') ||
+        normalized.contains('తమిళం') ||
+        normalized.contains('ತಮಿಳು') ||
+        normalized.contains('तमिल') ||
+        normalized.contains('तमिळ')) {
+      return 'ta';
+    }
+
+    // 4. Kannada (kn) - Kannada script, English transliterations, cross-script
+    if (normalized.contains('kannada') ||
+        normalized.contains('ಕನ್ನಡ') ||
+        normalized.contains('kanada') ||
+        normalized.contains('kannad') ||
+        normalized.contains('kannadadalli') ||
+        normalized.contains('kannada bhasha') ||
+        normalized.contains('kannada beku') ||
+        normalized.contains('ಕನ್ನಡ ಭಾಷೆ') ||
+        normalized.contains('ನನಗೆ ಕನ್ನಡ') ||
+        normalized.contains('ಕನ್ನಡದಲ್ಲಿ') ||
+        normalized.contains('ಕನ್ನಡ ಆಯ್ಕೆ') ||
+        normalized.contains('ಕನ್ನಡ ಮಾತಾಡಿ') ||
+        normalized.contains('కన్నడ') ||
+        normalized.contains('கன்னடம்') ||
+        normalized.contains('कन्नड़') ||
+        normalized.contains('कन्नड')) {
+      return 'kn';
+    }
+
+    // 5. English (en) - English words, native Indic scripts for English
+    if (normalized.contains('english') ||
+        normalized.contains('inglish') ||
+        normalized.contains('angrezi') ||
+        normalized.contains('angla') ||
+        normalized.contains('ఇంగ్లీష్') ||
+        normalized.contains('ఆంగ్లం') ||
+        normalized.contains('ஆங்கிலம்') ||
+        normalized.contains('இங்கிலீஷ்') ||
+        normalized.contains('ಇಂಗ್ಲಿಷ್') ||
+        normalized.contains('ಆಂಗ್ಲ') ||
+        normalized.contains('अंग्रेजी') ||
+        normalized.contains('इंग्लिश') ||
+        normalized.contains('अंग्रेज़ी')) {
       return 'en';
+    }
+
+    return null;
+  }
+
+  // =========================================================================
+  // 1B. CONVERSATIONAL INTENT EXTRACTION (Multilingual Across All 5 Languages)
+  // =========================================================================
+
+  ConversationalIntent? extractConversationalIntent(String spokenText) {
+    final lower = spokenText.toLowerCase().trim();
+    if (lower.isEmpty) return null;
+
+    final normalized = lower
+        .replaceAll(RegExp(r'[\.,!?;:\-_"״]'), ' ')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+
+    // 1. Screening History (Must be checked before generic startScreening)
+    if (normalized.contains('screening history') ||
+        normalized.contains('my history') ||
+        normalized.contains('past records') ||
+        normalized.contains('past screenings') ||
+        normalized.contains('history') ||
+        // Telugu
+        normalized.contains('స్క్రీనింగ్ హిస్టరీ') ||
+        normalized.contains('గత రికార్డులు') ||
+        normalized.contains('గత పరీక్షలు') ||
+        normalized.contains('చరిత్ర') ||
+        normalized.contains('హిస్టరీ') ||
+        // Hindi
+        normalized.contains('स्क्रीनिंग इतिहास') ||
+        normalized.contains('पिछला रिकॉर्ड') ||
+        normalized.contains('पुराने टेस्ट') ||
+        normalized.contains('इतिहास') ||
+        normalized.contains('हिस्ट्री') ||
+        // Tamil
+        normalized.contains('பரிசோதனை வரலாறு') ||
+        normalized.contains('முந்தைய பதிவுகள்') ||
+        normalized.contains('வரலாறு') ||
+        normalized.contains('ஹிஸ்டரி') ||
+        // Kannada
+        normalized.contains('ಸ್ಕ್ರೀನಿಂಗ್ ಇತಿಹಾಸ') ||
+        normalized.contains('ಹಿಂದಿನ ದಾಖಲೆಗಳು') ||
+        normalized.contains('ಇತಿಹಾಸ') ||
+        normalized.contains('ಹಿಸ್ಟರಿ')) {
+      return ConversationalIntent.screeningHistory;
+    }
+
+    // 2. View Reports
+    if (normalized.contains('view report') ||
+        normalized.contains('view reports') ||
+        normalized.contains('show report') ||
+        normalized.contains('show reports') ||
+        normalized.contains('my reports') ||
+        normalized.contains('my report') ||
+        normalized.contains('download report') ||
+        normalized.contains('open report') ||
+        normalized.contains('open reports') ||
+        normalized.contains('see results') ||
+        normalized.contains('reports') ||
+        // Telugu
+        normalized.contains('రిపోర్ట్స్') ||
+        normalized.contains('రిపోర్టులు') ||
+        normalized.contains('నా రిపోర్ట్స్') ||
+        normalized.contains('రిపోర్టులు చూపించు') ||
+        normalized.contains('ఫలితాలు చూపించు') ||
+        normalized.contains('ఫలితాలు') ||
+        // Hindi
+        normalized.contains('रिपोर्ट्स') ||
+        normalized.contains('मेरी रिपोर्ट्स') ||
+        normalized.contains('रिपोर्ट दिखाएं') ||
+        normalized.contains('रिपोर्ट दिखाओ') ||
+        normalized.contains('परिणाम दिखाएं') ||
+        normalized.contains('रिजल्ट') ||
+        // Tamil
+        normalized.contains('அறிக்கைகள்') ||
+        normalized.contains('என் அறிக்கைகள்') ||
+        normalized.contains('அறிக்கையைக் காட்டு') ||
+        normalized.contains('அறிக்கைகளைக் காட்டு') ||
+        normalized.contains('முடிவுகள்') ||
+        // Kannada
+        normalized.contains('ವರದಿಗಳು') ||
+        normalized.contains('ನನ್ನ ವರದಿಗಳು') ||
+        normalized.contains('ವರದಿ ತೋರಿಸಿ') ||
+        normalized.contains('ವರದಿಗಳನ್ನು ತೋರಿಸಿ') ||
+        normalized.contains('ಫಲಿತಾಂಶಗಳು')) {
+      return ConversationalIntent.viewReports;
+    }
+
+    // 3. Food & Nutrition Guidance
+    if (normalized.contains('food guidance') ||
+        normalized.contains('diet plan') ||
+        normalized.contains('nutrition') ||
+        normalized.contains('food guide') ||
+        normalized.contains('diet recommendations') ||
+        normalized.contains('medicine advice') ||
+        normalized.contains('diet') ||
+        // Telugu
+        normalized.contains('ఆహార సలహాలు') ||
+        normalized.contains('డైట్ ప్లాన్') ||
+        normalized.contains('పోషకాహారం') ||
+        normalized.contains('మందుల సలహాలు') ||
+        normalized.contains('ఫుడ్ గైడెన్స్') ||
+        normalized.contains('ఆహారం') ||
+        normalized.contains('డైట్') ||
+        // Hindi
+        normalized.contains('आहार मार्गदर्शन') ||
+        normalized.contains('डाइट प्लान') ||
+        normalized.contains('भोजन सलाह') ||
+        normalized.contains('पोषण सलाह') ||
+        normalized.contains('दवा सलाह') ||
+        normalized.contains('फूड गाइडेंस') ||
+        normalized.contains('डाइट') ||
+        // Tamil
+        normalized.contains('உணவு வழிகாட்டல்') ||
+        normalized.contains('டயட் திட்டம்') ||
+        normalized.contains('ஊட்டச்சத்து') ||
+        normalized.contains('உணவு ஆலோசனை') ||
+        normalized.contains('டயட்') ||
+        // Kannada
+        normalized.contains('ಆಹಾರ ಮಾರ್ಗದರ್ಶನ') ||
+        normalized.contains('ಡಯಟ್ ಪ್ಲಾನ್') ||
+        normalized.contains('ಪೋಷಕಾಂಶ') ||
+        normalized.contains('ಊಟದ ಸಲಹೆ') ||
+        normalized.contains('ಡಯಟ್')) {
+      return ConversationalIntent.foodGuidance;
+    }
+
+    // 4. Continue / Next
+    if (normalized.contains('continue') ||
+        normalized.contains('next') ||
+        normalized.contains('proceed') ||
+        normalized.contains('go ahead') ||
+        normalized.contains('next step') ||
+        // Telugu
+        normalized.contains('ముందుకు వెళ్లు') ||
+        normalized.contains('ముందుకు కొనసాగించండి') ||
+        normalized.contains('తర్వాత') ||
+        normalized.contains('కంటిన్యూ') ||
+        // Hindi
+        normalized.contains('आगे बढ़ें') ||
+        normalized.contains('अगला') ||
+        normalized.contains('जारी रखें') ||
+        normalized.contains('कंटिन्यू') ||
+        // Tamil
+        normalized.contains('தொடரவும்') ||
+        normalized.contains('அடுத்து') ||
+        normalized.contains('முன்னேறு') ||
+        normalized.contains('கண்டினியூ') ||
+        // Kannada
+        normalized.contains('ಮುಂದುವರಿಯಿರಿ') ||
+        normalized.contains('ಮುಂದೆ') ||
+        normalized.contains('ಮುಂದಿನ ಹಂತ') ||
+        normalized.contains('ಕಂಟಿನ್ಯೂ')) {
+      return ConversationalIntent.continueNext;
+    }
+
+    // 5. Change Language
+    if (normalized.contains('change language') ||
+        normalized.contains('switch language') ||
+        normalized.contains('select language') ||
+        normalized.contains('భాష మార్చు') ||
+        normalized.contains('భాష ఎంచుకో') ||
+        normalized.contains('भाषा बदलो') ||
+        normalized.contains('भाषा चुनें') ||
+        normalized.contains('மொழி மாற்று') ||
+        normalized.contains('மொழியை தேர்வு செய்') ||
+        normalized.contains('ಭಾಷೆ ಬದಲಾಯಿಸಿ') ||
+        normalized.contains('ಭಾಷೆ ಆಯ್ಕೆ ಮಾಡಿ')) {
+      return ConversationalIntent.changeLanguage;
+    }
+
+    // 6. Start Screening / Cancer Screening
+    if (normalized.contains('start screening') ||
+        normalized.contains('begin screening') ||
+        normalized.contains('cancer screening') ||
+        normalized.contains('start test') ||
+        normalized.contains('take test') ||
+        normalized.contains('run screening') ||
+        normalized.contains('screening start') ||
+        normalized.contains('start analysis') ||
+        // Telugu
+        normalized.contains('స్క్రీనింగ్ ప్రారంభించాలి') ||
+        normalized.contains('స్క్రీనింగ్ ప్రారంభించు') ||
+        normalized.contains('స్క్రీనింగ్ ప్రారంభించండి') ||
+        normalized.contains('స్క్రీనింగ్ స్టార్ట్') ||
+        normalized.contains('క్యాన్సర్ స్క్రీనింగ్') ||
+        normalized.contains('టెస్ట్ ప్రారంభించు') ||
+        normalized.contains('స్క్రీనింగ్ చేయి') ||
+        normalized.contains('స్క్రీనింగ్') ||
+        // Hindi
+        normalized.contains('स्क्रीनिंग शुरू करें') ||
+        normalized.contains('स्क्रीनिंग शुरू करो') ||
+        normalized.contains('स्क्रीनिंग शुरू') ||
+        normalized.contains('कैंसर स्क्रीनिंग') ||
+        normalized.contains('जांच शुरू करें') ||
+        normalized.contains('जांच शुरू') ||
+        normalized.contains('टेस्ट शुरू करें') ||
+        normalized.contains('स्क्रीनिंग चालू') ||
+        normalized.contains('स्क्रीनिंग') ||
+        // Tamil
+        normalized.contains('ஸ்கிரீனிங் தொடங்கவும்') ||
+        normalized.contains('பரிசோதனை தொடங்கு') ||
+        normalized.contains('புற்றுநோய் பரிசோதனை') ||
+        normalized.contains('பரிசோதனை தொடங்க') ||
+        normalized.contains('ஸ்கிரீனிங் ஆரம்பி') ||
+        normalized.contains('பரிசோதனை') ||
+        normalized.contains('ஸ்கிரீனிங்') ||
+        // Kannada
+        normalized.contains('ಸ್ಕ್ರೀನಿಂಗ್ ಪ್ರಾರಂಭಿಸಿ') ||
+        normalized.contains('ಕ್ಯಾನ್ಸರ್ ಸ್ಕ್ರೀನಿಂಗ್') ||
+        normalized.contains('ಪರೀಕ್ಷೆ ಪ್ರಾರಂಭಿಸಿ') ||
+        normalized.contains('ಸ್ಕ್ರೀನಿಂಗ್ ಶುರು') ||
+        normalized.contains('ಪರೀಕ್ಷೆ ಶುರು') ||
+        normalized.contains('ಸ್ಕ್ರೀನಿಂಗ್')) {
+      return ConversationalIntent.startScreening;
     }
 
     return null;

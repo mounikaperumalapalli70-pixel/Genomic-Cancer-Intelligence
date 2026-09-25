@@ -2,6 +2,7 @@
 *.class
 *.log
 *.pyc
+__pycache__/
 *.swp
 .DS_Store
 .atom/
@@ -11,6 +12,15 @@
 .svn/
 .swiftpm/
 migrate_working_dir/
+.pytest_cache/
+.venv/
+venv/
+env/
+
+# Large raw training datasets (>100MB, models are in backend/models)
+*.xena.gz
+*.tsv.gz
+*.tar.gz
 
 # IntelliJ related
 *.iml

@@ -214,7 +214,10 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
     final screeningProvider = Provider.of<ScreeningProvider>(context);
     final onboarding = Provider.of<OnboardingProvider>(context);
     final activeResult = screeningProvider.activeScreeningResult;
-    final cancerType = activeResult.likelyCancerType ?? 'Lung Cancer';
+    final cancerType = screeningProvider.activeGenomicResult?.cancerType ??
+        activeResult.genomicResult?.cancerType ??
+        (activeResult.imageResult == null ? activeResult.likelyCancerType : null) ??
+        'Lung Cancer';
     final guidance = FoodGuidanceModel.getGuidanceForCancerType(cancerType);
 
     return Scaffold(

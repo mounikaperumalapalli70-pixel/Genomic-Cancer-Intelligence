@@ -23,6 +23,11 @@ class LanguageSelectionScreen extends StatelessWidget {
       onLanguageSelected: (langCode) {
         onboardingProvider.selectLanguage(langCode);
       },
+      onComplete: () {
+        if (context.mounted) {
+          Navigator.of(context).pushNamed(AppRoutes.genderSelection);
+        }
+      },
     );
   }
 

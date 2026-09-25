@@ -17,6 +17,7 @@ import 'presentation/screens/08_upload/genomic_upload_screen.dart';
 import 'presentation/screens/08_upload/medical_image_upload_screen.dart';
 import 'presentation/screens/09_analysis/ai_analysis_screen.dart';
 import 'presentation/screens/10_result/high_risk_result_screen.dart';
+import 'presentation/screens/10_result/medical_image_result_screen.dart';
 import 'presentation/screens/11_result/no_high_risk_result_screen.dart';
 import 'presentation/screens/12_reports/reports_screen.dart';
 import 'presentation/screens/13_history/screening_history_screen.dart';
@@ -78,6 +79,7 @@ class GenomicCancerIntelligenceApp extends StatelessWidget {
           AppRoutes.aiAnalysis: (context) => const AIAnalysisScreen(),
           AppRoutes.highRiskResult: (context) => const HighRiskResultScreen(),
           AppRoutes.noHighRiskResult: (context) => const NoHighRiskResultScreen(),
+          AppRoutes.medicalImageResult: (context) => const MedicalImageResultScreen(),
           AppRoutes.reports: (context) => const ReportsScreen(),
           AppRoutes.screeningHistory: (context) => const ScreeningHistoryScreen(),
           AppRoutes.notifications: (context) => const NotificationsScreen(),

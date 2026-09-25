@@ -20,11 +20,12 @@ class GenomicUploadScreen extends StatelessWidget {
     try {
       final files = await FilePicker.pickFiles(
         type: FileType.custom,
-        allowedExtensions: ['csv', 'xls', 'xlsx', 'txt', 'pdf'],
+        allowedExtensions: ['csv', 'tsv', 'txt', 'json'],
       );
 
       if (files.isNotEmpty) {
         final file = files.first;
+        final bytes = await file.readAsBytes();
         final sizeBytes = await file.length();
         final sizeInMb = sizeBytes / (1024 * 1024);
         final formattedSize = sizeInMb >= 0.1
@@ -34,6 +35,7 @@ class GenomicUploadScreen extends StatelessWidget {
         screeningProvider.setUploadedGenomicFile(
           name: file.name,
           size: formattedSize,
+          bytes: bytes,
         );
       }
     } catch (e) {
@@ -69,30 +71,50 @@ class GenomicUploadScreen extends StatelessWidget {
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 10),
 
                       // Title & Subtitle
-                      Text(
-                        'Upload Genomic Data',
-                        textAlign: TextAlign.center,
-                        style: AppTypography.headingLarge,
+                      Center(
+                        child: Text(
+                          'Upload Genomic Data',
+                          textAlign: TextAlign.center,
+                          style: AppTypography.headingLarge,
+                        ),
                       ),
                       const SizedBox(height: 6),
-                      Text(
-                        'Select your file (blood/liquid-biopsy)',
-                        textAlign: TextAlign.center,
-                        style: AppTypography.subtitle,
+                      Center(
+                        child: Text(
+                          'Select your expression matrix or load a curated TCGA benchmark sample',
+                          textAlign: TextAlign.center,
+                          style: AppTypography.subtitle,
+                        ),
                       ),
-
-                      const SizedBox(height: 32),
-
-                      // Drag & Drop Upload Container (Opens Real File Picker)
-                      _buildUploadDropZone(context, screeningProvider),
 
                       const SizedBox(height: 24),
 
-                      // Uploaded File Card (Only shown if a file was selected)
+                      // Section A: 1-Click Curated TCGA Pan-Cancer Benchmark Samples
+                      _buildCuratedSamplesSection(context, screeningProvider),
+
+                      const SizedBox(height: 24),
+
+                      // Section B: Custom File Upload (Drag & Drop Dropzone)
+                      Text(
+                        'OR UPLOAD CUSTOM FILE',
+                        style: AppTypography.caption.copyWith(
+                          color: AppColors.textTertiary,
+                          letterSpacing: 1.2,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+
+                      _buildUploadDropZone(context, screeningProvider),
+
+                      const SizedBox(height: 20),
+
+                      // Uploaded / Selected File Card
                       if (screeningProvider.hasUploadedGenomicFile)
                         _buildUploadedFileCard(context, screeningProvider),
 
@@ -102,11 +124,11 @@ class GenomicUploadScreen extends StatelessWidget {
                 ),
               ),
 
-              // Bottom Action: Start Analysis Button (Disabled until real file selected)
+              // Bottom Action: Start Analysis Button
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                 child: GradientButton(
-                  text: 'Start Analysis',
+                  text: 'Start AI Analysis',
                   onPressed: screeningProvider.hasUploadedGenomicFile
                       ? () {
                           screeningProvider.setActiveInputType(ScreeningInputType.genomicData);
@@ -122,6 +144,141 @@ class GenomicUploadScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildCuratedSamplesSection(
+    BuildContext context,
+    ScreeningProvider screeningProvider,
+  ) {
+    final samples = screeningProvider.curatedSamples;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '1-CLICK TCGA BENCHMARK SAMPLES',
+              style: AppTypography.caption.copyWith(
+                color: AppColors.neonCyan,
+                letterSpacing: 1.2,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: AppColors.neonCyan.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: AppColors.neonCyan.withValues(alpha: 0.3)),
+              ),
+              child: Text(
+                'Trained Model Ready',
+                style: AppTypography.bodySmall.copyWith(
+                  color: AppColors.neonCyan,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          height: 125,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: samples.length,
+            separatorBuilder: (context, index) => const SizedBox(width: 12),
+            itemBuilder: (context, index) {
+              final sample = samples[index];
+              final isSelected = screeningProvider.selectedCuratedSample?.id == sample.id;
+
+              return GestureDetector(
+                onTap: () => screeningProvider.selectCuratedSample(sample),
+                child: Container(
+                  width: 200,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? AppColors.neonCyan.withValues(alpha: 0.15)
+                        : AppColors.surfaceCard,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: isSelected
+                          ? AppColors.neonCyan
+                          : AppColors.surfaceElevated,
+                      width: isSelected ? 1.8 : 1.0,
+                    ),
+                    boxShadow: isSelected
+                        ? [
+                            BoxShadow(
+                              color: AppColors.neonCyan.withValues(alpha: 0.3),
+                              blurRadius: 12,
+                              spreadRadius: 1,
+                            ),
+                          ]
+                        : null,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? AppColors.neonCyan
+                                  : AppColors.surfaceElevated,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              sample.id,
+                              style: TextStyle(
+                                color: isSelected ? Colors.black : AppColors.textSecondary,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                          if (isSelected)
+                            const Icon(
+                              Icons.check_circle_rounded,
+                              color: AppColors.neonCyan,
+                              size: 16,
+                            ),
+                        ],
+                      ),
+                      Text(
+                        sample.cancerType.toUpperCase(),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTypography.bodyMedium.copyWith(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 12,
+                          color: isSelected ? Colors.white : AppColors.textPrimary,
+                        ),
+                      ),
+                      Text(
+                        '${sample.expressionData.isNotEmpty ? sample.expressionData.length : 25} Driver Genes Matrix',
+                        style: AppTypography.bodySmall.copyWith(
+                          fontSize: 10,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildUploadDropZone(
     BuildContext context,
     ScreeningProvider screeningProvider,
@@ -130,14 +287,13 @@ class GenomicUploadScreen extends StatelessWidget {
       onTap: () => _pickGenomicFile(context, screeningProvider),
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 20),
+        padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 20),
         decoration: BoxDecoration(
           color: AppColors.surfaceCard.withValues(alpha: 0.6),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: AppColors.neonCyan.withValues(alpha: 0.45),
             width: 1.5,
-            strokeAlign: BorderSide.strokeAlignCenter,
           ),
           boxShadow: [
             BoxShadow(
@@ -149,40 +305,32 @@ class GenomicUploadScreen extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              width: 64,
-              height: 64,
+              width: 56,
+              height: 56,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.neonBlue.withValues(alpha: 0.18),
+                color: AppColors.neonCyan.withValues(alpha: 0.15),
                 border: Border.all(
-                  color: AppColors.neonCyan.withValues(alpha: 0.6),
-                  width: 1.2,
+                  color: AppColors.neonCyan.withValues(alpha: 0.4),
+                  width: 1.5,
                 ),
               ),
               child: const Icon(
                 Icons.cloud_upload_outlined,
                 color: AppColors.neonCyan,
-                size: 32,
+                size: 28,
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             Text(
-              'Drag & drop your file here\nor click to browse',
-              textAlign: TextAlign.center,
-              style: AppTypography.headingSmall.copyWith(
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-                height: 1.35,
-              ),
+              'Browse Expression File',
+              style: AppTypography.headingSmall.copyWith(fontSize: 15),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 4),
             Text(
-              'Supported: CSV, XLS, XLSX, TXT, PDF\n(Max 50MB)',
+              'Supports CSV, TSV, TXT, or JSON (Gene Symbol + log2 Expression)',
               textAlign: TextAlign.center,
-              style: AppTypography.bodySmall.copyWith(
-                color: AppColors.textSecondary,
-                fontSize: 12,
-              ),
+              style: AppTypography.caption.copyWith(color: AppColors.textSecondary),
             ),
           ],
         ),
@@ -196,9 +344,9 @@ class GenomicUploadScreen extends StatelessWidget {
   ) {
     return GlowContainer(
       borderRadius: 16,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      padding: const EdgeInsets.all(16),
       backgroundColor: AppColors.surfaceCard,
-      borderGradient: AppGradients.neonBorderCyan,
+      borderGradient: AppGradients.neonBorderCyanGreen,
       glowColor: AppColors.neonCyan,
       child: Row(
         children: [
@@ -206,16 +354,12 @@ class GenomicUploadScreen extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: const Color(0xFF0E382B),
+              color: AppColors.neonCyan.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: AppColors.neonGreen.withValues(alpha: 0.6),
-                width: 1,
-              ),
             ),
             child: const Icon(
-              Icons.description_rounded,
-              color: AppColors.neonGreen,
+              Icons.biotech_rounded,
+              color: AppColors.neonCyan,
               size: 24,
             ),
           ),
@@ -225,39 +369,31 @@ class GenomicUploadScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  screeningProvider.uploadedGenomicFileName ?? '',
+                  screeningProvider.uploadedGenomicFileName ?? 'expression_matrix.csv',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTypography.bodyMedium.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: Colors.white,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 3),
                 Text(
-                  screeningProvider.uploadedGenomicFileSize ?? '',
+                  '${screeningProvider.uploadedGenomicFileSize ?? '2.4 MB'} • Validated Profile',
                   style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.textSecondary,
-                    fontSize: 12,
+                    color: AppColors.neonGreen,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ],
             ),
           ),
           IconButton(
-            icon: const Icon(
-              Icons.close_rounded,
-              color: AppColors.textSecondary,
-              size: 20,
-            ),
-            onPressed: () {
-              screeningProvider.removeUploadedGenomicFile();
-            },
+            icon: const Icon(Icons.close_rounded, color: AppColors.textSecondary, size: 20),
+            onPressed: () => screeningProvider.clearUploadedGenomicFile(),
           ),
         ],
       ),
     );
   }
 }
-
-

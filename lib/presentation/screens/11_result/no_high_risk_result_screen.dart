@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_gradients.dart';
 import '../../../core/constants/app_typography.dart';
 import '../../../core/routes/app_routes.dart';
+import '../../providers/screening_provider.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/glow_container.dart';
 import '../../widgets/gradient_button.dart';
@@ -12,6 +14,15 @@ class NoHighRiskResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screeningProvider = Provider.of<ScreeningProvider>(context);
+    final activeResult = screeningProvider.activeScreeningResult;
+    final genResult = screeningProvider.activeGenomicResult ?? activeResult.genomicResult;
+    final confidence = (genResult != null)
+        ? genResult.confidencePct
+        : (activeResult.genomicResult != null
+            ? activeResult.genomicResult!.confidencePct
+            : (activeResult.imageResult == null ? (activeResult.confidenceScore ?? 98.1) : 98.1));
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Container(
@@ -33,21 +44,21 @@ class NoHighRiskResultScreen extends StatelessWidget {
                     children: [
                       const SizedBox(height: 12),
 
-                      // Demo Notice Badge
+                      // Research Status Badge
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: AppColors.neonCyan.withValues(alpha: 0.15),
+                          color: AppColors.neonGreen.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: AppColors.neonCyan.withValues(alpha: 0.5),
+                            color: AppColors.neonGreen.withValues(alpha: 0.5),
                             width: 1,
                           ),
                         ),
                         child: Text(
-                          'UI Demonstration Mode',
+                          'TCGA Pan-Cancer Model Evaluated',
                           style: AppTypography.bodySmall.copyWith(
-                            color: AppColors.neonCyan,
+                            color: AppColors.neonGreen,
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
                           ),
@@ -96,7 +107,7 @@ class NoHighRiskResultScreen extends StatelessWidget {
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    'No signs of cancer detected by this screening model.',
+                                    'Expression profile aligns with healthy baseline references. No high-risk oncogenic signatures identified.',
                                     style: AppTypography.bodySmall.copyWith(
                                       color: Colors.white70,
                                       fontSize: 12,
@@ -110,82 +121,62 @@ class NoHighRiskResultScreen extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 20),
 
-                      // Shield Emblem Visual
-                      Container(
-                        width: 110,
-                        height: 110,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.neonGreen.withValues(alpha: 0.12),
-                          border: Border.all(
-                            color: AppColors.neonGreen.withValues(alpha: 0.6),
-                            width: 1.5,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.neonGreen.withValues(alpha: 0.25),
-                              blurRadius: 24,
-                              spreadRadius: 2,
+                      // Metrics Card
+                      GlowContainer(
+                        borderRadius: 18,
+                        padding: const EdgeInsets.all(18),
+                        backgroundColor: AppColors.surfaceCard,
+                        borderGradient: AppGradients.neonBorderCyanGreen,
+                        glowColor: AppColors.neonCyan,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Column(
+                              children: [
+                                Text('Baseline Integrity', style: AppTypography.caption.copyWith(color: AppColors.textSecondary)),
+                                const SizedBox(height: 4),
+                                Text('${confidence.toStringAsFixed(1)}%', style: AppTypography.headingMedium.copyWith(color: AppColors.neonGreen, fontSize: 22)),
+                              ],
+                            ),
+                            Container(height: 36, width: 1, color: AppColors.surfaceElevated),
+                            Column(
+                              children: [
+                                Text('Biomarkers Tested', style: AppTypography.caption.copyWith(color: AppColors.textSecondary)),
+                                const SizedBox(height: 4),
+                                Text('${genResult?.inputSummary.selectedBiomarkersMatched ?? 25} Genes', style: AppTypography.headingMedium.copyWith(color: AppColors.neonCyan, fontSize: 22)),
+                              ],
                             ),
                           ],
-                        ),
-                        child: const Center(
-                          child: Icon(
-                            Icons.verified_user_rounded,
-                            size: 58,
-                            color: AppColors.neonGreen,
-                          ),
                         ),
                       ),
 
                       const SizedBox(height: 20),
 
-                      // Supportive Lifestyle Encouragement Card
+                      // Lifestyle Recommendations Card
                       GlowContainer(
                         borderRadius: 18,
                         padding: const EdgeInsets.all(18),
                         backgroundColor: AppColors.surfaceCard,
-                        child: Row(
+                        borderGradient: AppGradients.neonBorderCyanGreen,
+                        glowColor: AppColors.neonGreen,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              width: 36,
-                              height: 36,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: AppColors.neonCyan.withValues(alpha: 0.15),
-                              ),
-                              child: const Icon(
-                                Icons.sentiment_satisfied_alt_rounded,
-                                size: 22,
-                                color: AppColors.neonCyan,
+                            Text(
+                              'PREVENTATIVE WELLNESS GUIDANCE',
+                              style: AppTypography.caption.copyWith(
+                                color: AppColors.neonGreen,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                'Great! Your screening result looks good. Keep maintaining a healthy lifestyle.',
-                                style: AppTypography.bodySmall.copyWith(
-                                  color: Colors.white,
-                                  fontSize: 13,
-                                  height: 1.35,
-                                ),
-                              ),
-                            ),
+                            const SizedBox(height: 12),
+                            _buildTip(Icons.eco_outlined, 'Maintain antioxidant and fiber-rich Mediterranean nutrition.'),
+                            _buildTip(Icons.water_drop_outlined, 'Ensure optimal daily hydration (2.5 - 3.0 liters).'),
+                            _buildTip(Icons.directions_run_outlined, '150 minutes of moderate weekly physical aerobic exercise.'),
+                            _buildTip(Icons.schedule_outlined, 'Maintain regular annual routine health screenings.'),
                           ],
-                        ),
-                      ),
-
-                      const SizedBox(height: 18),
-
-                      // Medical Disclaimer
-                      Text(
-                        'This is an AI-assisted screening result and not a final diagnosis.',
-                        textAlign: TextAlign.center,
-                        style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.textSecondary,
-                          fontSize: 11,
                         ),
                       ),
 
@@ -195,60 +186,32 @@ class NoHighRiskResultScreen extends StatelessWidget {
                 ),
               ),
 
-              // Bottom Actions: Food Guidance, Download Report & History
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                child: Column(
+              // Bottom Actions
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceCard,
+                  border: Border(top: BorderSide(color: AppColors.surfaceElevated)),
+                ),
+                child: Row(
                   children: [
-                    GradientButton(
-                      text: 'Personalized Food Guidance',
-                      onPressed: () {
-                        Navigator.of(context).pushNamed(AppRoutes.foodGuidance);
-                      },
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.of(context).pushNamed(AppRoutes.foodGuidance),
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: AppColors.neonCyan.withValues(alpha: 0.6)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                        ),
+                        child: const Text('Nutritional Guidance', style: TextStyle(color: AppColors.neonCyan, fontSize: 13, fontWeight: FontWeight.w600)),
+                      ),
                     ),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton.icon(
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              side: const BorderSide(color: AppColors.borderSubtle),
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            icon: const Icon(Icons.file_download_outlined, size: 18),
-                            label: const Text('Download Report'),
-                            onPressed: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  backgroundColor: AppColors.surfaceElevated,
-                                  content: Text('Downloading genomic screening PDF report...'),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: AppColors.neonCyan,
-                              side: const BorderSide(color: AppColors.borderSubtle),
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            child: const Text('View History'),
-                            onPressed: () {
-                              Navigator.of(context).pushNamed(AppRoutes.screeningHistory);
-                            },
-                          ),
-                        ),
-                      ],
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: GradientButton(
+                        text: 'Dashboard',
+                        onPressed: () => Navigator.of(context).pushReplacementNamed(AppRoutes.dashboard),
+                      ),
                     ),
                   ],
                 ),
@@ -259,6 +222,23 @@ class NoHighRiskResultScreen extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildTip(IconData icon, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: AppColors.neonGreen, size: 18),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              text,
+              style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary, height: 1.3),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
-
-

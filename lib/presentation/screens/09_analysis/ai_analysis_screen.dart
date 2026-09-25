@@ -1,12 +1,15 @@
-import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_gradients.dart';
 import '../../../core/constants/app_typography.dart';
 import '../../../core/routes/app_routes.dart';
+import '../../../data/models/screening_record_model.dart';
+import '../../providers/screening_provider.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/glow_container.dart';
+import '../../widgets/gradient_button.dart';
 
 class AIAnalysisScreen extends StatefulWidget {
   const AIAnalysisScreen({super.key});
@@ -18,10 +21,7 @@ class AIAnalysisScreen extends StatefulWidget {
 class _AIAnalysisScreenState extends State<AIAnalysisScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _animController;
-  int _progress = 15;
-  Timer? _progressTimer;
-  Timer? _navigationTimer;
-  bool _hasNavigated = false;
+  bool _hasTriggered = false;
 
   @override
   void initState() {
@@ -31,38 +31,54 @@ class _AIAnalysisScreenState extends State<AIAnalysisScreen>
       duration: const Duration(seconds: 4),
     )..repeat();
 
-    // Smoothly increment progress from 15% to 100%
-    _progressTimer = Timer.periodic(const Duration(milliseconds: 60), (timer) {
-      if (!mounted) return;
-      setState(() {
-        if (_progress < 100) {
-          _progress++;
-        } else {
-          _progressTimer?.cancel();
-          if (!_hasNavigated) {
-            _hasNavigated = true;
-            // Wait approximately 1 second after reaching 100% then auto-navigate
-            _navigationTimer = Timer(const Duration(milliseconds: 1000), () {
-              if (mounted) {
-                Navigator.of(context).pushReplacementNamed(AppRoutes.highRiskResult);
-              }
-            });
-          }
-        }
-      });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _startLivePipeline();
     });
+  }
+
+  Future<void> _startLivePipeline() async {
+    if (_hasTriggered) return;
+    _hasTriggered = true;
+
+    final screeningProvider = Provider.of<ScreeningProvider>(context, listen: false);
+    bool success = false;
+
+    if (screeningProvider.activeInputType == ScreeningInputType.medicalImage) {
+      success = await screeningProvider.executeMedicalImageAnalysis();
+    } else {
+      success = await screeningProvider.executeGenomicAnalysis();
+    }
+
+    if (!mounted) return;
+
+    if (success) {
+      if (screeningProvider.activeInputType == ScreeningInputType.medicalImage) {
+        Navigator.of(context).pushReplacementNamed(AppRoutes.medicalImageResult);
+      } else {
+        final result = screeningProvider.activeScreeningResult;
+        if (result.riskLevel == ScreeningRiskLevel.highRisk) {
+          Navigator.of(context).pushReplacementNamed(AppRoutes.highRiskResult);
+        } else {
+          Navigator.of(context).pushReplacementNamed(AppRoutes.noHighRiskResult);
+        }
+      }
+    }
   }
 
   @override
   void dispose() {
-    _progressTimer?.cancel();
-    _navigationTimer?.cancel();
     _animController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final screeningProvider = Provider.of<ScreeningProvider>(context);
+    final isImage = screeningProvider.activeInputType == ScreeningInputType.medicalImage;
+    final progress = screeningProvider.analysisProgress;
+    final stageText = screeningProvider.analysisStage;
+    final error = screeningProvider.analysisError;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Container(
@@ -91,14 +107,16 @@ class _AIAnalysisScreenState extends State<AIAnalysisScreen>
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        'Analyzing your genomic data...',
+                        isImage
+                            ? 'Analyzing medical scan & neural feature maps...'
+                            : 'Analyzing TCGA 33-class genomic signatures...',
                         textAlign: TextAlign.center,
                         style: AppTypography.subtitle,
                       ),
 
                       const SizedBox(height: 28),
 
-                      // Futuristic Circular DNA Radar Scanner
+                      // Circular DNA Radar Scanner
                       SizedBox(
                         width: 220,
                         height: 220,
@@ -128,8 +146,8 @@ class _AIAnalysisScreenState extends State<AIAnalysisScreen>
                                       ),
                                     ],
                                   ),
-                                  child: const Icon(
-                                    Icons.biotech_rounded,
+                                  child: Icon(
+                                    isImage ? Icons.image_search_rounded : Icons.biotech_rounded,
                                     size: 44,
                                     color: AppColors.neonCyan,
                                   ),
@@ -148,81 +166,111 @@ class _AIAnalysisScreenState extends State<AIAnalysisScreen>
                           Expanded(
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(6),
-                              child: Container(
+                              child: SizedBox(
                                 height: 8,
-                                color: AppColors.surfaceElevated,
-                                child: FractionallySizedBox(
-                                  alignment: Alignment.centerLeft,
-                                  widthFactor: _progress / 100,
-                                  child: Container(
-                                    decoration: const BoxDecoration(
-                                      gradient: AppGradients.primaryButton,
-                                    ),
-                                  ),
+                                child: LinearProgressIndicator(
+                                  value: progress / 100.0,
+                                  backgroundColor: AppColors.surfaceElevated,
+                                  valueColor: const AlwaysStoppedAnimation<Color>(AppColors.neonCyan),
                                 ),
                               ),
                             ),
                           ),
                           const SizedBox(width: 14),
                           Text(
-                            '$_progress%',
+                            '$progress%',
                             style: AppTypography.headingSmall.copyWith(
+                              color: AppColors.neonCyan,
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
-                              color: AppColors.neonCyan,
                             ),
                           ),
                         ],
                       ),
 
-                      const SizedBox(height: 28),
+                      const SizedBox(height: 12),
 
-                      // 4 Step Checklist Process
-                      GlowContainer(
-                        borderRadius: 18,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 18,
-                        ),
-                        backgroundColor: AppColors.surfaceCard,
-                        child: Column(
-                          children: [
-                            _buildChecklistItem(
-                              label: 'Data preprocessing',
-                              isDone: _progress >= 30,
-                              isActive: _progress < 30,
-                            ),
-                            const SizedBox(height: 14),
-                            _buildChecklistItem(
-                              label: 'Feature extraction',
-                              isDone: _progress >= 60,
-                              isActive: _progress >= 30 && _progress < 60,
-                            ),
-                            const SizedBox(height: 14),
-                            _buildChecklistItem(
-                              label: 'AI model analysis',
-                              isDone: _progress >= 85,
-                              isActive: _progress >= 60 && _progress < 85,
-                            ),
-                            const SizedBox(height: 14),
-                            _buildChecklistItem(
-                              label: 'Generating result',
-                              isDone: _progress >= 100,
-                              isActive: _progress >= 85 && _progress < 100,
-                            ),
-                          ],
+                      // Real Stage Text
+                      Text(
+                        stageText,
+                        textAlign: TextAlign.center,
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppColors.neonCyan,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
 
                       const SizedBox(height: 24),
 
-                      // Disclaimer Note
-                      Text(
-                        'This may take a few minutes.\nPlease don\'t close the app.',
-                        textAlign: TextAlign.center,
-                        style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.textSecondary,
-                          height: 1.4,
+                      // Error message if any
+                      if (error != null) ...[
+                        Container(
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: Colors.red.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.red.withValues(alpha: 0.4)),
+                          ),
+                          child: Text(
+                            'Pipeline Notice: $error',
+                            style: const TextStyle(color: Colors.redAccent, fontSize: 12),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        GradientButton(
+                          text: 'Retry Analysis',
+                          onPressed: () {
+                            setState(() {
+                              _hasTriggered = false;
+                            });
+                            _startLivePipeline();
+                          },
+                        ),
+                      ],
+
+                      // Pipeline Checklist
+                      GlowContainer(
+                        borderRadius: 16,
+                        padding: const EdgeInsets.all(16),
+                        backgroundColor: AppColors.surfaceCard,
+                        borderGradient: AppGradients.neonBorderCyanGreen,
+                        glowColor: AppColors.neonCyan,
+                        child: Column(
+                          children: [
+                            _buildStepItem(
+                              step: '1',
+                              title: isImage
+                                  ? 'Image Feature Extraction'
+                                  : 'Genomic Matrix Normalization',
+                              status: progress >= 25 ? 'Completed' : 'Processing',
+                              isDone: progress >= 25,
+                            ),
+                            const Divider(color: AppColors.surfaceElevated, height: 20),
+                            _buildStepItem(
+                              step: '2',
+                              title: isImage
+                                  ? 'Neural Lesion Segmentation'
+                                  : '2,000 TCGA Biomarkers Alignment',
+                              status: progress >= 50 ? 'Completed' : (progress >= 25 ? 'Processing' : 'Pending'),
+                              isDone: progress >= 50,
+                            ),
+                            const Divider(color: AppColors.surfaceElevated, height: 20),
+                            _buildStepItem(
+                              step: '3',
+                              title: isImage
+                                  ? 'Grad-CAM Saliency Heatmap Synthesis'
+                                  : 'Calibrated Multiclass Model Inference',
+                              status: progress >= 75 ? 'Completed' : (progress >= 50 ? 'Processing' : 'Pending'),
+                              isDone: progress >= 75,
+                            ),
+                            const Divider(color: AppColors.surfaceElevated, height: 20),
+                            _buildStepItem(
+                              step: '4',
+                              title: 'Precision Treatment & Quantum Synthesis',
+                              status: progress >= 100 ? 'Completed' : (progress >= 75 ? 'Processing' : 'Pending'),
+                              isDone: progress >= 100,
+                            ),
+                          ],
                         ),
                       ),
 
@@ -238,64 +286,53 @@ class _AIAnalysisScreenState extends State<AIAnalysisScreen>
     );
   }
 
-  Widget _buildChecklistItem({
-    required String label,
+  Widget _buildStepItem({
+    required String step,
+    required String title,
+    required String status,
     required bool isDone,
-    required bool isActive,
   }) {
     return Row(
       children: [
-        if (isDone)
-          Container(
-            width: 22,
-            height: 22,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.neonGreen,
-            ),
-            child: const Icon(
-              Icons.check,
-              size: 14,
-              color: Colors.white,
-            ),
-          )
-        else if (isActive)
-          Container(
-            width: 22,
-            height: 22,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: AppColors.neonCyan, width: 2),
-            ),
-            child: const Center(
-              child: SizedBox(
-                width: 8,
-                height: 8,
-                child: CircularProgressIndicator(
-                  strokeWidth: 1.5,
-                  color: AppColors.neonCyan,
-                ),
-              ),
-            ),
-          )
-        else
-          Container(
-            width: 22,
-            height: 22,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: AppColors.textDisabled,
-                width: 1.5,
-              ),
+        Container(
+          width: 28,
+          height: 28,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: isDone ? AppColors.neonGreen.withValues(alpha: 0.2) : AppColors.surfaceElevated,
+            border: Border.all(
+              color: isDone ? AppColors.neonGreen : AppColors.textSecondary.withValues(alpha: 0.4),
+              width: 1.5,
             ),
           ),
-        const SizedBox(width: 14),
+          child: Center(
+            child: isDone
+                ? const Icon(Icons.check, size: 16, color: AppColors.neonGreen)
+                : Text(
+                    step,
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            title,
+            style: AppTypography.bodySmall.copyWith(
+              color: isDone ? AppColors.textPrimary : AppColors.textSecondary,
+              fontWeight: isDone ? FontWeight.w600 : FontWeight.w400,
+            ),
+          ),
+        ),
         Text(
-          label,
-          style: AppTypography.bodyMedium.copyWith(
-            color: isDone || isActive ? Colors.white : AppColors.textDisabled,
-            fontWeight: isDone || isActive ? FontWeight.w600 : FontWeight.w400,
+          status,
+          style: AppTypography.caption.copyWith(
+            color: isDone ? AppColors.neonGreen : (status == 'Processing' ? AppColors.neonCyan : AppColors.textTertiary),
+            fontWeight: FontWeight.w600,
           ),
         ),
       ],
@@ -313,49 +350,41 @@ class _RadarDnaPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final maxRadius = size.width / 2;
 
-    // Outer concentric rings
+    final ringPaint = Paint()
+      ..color = AppColors.neonCyan.withValues(alpha: 0.2)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+
+    // Concentric rings
     for (int i = 1; i <= 3; i++) {
-      final ringPaint = Paint()
-        ..color = AppColors.neonCyan.withValues(alpha: 0.15 * i)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.0;
       canvas.drawCircle(center, maxRadius * (i / 3), ringPaint);
     }
 
-    // Rotating Radar Sweep Arc
+    // Crosshairs
+    final linePaint = Paint()
+      ..color = AppColors.neonCyan.withValues(alpha: 0.15)
+      ..strokeWidth = 1.0;
+    canvas.drawLine(Offset(center.dx, 0), Offset(center.dx, size.height), linePaint);
+    canvas.drawLine(Offset(0, center.dy), Offset(size.width, center.dy), linePaint);
+
+    // Rotating Radar Sweep
     final sweepAngle = progress * 2 * math.pi;
     final sweepPaint = Paint()
       ..shader = SweepGradient(
-        center: FractionalOffset.center,
         startAngle: 0.0,
         endAngle: math.pi / 2,
         colors: [
-          Colors.transparent,
-          AppColors.neonCyan.withValues(alpha: 0.45),
+          AppColors.neonCyan.withValues(alpha: 0.5),
+          AppColors.neonCyan.withValues(alpha: 0.0),
         ],
-        transform: GradientRotation(sweepAngle),
+        transform: GradientRotation(sweepAngle - math.pi / 2),
       ).createShader(Rect.fromCircle(center: center, radius: maxRadius))
       ..style = PaintingStyle.fill;
 
     canvas.drawCircle(center, maxRadius, sweepPaint);
-
-    // Glowing blip particles along the orbit
-    for (int i = 0; i < 4; i++) {
-      final angle = (i * math.pi / 2) + sweepAngle;
-      final radius = maxRadius * 0.75;
-      final blipCenter = Offset(
-        center.dx + math.cos(angle) * radius,
-        center.dy + math.sin(angle) * radius,
-      );
-      final blipPaint = Paint()
-        ..color = AppColors.neonCyan
-        ..style = PaintingStyle.fill;
-      canvas.drawCircle(blipCenter, 3.0, blipPaint);
-    }
   }
 
   @override
-  bool shouldRepaint(covariant _RadarDnaPainter oldDelegate) => true;
+  bool shouldRepaint(covariant _RadarDnaPainter oldDelegate) =>
+      oldDelegate.progress != progress;
 }
-
-

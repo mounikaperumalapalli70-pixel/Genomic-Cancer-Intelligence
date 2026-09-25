@@ -1,0 +1,84 @@
+{
+  "model_version": "1.0.0-tcga-pancan",
+  "model_name": "TCGA Multiclass Genomic Cancer Classifier",
+  "training_timestamp": "2026-09-20T05:22:17.521129Z",
+  "random_seed": 42,
+  "dataset_summary": {
+    "expression_file": "EB++AdjustPANCAN_IlluminaHiSeq_RNASeqV2.geneExp (2).xena.gz",
+    "phenotype_file": "TCGA_phenotype_denseDataOnlyDownload.tsv.gz",
+    "total_usable_samples": 11060,
+    "total_initial_genes": 20530,
+    "genes_after_variance_filter": 19742,
+    "selected_features_k": 2000,
+    "cancer_classes_count": 33,
+    "cancer_classes": [
+      "acute myeloid leukemia",
+      "adrenocortical cancer",
+      "bladder urothelial carcinoma",
+      "brain lower grade glioma",
+      "breast invasive carcinoma",
+      "cervical & endocervical cancer",
+      "cholangiocarcinoma",
+      "colon adenocarcinoma",
+      "diffuse large B-cell lymphoma",
+      "esophageal carcinoma",
+      "glioblastoma multiforme",
+      "head & neck squamous cell carcinoma",
+      "kidney chromophobe",
+      "kidney clear cell carcinoma",
+      "kidney papillary cell carcinoma",
+      "liver hepatocellular carcinoma",
+      "lung adenocarcinoma",
+      "lung squamous cell carcinoma",
+      "mesothelioma",
+      "ovarian serous cystadenocarcinoma",
+      "pancreatic adenocarcinoma",
+      "pheochromocytoma & paraganglioma",
+      "prostate adenocarcinoma",
+      "rectum adenocarcinoma",
+      "sarcoma",
+      "skin cutaneous melanoma",
+      "stomach adenocarcinoma",
+      "testicular germ cell tumor",
+      "thymoma",
+      "thyroid carcinoma",
+      "uterine carcinosarcoma",
+      "uterine corpus endometrioid carcinoma",
+      "uveal melanoma"
+    ],
+    "train_samples": 7742,
+    "val_samples": 1659,
+    "test_samples": 1659,
+    "split_ratio": {
+      "train": 0.7,
+      "val": 0.15,
+      "test": 0.15
+    }
+  },
+  "winning_model": {
+    "model_type": "linear_svc",
+    "selected_features_k": 2000,
+    "feature_selection_method": "f_classif",
+    "variance_threshold": 0.05
+  },
+  "validation_metrics": {
+    "accuracy": 0.9578059071729957,
+    "macro_precision": 0.9428688314333409,
+    "macro_recall": 0.9411399735715724,
+    "macro_f1": 0.9408084508424268,
+    "weighted_f1": 0.9574014233459975,
+    "top3_accuracy": 0.9921639541892706
+  },
+  "test_metrics": {
+    "accuracy": 0.948161543098252,
+    "macro_precision": 0.940270886200035,
+    "macro_recall": 0.9223879881204736,
+    "macro_f1": 0.9273054125079968,
+    "weighted_f1": 0.9480107515661259,
+    "top3_accuracy": 0.9903556359252562
+  },
+  "safety_and_compliance": {
+    "intended_use": "Research prototype for genomic biomarker analysis and Pan-Cancer molecular classification.",
+    "disclaimer": "FOR RESEARCH AND EDUCATIONAL USE ONLY. NOT FOR CLINICAL DIAGNOSTIC DECISIONS OR MEDICAL PRESCRIPTIONS."
+  }
+}

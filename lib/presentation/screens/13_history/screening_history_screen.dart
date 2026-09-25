@@ -137,7 +137,9 @@ class ScreeningHistoryScreen extends StatelessWidget {
                             ),
                             onPressed: () {
                               screeningProvider.setActiveScreeningResult(record);
-                              if (record.riskLevel == ScreeningRiskLevel.highRisk) {
+                              if (record.imageResult != null) {
+                                Navigator.of(context).pushNamed(AppRoutes.medicalImageResult);
+                              } else if (record.riskLevel == ScreeningRiskLevel.highRisk) {
                                 Navigator.of(context).pushNamed(AppRoutes.highRiskResult);
                               } else {
                                 Navigator.of(context).pushNamed(AppRoutes.noHighRiskResult);

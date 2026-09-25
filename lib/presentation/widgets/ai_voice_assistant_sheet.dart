@@ -281,6 +281,8 @@ class AiVoiceAssistantSheet extends StatefulWidget {
   final void Function(String languageCode)? onLanguageSelected;
   final void Function(Gender gender)? onGenderSelected;
   final void Function(ExtractedBasicInfo info)? onBasicInfoUpdated;
+  final void Function(ConversationalIntent intent)? onIntentDetected;
+  final VoidCallback? onComplete;
 
   const AiVoiceAssistantSheet({
     super.key,
@@ -290,6 +292,8 @@ class AiVoiceAssistantSheet extends StatefulWidget {
     this.onLanguageSelected,
     this.onGenderSelected,
     this.onBasicInfoUpdated,
+    this.onIntentDetected,
+    this.onComplete,
   });
 
   static Future<void> show({
@@ -300,6 +304,8 @@ class AiVoiceAssistantSheet extends StatefulWidget {
     void Function(String languageCode)? onLanguageSelected,
     void Function(Gender gender)? onGenderSelected,
     void Function(ExtractedBasicInfo info)? onBasicInfoUpdated,
+    void Function(ConversationalIntent intent)? onIntentDetected,
+    VoidCallback? onComplete,
   }) {
     return showModalBottomSheet(
       context: context,
@@ -312,6 +318,8 @@ class AiVoiceAssistantSheet extends StatefulWidget {
         onLanguageSelected: onLanguageSelected,
         onGenderSelected: onGenderSelected,
         onBasicInfoUpdated: onBasicInfoUpdated,
+        onIntentDetected: onIntentDetected,
+        onComplete: onComplete,
       ),
     );
   }
@@ -332,6 +340,7 @@ class _AiVoiceAssistantSheetState extends State<AiVoiceAssistantSheet>
   String? _phoneticMessage;
   String _status = 'Connecting...';
   late String _activeLang;
+  bool _isDismissed = false;
 
   @override
   void initState() {
@@ -385,12 +394,19 @@ class _AiVoiceAssistantSheetState extends State<AiVoiceAssistantSheet>
       onBasicInfo: (info) {
         widget.onBasicInfoUpdated?.call(info);
       },
+      onIntent: (intent) {
+        widget.onIntentDetected?.call(intent);
+      },
       onComplete: () {
-        if (!mounted) return;
+        if (!mounted || _isDismissed) return;
+        _isDismissed = true;
         setState(() {
-          _status = 'Information updated successfully!';
+          _status = widget.mode == AssistantMode.languageSelection
+              ? 'Language selected! Continuing...'
+              : 'Action completed!';
         });
-        Future.delayed(const Duration(milliseconds: 1400), () {
+        widget.onComplete?.call();
+        Future.delayed(const Duration(milliseconds: 700), () {
           if (mounted && Navigator.of(context).canPop()) {
             Navigator.of(context).pop();
           }
@@ -411,6 +427,11 @@ class _AiVoiceAssistantSheetState extends State<AiVoiceAssistantSheet>
           setState(() {
             _status = 'Heard: "$words"';
           });
+          _voiceService.handleExternalSpeechInput(
+            words,
+            isFinal,
+            mode: widget.mode,
+          );
         },
       );
     }

@@ -233,7 +233,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   child: const Text('View Report', style: TextStyle(fontSize: 12)),
                   onPressed: () {
                     provider.setActiveScreeningResult(record);
-                    if (isHighRisk) {
+                    if (record.imageResult != null) {
+                      Navigator.of(context).pushNamed(AppRoutes.medicalImageResult);
+                    } else if (isHighRisk) {
                       Navigator.of(context).pushNamed(AppRoutes.highRiskResult);
                     } else {
                       Navigator.of(context).pushNamed(AppRoutes.noHighRiskResult);

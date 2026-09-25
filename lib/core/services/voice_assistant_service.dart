@@ -9,6 +9,7 @@ enum AssistantMode {
   languageSelection,
   genderSelection,
   basicInfo,
+  dashboard,
 }
 
 enum BasicInfoField {
@@ -32,6 +33,7 @@ class VoiceAssistantService {
 
   bool _isActive = false;
   bool get isActive => _isActive;
+  bool _isHandlingAction = false;
 
   // Callbacks
   void Function(String message, String? phonetic)? onAiMessageUpdate;
@@ -39,6 +41,7 @@ class VoiceAssistantService {
   void Function(String languageCode)? onLanguageSelected;
   void Function(Gender gender)? onGenderSelected;
   void Function(ExtractedBasicInfo info)? onBasicInfoUpdated;
+  void Function(ConversationalIntent intent)? onIntentDetected;
   VoidCallback? onFlowCompleted;
 
   BasicInfoField _currentBasicInfoField = BasicInfoField.name;
@@ -55,15 +58,18 @@ class VoiceAssistantService {
     void Function(String languageCode)? onLanguage,
     void Function(Gender gender)? onGender,
     void Function(ExtractedBasicInfo info)? onBasicInfo,
+    void Function(ConversationalIntent intent)? onIntent,
     VoidCallback? onComplete,
   }) async {
     _isActive = true;
+    _isHandlingAction = false;
     _currentLanguageCode = languageCode;
     onAiMessageUpdate = onAiMessage;
     onStatusUpdate = onStatus;
     onLanguageSelected = onLanguage;
     onGenderSelected = onGender;
     onBasicInfoUpdated = onBasicInfo;
+    onIntentDetected = onIntent;
     onFlowCompleted = onComplete;
 
     if (existingInfo != null) {
@@ -78,12 +84,89 @@ class VoiceAssistantService {
       await _startGenderSelectionFlow();
     } else if (mode == AssistantMode.basicInfo) {
       await _startBasicInfoFlow();
+    } else if (mode == AssistantMode.dashboard) {
+      await _startDashboardConversationalFlow();
+    }
+  }
+
+  /// Handles speech input piped from manual mic taps or external triggers
+  Future<void> handleExternalSpeechInput(
+    String recognized,
+    bool isFinal, {
+    required AssistantMode mode,
+  }) async {
+    if (!_isActive || _isHandlingAction || recognized.trim().isEmpty) return;
+
+    if (mode == AssistantMode.languageSelection) {
+      final lang = _nlp.extractLanguage(recognized);
+      if (lang != null) {
+        _isHandlingAction = true;
+        _currentLanguageCode = lang;
+        await _stt.stopListening();
+        onLanguageSelected?.call(lang);
+        final confirm = _getLanguageConfirm(lang);
+        _displayAiMessage(confirm['text']!, confirm['phonetic']);
+        await _tts.speak(
+          text: confirm['text']!,
+          languageCode: lang,
+          onComplete: () => onFlowCompleted?.call(),
+          onError: (err) => onFlowCompleted?.call(),
+        );
+      }
+    } else if (mode == AssistantMode.genderSelection) {
+      final gender = _nlp.extractGender(recognized);
+      if (gender != null) {
+        _isHandlingAction = true;
+        await _stt.stopListening();
+        onGenderSelected?.call(gender);
+        final confirm = _getGenderConfirm(_currentLanguageCode, gender);
+        _displayAiMessage(confirm['text']!, confirm['phonetic']);
+        await _tts.speak(
+          text: confirm['text']!,
+          languageCode: _currentLanguageCode,
+          onComplete: () => onFlowCompleted?.call(),
+          onError: (err) => onFlowCompleted?.call(),
+        );
+      }
+    } else if (mode == AssistantMode.dashboard) {
+      final lang = _nlp.extractLanguage(recognized);
+      if (lang != null && lang != _currentLanguageCode) {
+        _isHandlingAction = true;
+        _currentLanguageCode = lang;
+        await _stt.stopListening();
+        onLanguageSelected?.call(lang);
+        final confirm = _getLanguageConfirm(lang);
+        _displayAiMessage(confirm['text']!, confirm['phonetic']);
+        await _tts.speak(
+          text: confirm['text']!,
+          languageCode: lang,
+          onComplete: () => onFlowCompleted?.call(),
+          onError: (err) => onFlowCompleted?.call(),
+        );
+        return;
+      }
+
+      final intent = _nlp.extractConversationalIntent(recognized);
+      if (intent != null) {
+        _isHandlingAction = true;
+        await _stt.stopListening();
+        onIntentDetected?.call(intent);
+        final confirm = _getIntentConfirmation(_currentLanguageCode, intent);
+        _displayAiMessage(confirm['text']!, confirm['phonetic']);
+        await _tts.speak(
+          text: confirm['text']!,
+          languageCode: _currentLanguageCode,
+          onComplete: () => onFlowCompleted?.call(),
+          onError: (err) => onFlowCompleted?.call(),
+        );
+      }
     }
   }
 
   /// Stop current active session
   Future<void> stopSession() async {
     _isActive = false;
+    _isHandlingAction = false;
     await _tts.stop();
     await _stt.stopListening();
   }
@@ -93,6 +176,7 @@ class VoiceAssistantService {
   // =========================================================================
 
   Future<void> _startLanguageSelectionFlow() async {
+    _isHandlingAction = false;
     final prompt = _getLanguagePrompt(_currentLanguageCode);
     _displayAiMessage(prompt['text']!, prompt['phonetic']);
 
@@ -100,19 +184,37 @@ class VoiceAssistantService {
       text: prompt['text']!,
       languageCode: _currentLanguageCode,
       onSpeechResult: (recognized, isFinal) async {
-        if (recognized.trim().isEmpty) return;
+        if (!_isActive || _isHandlingAction || recognized.trim().isEmpty) return;
 
         final detectedLang = _nlp.extractLanguage(recognized);
         if (detectedLang != null) {
+          _isHandlingAction = true;
           _currentLanguageCode = detectedLang;
+          await _stt.stopListening();
+
+          final langNames = {
+            'en': 'English',
+            'te': 'Telugu (తెలుగు)',
+            'hi': 'Hindi (हिंदी)',
+            'ta': 'Tamil (தமிழ்)',
+            'kn': 'Kannada (ಕನ್ನಡ)',
+          };
+          final langDisplay = langNames[detectedLang] ?? detectedLang;
+          onStatusUpdate?.call('Selecting $langDisplay...');
           onLanguageSelected?.call(detectedLang);
 
           final confirm = _getLanguageConfirm(detectedLang);
           _displayAiMessage(confirm['text']!, confirm['phonetic']);
+          
           await _tts.speak(
             text: confirm['text']!,
             languageCode: detectedLang,
             onComplete: () {
+              onStatusUpdate?.call('Language selected. Continuing...');
+              onFlowCompleted?.call();
+            },
+            onError: (err) {
+              onStatusUpdate?.call('Language selected. Continuing...');
               onFlowCompleted?.call();
             },
           );
@@ -122,12 +224,112 @@ class VoiceAssistantService {
           await _speakAndListen(
             text: retry['text']!,
             languageCode: _currentLanguageCode,
-            onSpeechResult: (r, fin) {
+            onSpeechResult: (r, fin) async {
+              if (!_isActive || _isHandlingAction || r.trim().isEmpty) return;
               final lang = _nlp.extractLanguage(r);
               if (lang != null) {
+                _isHandlingAction = true;
                 _currentLanguageCode = lang;
+                await _stt.stopListening();
                 onLanguageSelected?.call(lang);
-                onFlowCompleted?.call();
+                final confirm = _getLanguageConfirm(lang);
+                _displayAiMessage(confirm['text']!, confirm['phonetic']);
+                await _tts.speak(
+                  text: confirm['text']!,
+                  languageCode: lang,
+                  onComplete: () {
+                    onStatusUpdate?.call('Language selected. Continuing...');
+                    onFlowCompleted?.call();
+                  },
+                  onError: (err) {
+                    onStatusUpdate?.call('Language selected. Continuing...');
+                    onFlowCompleted?.call();
+                  },
+                );
+              }
+            },
+          );
+        }
+      },
+    );
+  }
+
+  // =========================================================================
+  // DASHBOARD CONVERSATIONAL ACTION FLOW
+  // =========================================================================
+
+  Future<void> _startDashboardConversationalFlow() async {
+    _isHandlingAction = false;
+    final prompt = _getDashboardPrompt(_currentLanguageCode, _accumulatedInfo.name);
+    _displayAiMessage(prompt['text']!, prompt['phonetic']);
+
+    await _speakAndListen(
+      text: prompt['text']!,
+      languageCode: _currentLanguageCode,
+      onSpeechResult: (recognized, isFinal) async {
+        if (!_isActive || _isHandlingAction || recognized.trim().isEmpty) return;
+
+        // 1. Check if user asked to change language
+        final detectedLang = _nlp.extractLanguage(recognized);
+        if (detectedLang != null && detectedLang != _currentLanguageCode) {
+          _isHandlingAction = true;
+          _currentLanguageCode = detectedLang;
+          await _stt.stopListening();
+          onLanguageSelected?.call(detectedLang);
+          final confirm = _getLanguageConfirm(detectedLang);
+          _displayAiMessage(confirm['text']!, confirm['phonetic']);
+          await _tts.speak(
+            text: confirm['text']!,
+            languageCode: detectedLang,
+            onComplete: () => onFlowCompleted?.call(),
+            onError: (err) => onFlowCompleted?.call(),
+          );
+          return;
+        }
+
+        // 2. Check conversational intent
+        final intent = _nlp.extractConversationalIntent(recognized);
+        if (intent != null) {
+          _isHandlingAction = true;
+          await _stt.stopListening();
+
+          final confirm = _getIntentConfirmation(_currentLanguageCode, intent);
+          _displayAiMessage(confirm['text']!, confirm['phonetic']);
+          onStatusUpdate?.call('Executing action...');
+
+          onIntentDetected?.call(intent);
+
+          await _tts.speak(
+            text: confirm['text']!,
+            languageCode: _currentLanguageCode,
+            onComplete: () {
+              onFlowCompleted?.call();
+            },
+            onError: (err) {
+              onFlowCompleted?.call();
+            },
+          );
+        } else if (isFinal) {
+          final retry = _getDashboardRetry(_currentLanguageCode);
+          _displayAiMessage(retry['text']!, retry['phonetic']);
+          await _speakAndListen(
+            text: retry['text']!,
+            languageCode: _currentLanguageCode,
+            onSpeechResult: (r, fin) async {
+              if (!_isActive || _isHandlingAction || r.trim().isEmpty) return;
+              final retryIntent = _nlp.extractConversationalIntent(r);
+              if (retryIntent != null) {
+                _isHandlingAction = true;
+                await _stt.stopListening();
+                onIntentDetected?.call(retryIntent);
+                final confirm = _getIntentConfirmation(_currentLanguageCode, retryIntent);
+                _displayAiMessage(confirm['text']!, confirm['phonetic']);
+                await _tts.speak(
+                  text: confirm['text']!,
+                  languageCode: _currentLanguageCode,
+                  onComplete: () => onFlowCompleted?.call(),
+                  onError: (e) => onFlowCompleted?.call(),
+                );
               }
             },
           );
@@ -597,6 +799,180 @@ class VoiceAssistantService {
         return {
           'text': 'Thank you $name! All your basic details have been recorded.',
           'phonetic': 'Thank you! Details recorded.',
+        };
+    }
+  }
+
+  // =========================================================================
+  // DASHBOARD PROMPTS & INTENT CONFIRMATIONS (All 5 Supported Languages)
+  // =========================================================================
+
+  Map<String, String> _getDashboardPrompt(String lang, String? userName) {
+    final name = (userName != null && userName.trim().isNotEmpty)
+        ? userName.trim().split(RegExp(r'\s+')).first
+        : '';
+
+    switch (lang) {
+      case 'te':
+        return {
+          'text': name.isNotEmpty
+              ? 'నమస్కారం $name! మీకు ఏ సహాయం కావాలి? మీరు స్క్రీనింగ్ ప్రారంభించండి, రిపోర్టులు లేదా ఆహార సలహాలు అని చెప్పవచ్చు.'
+              : 'నమస్కారం! మీకు ఏ సహాయం కావాలి? మీరు స్క్రీనింగ్ ప్రారంభించండి, రిపోర్టులు లేదా ఆహార సలహాలు అని చెప్పవచ్చు.',
+          'phonetic': 'Hello! How can I help you? You can say Start screening, Reports, or Food guidance.',
+        };
+      case 'ta':
+        return {
+          'text': name.isNotEmpty
+              ? 'வணக்கம் $name! நான் உங்களுக்கு எப்படி உதவ முடியும்? நீங்கள் புற்றுநோய் பரிசோதனை, அறிக்கைகள் அல்லது உணவு வழிகாட்டல் என்று சொல்லலாம்.'
+              : 'வணக்கம்! நான் உங்களுக்கு எப்படி உதவ முடியும்? நீங்கள் புற்றுநோய் பரிசோதனை, அறிக்கைகள் அல்லது உணவு வழிகாட்டல் என்று சொல்லலாம்.',
+          'phonetic': 'Hello! How can I help you? You can say Start screening, Reports, or Food guidance.',
+        };
+      case 'kn':
+        return {
+          'text': name.isNotEmpty
+              ? 'ನಮಸ್ಕಾರ $name! ನಾನು ನಿಮಗೆ ಹೇಗೆ ಸಹಾಯ ಮಾಡಬಹುದು? ನೀವು ಕ್ಯಾನ್ಸರ್ ಸ್ಕ್ರೀನಿಂಗ್, ವರದಿಗಳು ಅಥವಾ ಆಹಾರ ಮಾರ್ಗದರ್ಶನ ಎಂದು ಹೇಳಬಹುದು.'
+              : 'ನಮಸ್ಕಾರ! ನಾನು ನಿಮಗೆ ಹೇಗೆ ಸಹಾಯ ಮಾಡಬಹುದು? ನೀವು ಕ್ಯಾನ್ಸರ್ ಸ್ಕ್ರೀನಿಂಗ್, ವರದಿಗಳು ಅಥವಾ ಆಹಾರ ಮಾರ್ಗದರ್ಶನ ಎಂದು ಹೇಳಬಹುದು.',
+          'phonetic': 'Hello! How can I help you? You can say Start screening, Reports, or Food guidance.',
+        };
+      case 'hi':
+        return {
+          'text': name.isNotEmpty
+              ? 'नमस्ते $name! मैं आपकी क्या सहायता कर सकता हूँ? आप कैंसर स्क्रीनिंग शुरू करें, रिपोर्ट्स या आहार मार्गदर्शन कह सकते हैं।'
+              : 'नमस्ते! मैं आपकी क्या सहायता कर सकता हूँ? आप कैंसर स्क्रीनिंग शुरू करें, रिपोर्ट्स या आहार मार्गदर्शन कह सकते हैं।',
+          'phonetic': 'Hello! How can I help you? You can say Start screening, Reports, or Food guidance.',
+        };
+      case 'en':
+      default:
+        return {
+          'text': name.isNotEmpty
+              ? 'Hello $name! How can I help you today? You can say Start Cancer Screening, View Reports, or Food Guidance.'
+              : 'Hello! How can I help you today? You can say Start Cancer Screening, View Reports, or Food Guidance.',
+          'phonetic': 'How can I help you today?',
+        };
+    }
+  }
+
+  Map<String, String> _getIntentConfirmation(String lang, ConversationalIntent intent) {
+    switch (intent) {
+      case ConversationalIntent.startScreening:
+        switch (lang) {
+          case 'te':
+            return {'text': 'సరే, క్యాన్సర్ స్క్రీనింగ్ ప్రారంభిస్తున్నాను.', 'phonetic': 'Starting cancer screening.'};
+          case 'ta':
+            return {'text': 'சரி, புற்றுநோய் பரிசோதனை தொடங்கப்படுகிறது.', 'phonetic': 'Starting cancer screening.'};
+          case 'kn':
+            return {'text': 'ಸರಿ, ಕ್ಯಾನ್ಸರ್ ಸ್ಕ್ರೀನಿಂಗ್ ಪ್ರಾರಂಭಿಸಲಾಗುತ್ತಿದೆ.', 'phonetic': 'Starting cancer screening.'};
+          case 'hi':
+            return {'text': 'ठीक है, कैंसर स्क्रीनिंग शुरू की जा रही है।', 'phonetic': 'Starting cancer screening.'};
+          case 'en':
+          default:
+            return {'text': 'Starting AI cancer screening now.', 'phonetic': 'Starting cancer screening.'};
+        }
+
+      case ConversationalIntent.viewReports:
+        switch (lang) {
+          case 'te':
+            return {'text': 'సరే, మీ రిపోర్టులను తెరుస్తున్నాను.', 'phonetic': 'Opening reports.'};
+          case 'ta':
+            return {'text': 'சரி, உங்கள் அறிக்கைகள் திறக்கப்படுகின்றன.', 'phonetic': 'Opening reports.'};
+          case 'kn':
+            return {'text': 'ಸರಿ, ನಿಮ್ಮ ವರದಿಗಳನ್ನು ತೆರೆಯಲಾಗುತ್ತಿದೆ.', 'phonetic': 'Opening reports.'};
+          case 'hi':
+            return {'text': 'ठीक है, आपकी रिपोर्ट्स खोली जा रही हैं।', 'phonetic': 'Opening reports.'};
+          case 'en':
+          default:
+            return {'text': 'Opening your screening reports.', 'phonetic': 'Opening reports.'};
+        }
+
+      case ConversationalIntent.foodGuidance:
+        switch (lang) {
+          case 'te':
+            return {'text': 'సరే, ఆహార మరియు పోషకాహార మార్గదర్శకాలను చూపిస్తున్నాను.', 'phonetic': 'Opening food guidance.'};
+          case 'ta':
+            return {'text': 'சரி, உணவு மற்றும் ஊட்டச்சத்து வழிகாட்டல் காட்டப்படுகிறது.', 'phonetic': 'Opening food guidance.'};
+          case 'kn':
+            return {'text': 'ಸರಿ, ಆಹಾರ ಮತ್ತು ಪೋಷಕಾಂಶ ಮಾರ್ಗದರ್ಶನವನ್ನು ತೋರಿಸಲಾಗುತ್ತಿದೆ.', 'phonetic': 'Opening food guidance.'};
+          case 'hi':
+            return {'text': 'ठीक है, आहार और पोषण मार्गदर्शन दिखाया जा रहा है।', 'phonetic': 'Opening food guidance.'};
+          case 'en':
+          default:
+            return {'text': 'Opening food and nutrition guidance.', 'phonetic': 'Opening food guidance.'};
+        }
+
+      case ConversationalIntent.screeningHistory:
+        switch (lang) {
+          case 'te':
+            return {'text': 'సరే, మీ గత స్క్రీనింగ్ రికార్డులను చూపిస్తున్నాను.', 'phonetic': 'Opening history.'};
+          case 'ta':
+            return {'text': 'சரி, உங்கள் பரிசோதனை வரலாறு காட்டப்படுகிறது.', 'phonetic': 'Opening history.'};
+          case 'kn':
+            return {'text': 'ಸರಿ, ನಿಮ್ಮ ಸ್ಕ್ರೀನಿಂಗ್ ಇತಿಹಾಸವನ್ನು ತೋರಿಸಲಾಗುತ್ತಿದೆ.', 'phonetic': 'Opening history.'};
+          case 'hi':
+            return {'text': 'ठीक है, आपका स्क्रीनिंग इतिहास दिखाया जा रहा है।', 'phonetic': 'Opening history.'};
+          case 'en':
+          default:
+            return {'text': 'Opening your screening history.', 'phonetic': 'Opening history.'};
+        }
+
+      case ConversationalIntent.continueNext:
+        switch (lang) {
+          case 'te':
+            return {'text': 'సరే, ముందుకు కొనసాగుతున్నాము.', 'phonetic': 'Continuing.'};
+          case 'ta':
+            return {'text': 'சரி, தொடர்ந்து செல்கிறோம்.', 'phonetic': 'Continuing.'};
+          case 'kn':
+            return {'text': 'ಸರಿ, ಮುಂದುವರಿಯುತ್ತಿದ್ದೇವೆ.', 'phonetic': 'Continuing.'};
+          case 'hi':
+            return {'text': 'ठीक है, आगे बढ़ रहे हैं।', 'phonetic': 'Continuing.'};
+          case 'en':
+          default:
+            return {'text': 'Continuing to the next step.', 'phonetic': 'Continuing.'};
+        }
+
+      case ConversationalIntent.changeLanguage:
+        switch (lang) {
+          case 'te':
+            return {'text': 'సరే, భాష ఎంపిక తెరవబడుతోంది.', 'phonetic': 'Opening language selection.'};
+          case 'ta':
+            return {'text': 'சரி, மொழி தேர்வு திறக்கப்படுகிறது.', 'phonetic': 'Opening language selection.'};
+          case 'kn':
+            return {'text': 'ಸರಿ, ಭಾಷೆ ಆಯ್ಕೆ ತೆರೆಯಲಾಗುತ್ತಿದೆ.', 'phonetic': 'Opening language selection.'};
+          case 'hi':
+            return {'text': 'ठीक है, भाषा चयन खोला जा रहा है।', 'phonetic': 'Opening language selection.'};
+          case 'en':
+          default:
+            return {'text': 'Opening language selection.', 'phonetic': 'Opening language selection.'};
+        }
+    }
+  }
+
+  Map<String, String> _getDashboardRetry(String lang) {
+    switch (lang) {
+      case 'te':
+        return {
+          'text': 'దయచేసి స్క్రీనింగ్ ప్రారంభించండి, రిపోర్టులు లేదా ఆహార సలహాలు అని చెప్పండి.',
+          'phonetic': 'Please say Start screening, Reports, or Food guidance.',
+        };
+      case 'ta':
+        return {
+          'text': 'தயவுசெய்து பரிசோதனை தொடங்கு, அறிக்கைகள் அல்லது உணவு வழிகாட்டல் என்று சொல்லுங்கள்.',
+          'phonetic': 'Please say Start screening, Reports, or Food guidance.',
+        };
+      case 'kn':
+        return {
+          'text': 'ದಯವಿಟ್ಟು ಸ್ಕ್ರೀನಿಂಗ್ ಪ್ರಾರಂಭಿಸಿ, ವರದಿಗಳು ಅಥವಾ ಆಹಾರ ಮಾರ್ಗದರ್ಶನ ಎಂದು ಹೇಳಿ.',
+          'phonetic': 'Please say Start screening, Reports, or Food guidance.',
+        };
+      case 'hi':
+        return {
+          'text': 'कृपया स्क्रीनिंग शुरू करें, रिपोर्ट्स या आहार मार्गदर्शन बोलें।',
+          'phonetic': 'Please say Start screening, Reports, or Food guidance.',
+        };
+      case 'en':
+      default:
+        return {
+          'text': 'Please say Start Screening, View Reports, or Food Guidance.',
+          'phonetic': 'Please speak an action command.',
         };
     }
   }

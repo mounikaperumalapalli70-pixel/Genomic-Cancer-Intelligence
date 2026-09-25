@@ -115,6 +115,15 @@ class AppGradients {
     end: Alignment.bottomRight,
   );
 
+  static const LinearGradient neonBorderCyanGreen = LinearGradient(
+    colors: [
+      AppColors.neonCyan,
+      AppColors.neonGreen,
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
   // Background Ambient Glow (Radial)
   static const RadialGradient backgroundAura = RadialGradient(
     center: Alignment(0.0, -0.4),

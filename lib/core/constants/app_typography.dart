@@ -74,4 +74,10 @@ class AppTypography {
     color: AppColors.neonCyan,
     letterSpacing: 0.5,
   );
+
+  static TextStyle caption = GoogleFonts.inter(
+    fontSize: 11,
+    fontWeight: FontWeight.w500,
+    color: AppColors.textTertiary,
+  );
 }

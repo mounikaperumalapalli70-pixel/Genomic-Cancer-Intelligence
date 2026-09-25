@@ -16,6 +16,7 @@ class AppRoutes {
   static const String aiAnalysis = '/ai-analysis';
   static const String highRiskResult = '/high-risk-result';
   static const String noHighRiskResult = '/no-high-risk-result';
+  static const String medicalImageResult = '/medical-image-result';
   static const String reports = '/reports';
   static const String screeningHistory = '/screening-history';
   static const String notifications = '/notifications';

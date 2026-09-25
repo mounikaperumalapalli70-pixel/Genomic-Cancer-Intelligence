@@ -9,11 +9,51 @@ import '../../../core/routes/app_routes.dart';
 import '../../providers/onboarding_provider.dart';
 import '../../providers/screening_provider.dart';
 
+import '../../../core/services/information_extraction_service.dart';
+import '../../../core/services/voice_assistant_service.dart';
+import '../../widgets/ai_voice_assistant_sheet.dart';
 import '../../widgets/glow_container.dart';
 import '../../widgets/gradient_button.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
+
+  void _openAiAssistant(
+    BuildContext context,
+    OnboardingProvider onboardingProvider,
+  ) {
+    AiVoiceAssistantSheet.show(
+      context: context,
+      mode: AssistantMode.dashboard,
+      initialLanguageCode: onboardingProvider.selectedLanguageCode,
+      onLanguageSelected: (langCode) {
+        onboardingProvider.selectLanguage(langCode);
+      },
+      onIntentDetected: (intent) {
+        if (!context.mounted) return;
+        switch (intent) {
+          case ConversationalIntent.startScreening:
+            Navigator.of(context).pushNamed(AppRoutes.cancerScreening);
+            break;
+          case ConversationalIntent.viewReports:
+            Navigator.of(context).pushNamed(AppRoutes.reports);
+            break;
+          case ConversationalIntent.foodGuidance:
+            Navigator.of(context).pushNamed(AppRoutes.foodGuidance);
+            break;
+          case ConversationalIntent.screeningHistory:
+            Navigator.of(context).pushNamed(AppRoutes.screeningHistory);
+            break;
+          case ConversationalIntent.continueNext:
+            Navigator.of(context).pushNamed(AppRoutes.cancerScreening);
+            break;
+          case ConversationalIntent.changeLanguage:
+            Navigator.of(context).pushNamed(AppRoutes.languageSelection);
+            break;
+        }
+      },
+    );
+  }
 
   // ============================================================
   // DYNAMIC PERSONALIZED GREETING
@@ -120,62 +160,60 @@ class DashboardScreen extends StatelessWidget {
                       ),
                     ),
 
-                    // ==================================================
-                    // NOTIFICATION BELL
-                    // ==================================================
-
-                    Stack(
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Container(
-                          width: 44,
-                          height: 44,
-
-                          decoration: BoxDecoration(
-                            color:
-                                AppColors.surfaceElevated,
-
-                            borderRadius:
-                                BorderRadius.circular(14),
-
-                            border: Border.all(
-                              color:
-                                  AppColors.borderSubtle,
-
-                              width: 1,
-                            ),
-                          ),
-
-                          child: IconButton(
-                            icon: const Icon(
-                              Icons.notifications_none_rounded,
-
-                              color: Colors.white,
-
-                              size: 22,
-                            ),
-
-                            onPressed: () {
-                              Navigator.of(context)
-                                  .pushNamed(
-                                AppRoutes.notifications,
-                              );
-                            },
+                        AiAssistantFab(
+                          onTap: () => _openAiAssistant(
+                            context,
+                            onboardingProvider,
                           ),
                         ),
-
-                        if (screeningProvider.hasUnreadNotifications)
-                          Positioned(
-                            top: 10,
-                            right: 12,
-                            child: Container(
-                              width: 8,
-                              height: 8,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: AppColors.neonPink,
+                        const SizedBox(width: 10),
+                        // ==================================================
+                        // NOTIFICATION BELL
+                        // ==================================================
+                        Stack(
+                          children: [
+                            Container(
+                              width: 44,
+                              height: 44,
+                              decoration: BoxDecoration(
+                                color: AppColors.surfaceElevated,
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(
+                                  color: AppColors.borderSubtle,
+                                  width: 1,
+                                ),
+                              ),
+                              child: IconButton(
+                                icon: const Icon(
+                                  Icons.notifications_none_rounded,
+                                  color: Colors.white,
+                                  size: 22,
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pushNamed(
+                                    AppRoutes.notifications,
+                                  );
+                                },
                               ),
                             ),
-                          ),
+                            if (screeningProvider.hasUnreadNotifications)
+                              Positioned(
+                                top: 10,
+                                right: 12,
+                                child: Container(
+                                  width: 8,
+                                  height: 8,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: AppColors.neonPink,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
                       ],
                     ),
                   ],

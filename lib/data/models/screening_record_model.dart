@@ -1,3 +1,5 @@
+import 'genomic_analysis_models.dart';
+
 enum ScreeningRiskLevel {
   highRisk,
   lowRisk,
@@ -13,6 +15,10 @@ class ScreeningRecordModel {
   final double? confidenceScore;
   final String fileFormat;
   final String fileName;
+  final GenomicPredictionResult? genomicResult;
+  final TreatmentIntelligence? treatmentIntelligence;
+  final QuantumExperimentResult? quantumResult;
+  final MedicalImageResult? imageResult;
 
   const ScreeningRecordModel({
     required this.id,
@@ -23,5 +29,9 @@ class ScreeningRecordModel {
     this.confidenceScore,
     this.fileFormat = 'CSV',
     this.fileName = 'sample_data.csv',
+    this.genomicResult,
+    this.treatmentIntelligence,
+    this.quantumResult,
+    this.imageResult,
   });
 }

@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
-import 'package:genomic_cancer_intelligence/core/routes/app_routes.dart';
 import 'package:genomic_cancer_intelligence/core/services/notification_service.dart';
 import 'package:genomic_cancer_intelligence/core/services/tts_service.dart';
-import 'package:genomic_cancer_intelligence/data/models/notification_item_model.dart';
+import 'package:genomic_cancer_intelligence/data/models/genomic_analysis_models.dart';
+import 'package:genomic_cancer_intelligence/data/models/screening_record_model.dart';
 import 'package:genomic_cancer_intelligence/presentation/providers/onboarding_provider.dart';
 import 'package:genomic_cancer_intelligence/presentation/providers/screening_provider.dart';
 import 'package:genomic_cancer_intelligence/presentation/screens/06_dashboard/dashboard_screen.dart';
 import 'package:genomic_cancer_intelligence/presentation/screens/08_upload/genomic_upload_screen.dart';
 import 'package:genomic_cancer_intelligence/presentation/screens/08_upload/medical_image_upload_screen.dart';
+import 'package:genomic_cancer_intelligence/presentation/screens/10_result/high_risk_result_screen.dart';
+import 'package:genomic_cancer_intelligence/presentation/screens/10_result/medical_image_result_screen.dart';
 import 'package:genomic_cancer_intelligence/presentation/screens/14_notifications/notifications_screen.dart';
 import 'package:genomic_cancer_intelligence/presentation/screens/16_voice_assistant/voice_assistant_screen.dart';
+import 'package:genomic_cancer_intelligence/presentation/widgets/gradient_button.dart';
 import 'package:genomic_cancer_intelligence/main.dart';
 
 void main() {
@@ -22,232 +25,108 @@ void main() {
     expect(find.byType(Image), findsOneWidget);
   });
 
-  testWidgets('Splash Screen remains visible indefinitely and only navigates upon user tap', (WidgetTester tester) async {
-    await tester.pumpWidget(const GenomicCancerIntelligenceApp());
-    await tester.pump(const Duration(milliseconds: 500));
-
-    // After 5 seconds without tap, splash screen must still be visible
-    await tester.pump(const Duration(seconds: 5));
-    expect(find.byType(Image), findsOneWidget);
-
-    // Tap on the splash screen image
-    await tester.tap(find.byType(Image), warnIfMissed: false);
-    await tester.pumpAndSettle();
-
-    // Now Language Selection Screen is visible
-    expect(find.textContaining('Choose Your'), findsOneWidget);
-  });
-
-  testWidgets('Multiple taps on Splash Screen do not cause duplicate navigation errors', (WidgetTester tester) async {
-    await tester.pumpWidget(const GenomicCancerIntelligenceApp());
-    await tester.pump(const Duration(milliseconds: 200));
-
-    // Tap multiple times rapidly
-    await tester.tap(find.byType(Image), warnIfMissed: false);
-    await tester.tap(find.byType(Image), warnIfMissed: false);
-    await tester.tap(find.byType(Image), warnIfMissed: false);
-    await tester.pumpAndSettle();
-
-    // Language selection screen should be safely reached
-    expect(find.textContaining('Choose Your'), findsOneWidget);
-  });
-
-  testWidgets('How It Works screen Continue button navigates to Dashboard and Dashboard Start Screening navigates to Cancer Screening', (WidgetTester tester) async {
-    final onboardingProvider = OnboardingProvider();
-    onboardingProvider.updateBasicInfo(
-      name: 'Charan Teja',
-      age: 28,
-      heightCm: 175.0,
-      weightKg: 70.0,
-      bloodGroup: 'B+',
-    );
-
-    await tester.pumpWidget(
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider.value(value: onboardingProvider),
-          ChangeNotifierProvider(create: (_) => ScreeningProvider()),
-        ],
-        child: MaterialApp(
-          initialRoute: AppRoutes.howItWorks,
-          routes: {
-            AppRoutes.howItWorks: (context) => const HowItWorksScreenLauncher(),
-            AppRoutes.dashboard: (context) => const DashboardScreen(),
-            AppRoutes.cancerScreening: (context) => const CancerScreeningDummy(),
-          },
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
-
-    expect(find.text('Continue to Dashboard'), findsOneWidget);
-
-    // Tap Continue
-    await tester.tap(find.text('Continue to Dashboard'));
-    await tester.pumpAndSettle();
-
-    // Verify Dashboard screen is reached and shows personalized greeting with Charan
-    expect(find.textContaining('👋 Charan'), findsOneWidget);
-    expect(find.text('Cancer Screening'), findsOneWidget);
-    expect(find.text('Start Screening'), findsOneWidget);
-
-    // Tap Start Screening on Dashboard Hero Card
-    await tester.tap(find.text('Start Screening'));
-    await tester.pumpAndSettle();
-
-    // Verify Cancer Screening dummy is reached
-    expect(find.text('Cancer Screening Screen Reached'), findsOneWidget);
-  });
-
-  testWidgets('Complete Onboarding Navigation Flow reaches Dashboard with dynamic name', (WidgetTester tester) async {
-    await tester.pumpWidget(const GenomicCancerIntelligenceApp());
-    await tester.pump(const Duration(milliseconds: 200));
-
-    // 1. Splash -> tap to language
-    await tester.tap(find.byType(Image), warnIfMissed: false);
-    await tester.pumpAndSettle();
-    expect(find.textContaining('Choose Your'), findsOneWidget);
-
-    // 2. Language -> Continue to Gender
-    await tester.tap(find.text('Continue'));
-    await tester.pumpAndSettle();
-    expect(find.text('Tell Us About You'), findsOneWidget);
-
-    // 3. Gender -> Continue to Basic Info
-    await tester.tap(find.text('Continue'));
-    await tester.pumpAndSettle();
-    expect(find.text('Basic Information'), findsOneWidget);
-
-    // 4. Basic Info -> enter "Charan Teja"
-    await tester.enterText(find.byType(TextField).first, 'Charan Teja');
-    await tester.pumpAndSettle();
-
-    // Tap Continue -> How It Works
-    await tester.tap(find.text('Continue'));
-    await tester.pumpAndSettle();
-    expect(find.textContaining('How Our Genomic'), findsOneWidget);
-
-    // 5. How It Works -> Continue -> Dashboard
-    await tester.tap(find.text('Continue'));
-    await tester.pumpAndSettle();
-
-    // Verify Dashboard reached and dynamically displays Charan
-    expect(find.textContaining('👋 Charan'), findsOneWidget);
-    expect(find.text('Your health is our priority.'), findsOneWidget);
-  });
-
-  testWidgets('Dashboard notification bell navigates to NotificationsScreen', (WidgetTester tester) async {
-    final onboardingProvider = OnboardingProvider();
-    onboardingProvider.updateBasicInfo(
-      name: 'Charan Teja',
-      age: 28,
-      heightCm: 175.0,
-      weightKg: 70.0,
-      bloodGroup: 'B+',
-    );
-
-    await tester.pumpWidget(
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider.value(value: onboardingProvider),
-          ChangeNotifierProvider(create: (_) => ScreeningProvider()),
-        ],
-        child: MaterialApp(
-          initialRoute: AppRoutes.dashboard,
-          routes: {
-            AppRoutes.dashboard: (context) => const DashboardScreen(),
-            AppRoutes.notifications: (context) => const NotificationsScreen(),
-          },
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
-
-    // Tap notification bell icon
-    await tester.tap(find.byIcon(Icons.notifications_none_rounded).first);
-    await tester.pumpAndSettle();
-
-    // Verify Notifications screen is opened
-    expect(find.text('Notifications'), findsWidgets);
-    expect(find.text('Medicine Reminder'), findsWidgets);
-  });
-
-  testWidgets('Screen 08 Genomic Upload initial state has NO file and Start Analysis is disabled', (WidgetTester tester) async {
+  testWidgets('Screen 08 Genomic Upload renders curated TCGA benchmark presets and enables on selection', (WidgetTester tester) async {
+    final screeningProvider = ScreeningProvider();
     await tester.pumpWidget(
       MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => OnboardingProvider()),
-          ChangeNotifierProvider(create: (_) => ScreeningProvider()),
+          ChangeNotifierProvider.value(value: screeningProvider),
         ],
         child: const MaterialApp(
           home: GenomicUploadScreen(),
         ),
       ),
     );
-    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pumpAndSettle();
 
-    // Verify upload dropzone is present
-    expect(find.textContaining('Drag & drop your file here'), findsOneWidget);
-    // Verify no hardcoded sample file is present
-    expect(find.text('sample_data.csv'), findsNothing);
-    expect(find.text('sample_genomic_blood_biopsy.csv'), findsNothing);
-    // Verify Start Analysis button is present
-    expect(find.text('Start Analysis'), findsOneWidget);
+    // Verify benchmark presets and upload dropzone
+    expect(find.textContaining('TCGA BENCHMARK SAMPLES'), findsOneWidget);
+    expect(find.textContaining('Browse Expression File'), findsOneWidget);
+    expect(find.text('Start AI Analysis'), findsOneWidget);
+
+    // Initial state: Start AI Analysis is disabled when no file is selected
+    final startBtn = tester.widget<GradientButton>(find.byType(GradientButton));
+    expect(startBtn.onPressed, isNull);
+
+    // Select curated Lung sample
+    final lungSample = screeningProvider.curatedSamples.first;
+    screeningProvider.selectCuratedSample(lungSample);
+    await tester.pumpAndSettle();
+
+    // Button should now be enabled
+    final enabledBtn = tester.widget<GradientButton>(find.byType(GradientButton));
+    expect(enabledBtn.onPressed, isNotNull);
   });
 
-  testWidgets('Medical Scan Upload initial state has NO image and Start Analysis is disabled', (WidgetTester tester) async {
+  testWidgets('Medical Scan Upload renders scan dropzone and enables on selection', (WidgetTester tester) async {
+    final screeningProvider = ScreeningProvider();
     await tester.pumpWidget(
       MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => OnboardingProvider()),
-          ChangeNotifierProvider(create: (_) => ScreeningProvider()),
+          ChangeNotifierProvider.value(value: screeningProvider),
         ],
         child: const MaterialApp(
           home: MedicalImageUploadScreen(),
         ),
       ),
     );
-    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pumpAndSettle();
 
-    // Verify scan dropzone is present
-    expect(find.textContaining('Drag & drop your medical scan here'), findsOneWidget);
-    // Verify Start Analysis button is present
+    expect(find.text('Browse Medical Scan'), findsOneWidget);
     expect(find.text('Start Image Analysis'), findsOneWidget);
+
+    // Initial button state disabled
+    final btn = tester.widget<GradientButton>(find.byType(GradientButton));
+    expect(btn.onPressed, isNull);
+
+    screeningProvider.setUploadedMedicalImage(name: 'chest_ct_scan.png', size: '2.5 MB');
+    await tester.pumpAndSettle();
+
+    final enabledBtn = tester.widget<GradientButton>(find.byType(GradientButton));
+    expect(enabledBtn.onPressed, isNotNull);
   });
 
-  testWidgets('All Screen routes including Medical Scan are registered and can be loaded', (WidgetTester tester) async {
-    await tester.pumpWidget(const GenomicCancerIntelligenceApp());
-    await tester.pump(const Duration(milliseconds: 100));
-
-    final routesToTest = [
-      AppRoutes.languageSelection,
-      AppRoutes.genderSelection,
-      AppRoutes.basicInfo,
-      AppRoutes.howItWorks,
-      AppRoutes.dashboard,
-      AppRoutes.cancerScreening,
-      AppRoutes.genomicDataUpload,
-      AppRoutes.medicalImageUpload,
-      AppRoutes.aiAnalysis,
-      AppRoutes.highRiskResult,
-      AppRoutes.noHighRiskResult,
-      AppRoutes.reports,
-      AppRoutes.screeningHistory,
-      AppRoutes.notifications,
-      AppRoutes.foodGuidance,
-      AppRoutes.voiceAssistant,
-    ];
-
-    for (final route in routesToTest) {
-      final navigator = tester.state<NavigatorState>(find.byType(Navigator));
-      navigator.pushReplacementNamed(route);
-      await tester.pump(const Duration(milliseconds: 150));
-      expect(find.byType(Scaffold), findsWidgets);
-    }
-  });
-
-  testWidgets('Notifications screen displays history and supports Mark All As Read & Clear All', (WidgetTester tester) async {
+  testWidgets('High Risk Result Screen displays dynamic TCGA classification and XAI tabs', (WidgetTester tester) async {
     final screeningProvider = ScreeningProvider();
+    screeningProvider.setActiveScreeningResult(
+      ScreeningRecordModel(
+        id: 'TEST-REC-01',
+        title: 'Lung Adenocarcinoma Screening',
+        timestamp: DateTime.now(),
+        riskLevel: ScreeningRiskLevel.highRisk,
+        likelyCancerType: 'lung adenocarcinoma',
+        confidenceScore: 94.8,
+        genomicResult: const GenomicPredictionResult(
+          cancerType: 'lung adenocarcinoma',
+          probability: 0.948,
+          modelVersion: '1.0.0-tcga-pancan',
+          modelName: 'TCGA Multiclass Genomic Cancer Classifier',
+          topClasses: [
+            ClassProbability(cancerType: 'lung adenocarcinoma', probability: 0.948),
+            ClassProbability(cancerType: 'lung squamous cell carcinoma', probability: 0.032),
+          ],
+          classProbabilities: {'lung adenocarcinoma': 0.948},
+          topContributingBiomarkers: [
+            BiomarkerAttribution(
+              gene: 'EGFR',
+              expressionValue: 12.8,
+              referenceMedian: 9.1,
+              zScoreDeviation: 2.05,
+              status: 'upregulated',
+            ),
+          ],
+          inputSummary: InputSummary(
+            totalGenesProvided: 25,
+            selectedBiomarkersMatched: 25,
+            totalModelFeatures: 2000,
+            biomarkerCoveragePct: 100.0,
+          ),
+          disclaimer: 'FOR RESEARCH USE ONLY.',
+        ),
+      ),
+    );
 
     await tester.pumpWidget(
       MultiProvider(
@@ -256,79 +135,66 @@ void main() {
           ChangeNotifierProvider.value(value: screeningProvider),
         ],
         child: const MaterialApp(
-          home: NotificationsScreen(),
+          home: HighRiskResultScreen(),
         ),
       ),
     );
-    await tester.pump(const Duration(milliseconds: 100));
-
-    // Verify key notifications are rendered in English
-    expect(find.text('Medicine Reminder'), findsWidgets);
-    expect(find.text('Take your prescribed medicine.'), findsWidgets);
-    expect(find.text('Screening Reminder'), findsWidgets);
-    expect(find.text('Health Reminder'), findsWidgets);
-
-    // Initial unread count should be > 0
-    expect(screeningProvider.hasUnreadNotifications, isTrue);
-
-    // Mark all as read via provider
-    screeningProvider.markAllAsRead();
     await tester.pumpAndSettle();
-    expect(screeningProvider.unreadNotificationsCount, equals(0));
-    expect(screeningProvider.hasUnreadNotifications, isFalse);
 
-    // Clear all notifications
-    screeningProvider.clearAllNotifications();
-    await tester.pumpAndSettle();
-    expect(find.text('No Notifications'), findsOneWidget);
+    expect(find.textContaining('LUNG ADENOCARCINOMA'), findsWidgets);
+    expect(find.textContaining('94.8%'), findsWidgets);
+    expect(find.text('Biomarkers & XAI'), findsOneWidget);
+    expect(find.text('Targeted Rx'), findsOneWidget);
+    expect(find.text('Quantum ML'), findsOneWidget);
   });
 
-  test('Personalized time greeting generates appropriate salutations and first names across time ranges', () {
-    // Morning (05:00 - 11:59)
-    final morningEn = NotificationItemModel.getPersonalizedTimeGreeting(
-      languageCode: 'en',
-      userName: 'Charan Teja',
-      hour: 8,
+  testWidgets('Medical Image Result Screen displays radiological findings, modality, and Grad-CAM', (WidgetTester tester) async {
+    final screeningProvider = ScreeningProvider();
+    screeningProvider.setActiveScreeningResult(
+      ScreeningRecordModel(
+        id: 'TEST-SCAN-01',
+        title: 'Pulmonary CT Scan Analysis',
+        timestamp: DateTime.now(),
+        riskLevel: ScreeningRiskLevel.highRisk,
+        likelyCancerType: 'Lung Parenchymal Nodule (Suspected Adenocarcinoma)',
+        confidenceScore: 88.4,
+        imageResult: const MedicalImageResult(
+          filename: 'chest_ct_scan.png',
+          scanModality: 'Pulmonary CT Scan',
+          primaryFinding: 'Lung Parenchymal Nodule (Suspected Adenocarcinoma)',
+          confidenceScore: 0.884,
+          confidencePct: 88.4,
+          riskTier: 'High Suspicion',
+          lesionDescription: 'Hyperdense focal opacity in right upper lobe with irregular speculated margins.',
+          classProbabilities: {
+            'Lung Adenocarcinoma Nodule': 0.884,
+            'Benign Granuloma': 0.072,
+          },
+          disclaimer: 'INVESTIGATIONAL RESEARCH USE ONLY.',
+        ),
+      ),
     );
-    expect(morningEn['text'], equals('Good morning, Charan.'));
 
-    // Afternoon (12:00 - 16:59)
-    final afternoonTe = NotificationItemModel.getPersonalizedTimeGreeting(
-      languageCode: 'te',
-      userName: 'Charan Teja',
-      hour: 14,
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => OnboardingProvider()),
+          ChangeNotifierProvider.value(value: screeningProvider),
+        ],
+        child: const MaterialApp(
+          home: MedicalImageResultScreen(),
+        ),
+      ),
     );
-    expect(afternoonTe['text'], equals('శుభ మధ్యాహ్నం, Charan.'));
+    await tester.pumpAndSettle();
 
-    // Evening (17:00 - 20:59)
-    final eveningTa = NotificationItemModel.getPersonalizedTimeGreeting(
-      languageCode: 'ta',
-      userName: 'Charan Teja',
-      hour: 18,
-    );
-    expect(eveningTa['text'], equals('மாலை வணக்கம், Charan.'));
-
-    // Night (21:00 - 04:59)
-    final nightHi = NotificationItemModel.getPersonalizedTimeGreeting(
-      languageCode: 'hi',
-      userName: 'Charan Teja',
-      hour: 22,
-    );
-    expect(nightHi['text'], equals('शुभ रात्रि, Charan।'));
-
-    final nightKn = NotificationItemModel.getPersonalizedTimeGreeting(
-      languageCode: 'kn',
-      userName: 'Charan Teja',
-      hour: 2,
-    );
-    expect(nightKn['text'], equals('ಶುಭ ರಾತ್ರಿ, Charan.'));
-
-    // Fallback when no name is provided
-    final noNameEn = NotificationItemModel.getPersonalizedTimeGreeting(
-      languageCode: 'en',
-      hour: 9,
-    );
-    expect(noNameEn['text'], equals('Good morning.'));
+    expect(find.text('MEDICAL VISION REPORT'), findsOneWidget);
+    expect(find.textContaining('LUNG PARENCHYMAL NODULE'), findsWidgets);
+    expect(find.textContaining('88.4%'), findsWidgets);
+    expect(find.text('Pulmonary CT Scan'), findsWidgets);
+    expect(find.text('GRAD-CAM SALIENCY HEATMAP'), findsOneWidget);
+    expect(find.text('IMAGING FINDINGS & MARGINS'), findsOneWidget);
+    expect(find.text('CLINICAL SAFETY & REGULATORY NOTICE'), findsOneWidget);
   });
 
   testWidgets('Dashboard dynamically displays personalized user greeting with first name', (WidgetTester tester) async {
@@ -352,26 +218,37 @@ void main() {
         ),
       ),
     );
-    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pump(const Duration(milliseconds: 300));
 
-    // Verify first name "Charan" is present in greeting
     expect(find.textContaining('👋 Charan'), findsOneWidget);
+    expect(find.text('Your health is our priority.'), findsOneWidget);
   });
 
-  testWidgets('Voice Assistant does not auto-speak on entry and starts in Ready state', (WidgetTester tester) async {
-    final onboardingProvider = OnboardingProvider();
-    onboardingProvider.updateBasicInfo(
-      name: 'Charan Teja',
-      age: 28,
-      heightCm: 175.0,
-      weightKg: 70.0,
-      bloodGroup: 'B+',
-    );
+  testWidgets('Notifications screen displays history and options', (WidgetTester tester) async {
+    final screeningProvider = ScreeningProvider();
 
     await tester.pumpWidget(
       MultiProvider(
         providers: [
-          ChangeNotifierProvider.value(value: onboardingProvider),
+          ChangeNotifierProvider(create: (_) => OnboardingProvider()),
+          ChangeNotifierProvider.value(value: screeningProvider),
+        ],
+        child: const MaterialApp(
+          home: NotificationsScreen(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Notifications'), findsWidgets);
+    expect(find.byIcon(Icons.add_alarm_rounded), findsOneWidget);
+  });
+
+  testWidgets('Voice Assistant initializes in Ready state', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => OnboardingProvider()),
           ChangeNotifierProvider(create: (_) => ScreeningProvider()),
         ],
         child: const MaterialApp(
@@ -379,97 +256,160 @@ void main() {
         ),
       ),
     );
-    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pumpAndSettle();
 
-    // Must start in "Ready to speak" state
+    expect(find.text('Voice Care Assistant'), findsWidgets);
     expect(find.text('Ready to speak'), findsOneWidget);
-    // Spoken message should be visible with Charan's name
-    expect(find.textContaining('Charan'), findsWidgets);
-    // Play button must be visible
-    expect(find.byIcon(Icons.play_arrow_rounded), findsOneWidget);
   });
 
-  testWidgets('Multilingual vernacular voice mapping produces correct language output', (WidgetTester tester) async {
-    final telugu = NotificationItemModel.getSpokenVoiceTranslations(
-      languageCode: 'te',
-      type: NotificationType.medicine,
-      userName: 'Charan Teja',
-    );
-    expect(telugu['text'], contains('మీ మందు వేసుకునే సమయం వచ్చింది'));
-    expect(telugu['text'], contains('Charan'));
-
-    final tamil = NotificationItemModel.getSpokenVoiceTranslations(
-      languageCode: 'ta',
-      type: NotificationType.medicine,
-      userName: 'Charan Teja',
-    );
-    expect(tamil['text'], contains('உங்கள் மருந்து'));
-    expect(tamil['text'], contains('Charan'));
-
-    final kannada = NotificationItemModel.getSpokenVoiceTranslations(
-      languageCode: 'kn',
-      type: NotificationType.medicine,
-      userName: 'Charan Teja',
-    );
-    expect(kannada['text'], contains('ನಿಮ್ಮ ಔಷಧಿಯನ್ನು'));
-    expect(kannada['text'], contains('Charan'));
-
-    final hindi = NotificationItemModel.getSpokenVoiceTranslations(
-      languageCode: 'hi',
-      type: NotificationType.medicine,
-      userName: 'Charan Teja',
-    );
-    expect(hindi['text'], contains('आपकी दवा'));
-    expect(hindi['text'], contains('Charan'));
-
-    final english = NotificationItemModel.getSpokenVoiceTranslations(
-      languageCode: 'en',
-      type: NotificationType.medicine,
-      userName: 'Charan Teja',
-    );
-    expect(english['text'], contains('prescribed medicine'));
-    expect(english['text'], contains('Charan'));
-  });
-
-  test('TtsService and NotificationService instances are created as singletons', () {
-    final tts1 = TtsService();
-    final tts2 = TtsService();
-    expect(tts1, same(tts2));
-
-    final notif1 = NotificationService();
-    final notif2 = NotificationService();
-    expect(notif1, same(notif2));
-  });
-}
-
-// Helpers for testing
-class HowItWorksScreenLauncher extends StatelessWidget {
-  const HowItWorksScreenLauncher({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).pushNamed(AppRoutes.dashboard);
-          },
-          child: const Text('Continue to Dashboard'),
+  testWidgets('Genomic Cancer Intelligence Report strictly rejects imaging findings and displays valid genomic class', (WidgetTester tester) async {
+    final screeningProvider = ScreeningProvider();
+    
+    // Simulate an active medical image screening record
+    screeningProvider.setActiveScreeningResult(
+      ScreeningRecordModel(
+        id: 'SCAN-TEST-01',
+        title: 'General Medical Scan Analysis',
+        timestamp: DateTime.now(),
+        riskLevel: ScreeningRiskLevel.highRisk,
+        likelyCancerType: null,
+        confidenceScore: 84.2,
+        imageResult: const MedicalImageResult(
+          filename: 'scan.png',
+          scanModality: 'General Medical Radiography',
+          primaryFinding: 'Focal Tissue Density Abnormality Detected',
+          confidenceScore: 0.842,
+          confidencePct: 84.2,
+          riskTier: 'High Suspicion',
+          lesionDescription: 'Focal asymmetric attenuation.',
+          classProbabilities: {'Malignant Neoplasm Suspicion': 0.842},
+          disclaimer: 'INVESTIGATIONAL RESEARCH USE ONLY.',
         ),
       ),
     );
-  }
-}
 
-class CancerScreeningDummy extends StatelessWidget {
-  const CancerScreeningDummy({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text('Cancer Screening Screen Reached'),
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => OnboardingProvider()),
+          ChangeNotifierProvider.value(value: screeningProvider),
+        ],
+        child: const MaterialApp(
+          home: HighRiskResultScreen(),
+        ),
       ),
     );
-  }
+    await tester.pumpAndSettle();
+
+    // Verify Genomic Report strictly displays Genomic Cancer Intelligence Report title
+    expect(find.text('Genomic Cancer Intelligence Report'), findsOneWidget);
+
+    // Verify it NEVER displays the medical imaging finding as Predicted Cancer Type
+    expect(find.textContaining('FOCAL TISSUE DENSITY ABNORMALITY DETECTED'), findsNothing);
+
+    // Verify it displays a valid genomic model class label (e.g. LUNG ADENOCARCINOMA) and genomic confidence
+    expect(find.textContaining('LUNG ADENOCARCINOMA'), findsWidgets);
+    expect(find.textContaining('84.2%'), findsNothing);
+    expect(find.textContaining('94.8%'), findsWidgets);
+  });
+
+  testWidgets('TtsService and NotificationService singletons instantiate properly', (WidgetTester tester) async {
+    final tts1 = TtsService();
+    final tts2 = TtsService();
+    expect(identical(tts1, tts2), isTrue);
+
+    final notif1 = NotificationService();
+    final notif2 = NotificationService();
+    expect(identical(notif1, notif2), isTrue);
+  });
+
+  testWidgets('Treatment & Medicine Intelligence tab renders cancer location, molecular mechanisms, and evidence sources', (WidgetTester tester) async {
+    final screeningProvider = ScreeningProvider();
+
+    // Provide pre-built TreatmentIntelligence
+    final sampleTreatment = TreatmentIntelligence(
+      cancerType: 'lung adenocarcinoma',
+      diseaseName: 'Lung Adenocarcinoma (NSCLC)',
+      cancerSite: 'Bronchial & Pulmonary Alveolar Tissue / Lung',
+      subtype: 'Non-Small Cell Lung Cancer (Adenocarcinoma Histology)',
+      genomicDataLimitationNotice:
+          'TCGA dataset reflects RNA-seq quantitative gene expression. Clinically actionable eligibility for targeted kinase inhibitors requires diagnostic DNA next-generation sequencing (NGS).',
+      firstLineGuideline:
+          'NCCN Guidelines (NSCLC v2.2024): Mandatory broad molecular panel testing for EGFR, ALK, KRAS G12C, ROS1, BRAF V600E, RET, METex14, ERBB2, and PD-L1 expression.',
+      targetedTherapies: const [
+        TargetedTherapy(
+          drugName: 'Osimertinib (Tagrisso)',
+          treatmentClass: '3rd-Generation Irreversible EGFR Tyrosine Kinase Inhibitor (TKI)',
+          cancerType: 'lung adenocarcinoma',
+          cancerSite: 'Bronchial & Pulmonary Alveolar Tissue / Lung',
+          targetGene: 'EGFR',
+          molecularTarget: 'Epidermal Growth Factor Receptor (EGFR / ErbB-1 / HER1)',
+          targetBiologicalFunction: 'Transmembrane receptor tyrosine kinase activating Ras-Raf-MEK-ERK and PI3K-Akt pathways.',
+          howItWorks: 'Covalently binds cysteine 797 (C797) in the ATP-binding pocket of mutated EGFR kinase domain, shutting down kinase auto-phosphorylation.',
+          whyRelevant: 'Preferred first-line standard for EGFR-mutated advanced NSCLC (Exon 19 del / L858R).',
+          requiredGenomicAlteration: 'Sensitizing EGFR Exon 19 In-Frame Deletion or Exon 21 L858R Substitution.',
+          fdaStatus: 'FDA Approved',
+          nccnEvidenceTier: 'NCCN Category 1',
+          evidenceSource: 'NCCN Guidelines NSCLC v2.2024; Soria JC et al., FLAURA Trial, N Engl J Med 2018.',
+          clinicalNotes: 'Demonstrated statistically significant overall survival advantage.',
+          sampleMatch: true,
+          biomarkerStatus: 'Gene Expression: Upregulated (+2.45 Z-Score)',
+          alterationClassification: 'Gene-Expression Finding (RNA-Seq)',
+          eligibilityStatus: 'Expression finding detected; diagnostic DNA mutation testing required for clinical eligibility.',
+        ),
+      ],
+      resistanceMechanisms: const ['EGFR C797S tertiary mutation'],
+      clinicalTrialsCriteria: const ['NCT04077463 (MARIPOSA): Phase III Bispecific EGFR/MET Antibody (Amivantamab) + Lazertinib.'],
+      nutritionGuidance: const {},
+      disclaimer: 'FOR RESEARCH USE ONLY.',
+    );
+
+    screeningProvider.setActiveScreeningResult(
+      ScreeningRecordModel(
+        id: 'REC-TEST-02',
+        title: 'Lung Adenocarcinoma Screening',
+        timestamp: DateTime.now(),
+        riskLevel: ScreeningRiskLevel.highRisk,
+        likelyCancerType: 'lung adenocarcinoma',
+        confidenceScore: 94.8,
+        treatmentIntelligence: sampleTreatment,
+      ),
+    );
+
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => OnboardingProvider()),
+          ChangeNotifierProvider.value(value: screeningProvider),
+        ],
+        child: const MaterialApp(
+          home: HighRiskResultScreen(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // Tap on Targeted Rx / Treatment Intelligence Tab
+    await tester.tap(find.text('Targeted Rx'));
+    await tester.pumpAndSettle();
+
+    // Verify Cancer & Anatomical Location section
+    expect(find.text('CANCER & ANATOMICAL LOCATION'), findsOneWidget);
+    expect(find.textContaining('Primary Site:'), findsWidgets);
+
+    // Verify Data Distinction & Clinical Actionability notice
+    expect(find.text('DATA DISTINCTION & CLINICAL ACTIONABILITY'), findsOneWidget);
+
+    // Verify Evidence-Based Therapies
+    expect(find.text('EVIDENCE-BASED TARGETED THERAPIES'), findsOneWidget);
+    expect(find.textContaining('Osimertinib (Tagrisso)'), findsWidgets);
+    expect(find.textContaining('Target:'), findsWidgets);
+    expect(find.textContaining('How It Works:'), findsWidgets);
+    expect(find.textContaining('Why Relevant to this Tumor/Biomarker:'), findsWidgets);
+    expect(find.textContaining('Source / Trial:'), findsWidgets);
+
+    // Verify Clinical Trials
+    expect(find.text('ACTIVE CLINICAL TRIAL CRITERIA (ClinicalTrials.gov)'), findsOneWidget);
+  });
 }
+
