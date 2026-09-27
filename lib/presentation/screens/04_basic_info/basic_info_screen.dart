@@ -10,6 +10,7 @@ import '../../providers/onboarding_provider.dart';
 import '../../widgets/ai_voice_assistant_sheet.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_text_field.dart';
+import '../../widgets/glow_container.dart';
 import '../../widgets/gradient_button.dart';
 
 class BasicInfoScreen extends StatefulWidget {
@@ -20,11 +21,13 @@ class BasicInfoScreen extends StatefulWidget {
 }
 
 class _BasicInfoScreenState extends State<BasicInfoScreen> {
+  final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
   late TextEditingController _ageController;
   late TextEditingController _heightController;
   late TextEditingController _weightController;
   String? _selectedBloodGroup;
+  String _assistantSpeech = "Nice! Let's get to know you better.\nPlease fill in your basic information.";
 
   final List<String> _bloodGroups = [
     'A+',
@@ -93,6 +96,7 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
           if (info.bloodGroup != null && _bloodGroups.contains(info.bloodGroup)) {
             _selectedBloodGroup = info.bloodGroup;
           }
+          _assistantSpeech = "Thank you, ${info.name ?? 'Patient'}! Information updated.";
         });
         onboarding.updateBasicInfo(
           name: _nameController.text.trim(),
@@ -102,26 +106,40 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
           bloodGroup: _selectedBloodGroup,
         );
       },
+      onComplete: () {
+        if (mounted) {
+          _saveAndContinue();
+        }
+      },
     );
   }
 
-  void _saveAndProceed() {
+  void _saveAndContinue() {
     final onboarding = Provider.of<OnboardingProvider>(context, listen: false);
+
+    final name = _nameController.text.trim();
+    final age = int.tryParse(_ageController.text.trim());
+    final height = double.tryParse(_heightController.text.trim());
+    final weight = double.tryParse(_weightController.text.trim());
+
     onboarding.updateBasicInfo(
-      name: _nameController.text.trim(),
-      age: int.tryParse(_ageController.text.trim()),
-      heightCm: double.tryParse(_heightController.text.trim()),
-      weightKg: double.tryParse(_weightController.text.trim()),
+      name: name.isNotEmpty ? name : null,
+      age: age,
+      heightCm: height,
+      weightKg: weight,
       bloodGroup: _selectedBloodGroup,
     );
 
-    Navigator.of(context).pushNamed(AppRoutes.howItWorks);
+    Navigator.of(context).pushNamed(AppRoutes.genderSelection);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
+      floatingActionButton: AiAssistantFab(
+        onTap: () => _openAiAssistant(context),
+      ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: AppGradients.backgroundAura,
@@ -132,145 +150,236 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
               CustomAppBar(
                 showBackButton: true,
                 onBackPressed: () => Navigator.of(context).maybePop(),
-                actions: [
-                  // Top Right AI Assistant Pill Button
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: GestureDetector(
-                      onTap: () => _openAiAssistant(context),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: AppColors.surfaceElevated,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: AppColors.neonCyan.withValues(alpha: 0.6),
-                            width: 1,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.neonBlue.withValues(alpha: 0.3),
-                              blurRadius: 10,
-                              spreadRadius: 1,
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 8),
+
+                        // Step 2 Indicator
+                        Center(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: AppColors.surfaceLightBlue,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: AppColors.borderSubtle),
                             ),
-                          ],
+                            child: Text(
+                              'Step 2 of 4 • Basic Information',
+                              style: AppTypography.caption.copyWith(
+                                color: AppColors.primaryTeal,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
+
+                        const SizedBox(height: 14),
+
+                        // AI Assistant Header Guidance
+                        GlowContainer(
+                          borderRadius: 18,
+                          padding: const EdgeInsets.all(16),
+                          backgroundColor: AppColors.surfaceCard,
+                          borderWidth: 1.2,
+                          borderColor: AppColors.borderTeal.withValues(alpha: 0.3),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: 44,
+                                height: 44,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  gradient: AppGradients.tealMint,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: AppColors.primaryTeal.withValues(alpha: 0.25),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.smart_toy_rounded,
+                                    color: Colors.white,
+                                    size: 24,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'AI Care Assistant',
+                                      style: AppTypography.headingSmall.copyWith(fontSize: 14),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      _assistantSpeech,
+                                      style: AppTypography.bodySmall.copyWith(
+                                        color: AppColors.textPrimary,
+                                        fontWeight: FontWeight.w500,
+                                        height: 1.35,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        const SizedBox(height: 20),
+
+                        // Form Section Header
+                        Text(
+                          'Basic Information',
+                          style: AppTypography.headingLarge.copyWith(fontSize: 22),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Accurate vitals help our precision oncology AI calibrate clinical benchmarks.',
+                          style: AppTypography.subtitle,
+                        ),
+
+                        const SizedBox(height: 20),
+
+                        // Full Name
+                        CustomTextField(
+                          label: 'Full Name',
+                          hintText: 'e.g. John Doe',
+                          icon: Icons.person_outline_rounded,
+                          controller: _nameController,
+                          validator: (val) {
+                            if (val == null || val.trim().isEmpty) {
+                              return 'Please enter your name';
+                            }
+                            return null;
+                          },
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        // Age
+                        CustomTextField(
+                          label: 'Age',
+                          hintText: 'e.g. 35',
+                          icon: Icons.cake_outlined,
+                          controller: _ageController,
+                          keyboardType: TextInputType.number,
+                          validator: (val) {
+                            if (val == null || val.trim().isEmpty) {
+                              return 'Please enter your age';
+                            }
+                            final n = int.tryParse(val.trim());
+                            if (n == null || n <= 0 || n > 120) {
+                              return 'Please enter a valid age';
+                            }
+                            return null;
+                          },
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        // Height & Weight Row
+                        Row(
                           children: [
-                            const RobotAvatar(size: 18, isGlowing: true),
-                            const SizedBox(width: 6),
-                            Text(
-                              'AI Assistant',
-                              style: AppTypography.bodySmall.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 11,
+                            Expanded(
+                              child: CustomTextField(
+                                label: 'Height (cm)',
+                                hintText: '175',
+                                icon: Icons.height_rounded,
+                                controller: _heightController,
+                                keyboardType: TextInputType.number,
+                              ),
+                            ),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: CustomTextField(
+                                label: 'Weight (kg)',
+                                hintText: '70',
+                                icon: Icons.monitor_weight_outlined,
+                                controller: _weightController,
+                                keyboardType: TextInputType.number,
                               ),
                             ),
                           ],
                         ),
-                      ),
+
+                        const SizedBox(height: 18),
+
+                        // Blood Group Selection
+                        Text(
+                          'Blood Group',
+                          style: AppTypography.label.copyWith(
+                            color: AppColors.textSecondary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Wrap(
+                          spacing: 10,
+                          runSpacing: 10,
+                          children: _bloodGroups.map((bg) {
+                            final isSelected = _selectedBloodGroup == bg;
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _selectedBloodGroup = bg;
+                                });
+                              },
+                              child: Container(
+                                width: 70,
+                                height: 42,
+                                decoration: BoxDecoration(
+                                  color: isSelected ? AppColors.surfaceLightBlue : AppColors.surfaceElevated,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: isSelected ? AppColors.primaryTeal : AppColors.borderSubtle,
+                                    width: isSelected ? 1.8 : 1.0,
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    bg,
+                                    style: AppTypography.bodyMedium.copyWith(
+                                      color: isSelected ? AppColors.primaryTeal : AppColors.textPrimary,
+                                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+
+                        const SizedBox(height: 32),
+
+                        // Continue Button
+                        GradientButton(
+                          text: 'Continue',
+                          gradient: AppGradients.primaryButton,
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              _saveAndContinue();
+                            }
+                          },
+                        ),
+
+                        const SizedBox(height: 80),
+                      ],
                     ),
                   ),
-                ],
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 12),
-
-                      // Title & Subtitle
-                      Center(
-                        child: Column(
-                          children: [
-                            Text(
-                              'Basic Information',
-                              textAlign: TextAlign.center,
-                              style: AppTypography.headingLarge,
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              'Please provide some basic details',
-                              textAlign: TextAlign.center,
-                              style: AppTypography.subtitle,
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      const SizedBox(height: 32),
-
-                      // Name Field
-                      CustomTextField(
-                        label: 'Name',
-                        hintText: 'Enter your name',
-                        icon: Icons.person_outline_rounded,
-                        controller: _nameController,
-                      ),
-
-                      const SizedBox(height: 18),
-
-                      // Age Field
-                      CustomTextField(
-                        label: 'Age',
-                        hintText: 'Enter your age',
-                        icon: Icons.cake_outlined,
-                        keyboardType: TextInputType.number,
-                        controller: _ageController,
-                      ),
-
-                      const SizedBox(height: 18),
-
-                      // Height Field
-                      CustomTextField(
-                        label: 'Height (cm)',
-                        hintText: 'Enter your height',
-                        icon: Icons.height_rounded,
-                        keyboardType: TextInputType.number,
-                        controller: _heightController,
-                      ),
-
-                      const SizedBox(height: 18),
-
-                      // Weight Field
-                      CustomTextField(
-                        label: 'Weight (kg)',
-                        hintText: 'Enter your weight',
-                        icon: Icons.monitor_weight_outlined,
-                        keyboardType: TextInputType.number,
-                        controller: _weightController,
-                      ),
-
-                      const SizedBox(height: 18),
-
-                      // Blood Group Field
-                      _buildBloodGroupDropdown(),
-
-                      const SizedBox(height: 24),
-
-                      // Floating AI Assistant Button
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: AiAssistantFab(
-                          onTap: () => _openAiAssistant(context),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Bottom Action Button
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                child: GradientButton(
-                  text: 'Continue',
-                  onPressed: _saveAndProceed,
                 ),
               ),
             ],
@@ -279,73 +388,4 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
       ),
     );
   }
-
-  Widget _buildBloodGroupDropdown() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            const Icon(
-              Icons.bloodtype_outlined,
-              size: 16,
-              color: AppColors.textSecondary,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              'Blood Group',
-              style: AppTypography.label,
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-          decoration: BoxDecoration(
-            color: AppColors.surfaceCard,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-              color: AppColors.borderSubtle.withValues(alpha: 0.8),
-              width: 1.0,
-            ),
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              value: _selectedBloodGroup,
-              isExpanded: true,
-              dropdownColor: AppColors.surfaceElevated,
-              icon: const Icon(
-                Icons.keyboard_arrow_down_rounded,
-                color: AppColors.textSecondary,
-              ),
-              hint: Text(
-                'Select blood group',
-                style: AppTypography.bodyMedium.copyWith(
-                  color: AppColors.textMuted,
-                ),
-              ),
-              items: _bloodGroups.map((group) {
-                return DropdownMenuItem<String>(
-                  value: group,
-                  child: Text(
-                    group,
-                    style: AppTypography.bodyMedium.copyWith(
-                      color: Colors.white,
-                    ),
-                  ),
-                );
-              }).toList(),
-              onChanged: (val) {
-                setState(() {
-                  _selectedBloodGroup = val;
-                });
-              },
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 }
-
-

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_typography.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
@@ -28,19 +29,26 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         leading: showBackButton
             ? IconButton(
                 icon: Container(
-                  width: 40,
-                  height: 40,
+                  width: 38,
+                  height: 38,
                   decoration: BoxDecoration(
-                    color: AppColors.surface.withValues(alpha: 0.6),
+                    color: AppColors.surface,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: AppColors.borderSubtle.withValues(alpha: 0.6),
+                      color: AppColors.borderSubtle,
                       width: 1,
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.shadowLight,
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: const Icon(
                     Icons.arrow_back_ios_new_rounded,
-                    color: Colors.white,
+                    color: AppColors.textHeading,
                     size: 16,
                   ),
                 ),
@@ -50,10 +58,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         title: title != null
             ? Text(
                 title!,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
+                style: AppTypography.headingSmall.copyWith(
+                  fontSize: 17,
+                  color: AppColors.textHeading,
                 ),
               )
             : null,

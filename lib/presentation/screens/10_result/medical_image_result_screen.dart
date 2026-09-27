@@ -88,7 +88,7 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
                       _buildSectionHeader(
                         icon: Icons.remove_red_eye_rounded,
                         title: 'MEDICAL VISION REPORT',
-                        accentColor: AppColors.neonPurple,
+                        accentColor: AppColors.primaryMedicalTeal,
                       ),
                       const SizedBox(height: 10),
 
@@ -127,7 +127,7 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
                       _buildSectionHeader(
                         icon: Icons.medication_liquid_rounded,
                         title: 'TREATMENT INTELLIGENCE',
-                        accentColor: AppColors.neonCyan,
+                        accentColor: AppColors.secondaryBlue,
                       ),
                       const SizedBox(height: 10),
 
@@ -175,9 +175,9 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
         Container(
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
-            color: accentColor.withValues(alpha: 0.15),
+            color: accentColor.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: accentColor.withValues(alpha: 0.4)),
+            border: Border.all(color: accentColor.withValues(alpha: 0.3)),
           ),
           child: Icon(icon, color: accentColor, size: 16),
         ),
@@ -199,20 +199,20 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E1338),
+        color: AppColors.lightBlue.withValues(alpha: 0.6),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.neonPurple.withValues(alpha: 0.4)),
+        border: Border.all(color: AppColors.secondaryBlue.withValues(alpha: 0.3)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.shield_outlined, color: AppColors.neonPurple, size: 18),
+          const Icon(Icons.shield_outlined, color: AppColors.secondaryBlue, size: 18),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
               'Research / Educational Use Only: Evaluates neural image features. Treatment decisions require qualified oncologists, staging biopsy, and molecular confirmation.',
               style: AppTypography.caption.copyWith(
-                color: Colors.white.withValues(alpha: 0.85),
+                color: AppColors.textPrimary,
                 fontSize: 11,
                 fontWeight: FontWeight.w500,
                 height: 1.35,
@@ -228,7 +228,7 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
     return GlowContainer(
       borderRadius: 18,
       padding: const EdgeInsets.all(20),
-      backgroundColor: const Color(0xFF201328),
+      backgroundColor: Colors.white,
       borderGradient: const LinearGradient(
         colors: [Color(0xFFE11D48), Color(0xFFF59E0B)],
       ),
@@ -256,7 +256,7 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
           Text(
             description,
             style: AppTypography.bodySmall.copyWith(
-              color: Colors.white70,
+              color: AppColors.textSecondary,
               height: 1.4,
             ),
           ),
@@ -264,17 +264,17 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.3),
+              color: AppColors.lightBlue.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
               children: [
-                const Icon(Icons.check_circle_outline, color: AppColors.neonCyan, size: 16),
+                const Icon(Icons.check_circle_outline, color: AppColors.primaryMedicalTeal, size: 16),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     'Supported modalities: Pulmonary CT (.png/.jpg/.dcm), H&E Histopathology, Brain MRI, Digital Mammography.',
-                    style: AppTypography.caption.copyWith(color: AppColors.neonCyan, fontSize: 11),
+                    style: AppTypography.caption.copyWith(color: AppColors.primaryMedicalTeal, fontSize: 11),
                   ),
                 ),
               ],
@@ -295,11 +295,11 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
     return GlowContainer(
       borderRadius: 20,
       padding: const EdgeInsets.all(20),
-      backgroundColor: const Color(0xFF1E1338),
+      backgroundColor: Colors.white,
       borderGradient: const LinearGradient(
-        colors: [Color(0xFF9333EA), Color(0xFF6366F1), Color(0xFF3B82F6)],
+        colors: [AppColors.primaryMedicalTeal, AppColors.secondaryBlue],
       ),
-      glowColor: AppColors.neonPurple,
+      glowColor: AppColors.primaryMedicalTeal,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -309,19 +309,19 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: AppColors.neonPurple.withValues(alpha: 0.25),
+                  color: AppColors.warningOrange.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppColors.neonPurple.withValues(alpha: 0.6)),
+                  border: Border.all(color: AppColors.warningOrange.withValues(alpha: 0.4)),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.image_search_rounded, color: AppColors.neonPurple, size: 14),
+                    const Icon(Icons.image_search_rounded, color: AppColors.warningOrange, size: 14),
                     const SizedBox(width: 4),
                     Text(
                       riskTier.toUpperCase(),
                       style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.neonPurple,
+                        color: AppColors.warningOrange,
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
                       ),
@@ -332,7 +332,7 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
               Text(
                 modality,
                 style: AppTypography.caption.copyWith(
-                  color: Colors.white70,
+                  color: AppColors.textSecondary,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -342,7 +342,7 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
           Text(
             'Predicted Cancer / Imaging Finding',
             style: AppTypography.bodySmall.copyWith(
-              color: Colors.white70,
+              color: AppColors.textSecondary,
               fontSize: 12,
             ),
           ),
@@ -352,7 +352,7 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
             style: AppTypography.headingMedium.copyWith(
               fontSize: 18,
               fontWeight: FontWeight.w800,
-              color: Colors.white,
+              color: AppColors.textPrimary,
             ),
           ),
           if (cancerType != null) ...[
@@ -360,14 +360,14 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
-                color: AppColors.neonCyan.withValues(alpha: 0.15),
+                color: AppColors.lightCyan,
                 borderRadius: BorderRadius.circular(6),
-                border: Border.all(color: AppColors.neonCyan.withValues(alpha: 0.4)),
+                border: Border.all(color: AppColors.primaryMedicalTeal.withValues(alpha: 0.3)),
               ),
               child: Text(
                 'Oncology Phenotype: ${cancerType.toUpperCase()}',
                 style: AppTypography.caption.copyWith(
-                  color: AppColors.neonCyan,
+                  color: AppColors.primaryMedicalTealDark,
                   fontWeight: FontWeight.w700,
                   fontSize: 11,
                 ),
@@ -383,13 +383,13 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
                   children: [
                     Text(
                       'Vision Model Confidence',
-                      style: AppTypography.caption.copyWith(color: Colors.white70),
+                      style: AppTypography.caption.copyWith(color: AppColors.textSecondary),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       '${confidence.toStringAsFixed(1)}%',
                       style: AppTypography.headingLarge.copyWith(
-                        color: Colors.white,
+                        color: AppColors.textPrimary,
                         fontSize: 26,
                         fontWeight: FontWeight.w800,
                       ),
@@ -400,7 +400,7 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
               Container(
                 height: 38,
                 width: 1,
-                color: Colors.white24,
+                color: AppColors.borderSubtle,
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -409,7 +409,7 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
                   children: [
                     Text(
                       'Modality Protocol',
-                      style: AppTypography.caption.copyWith(color: Colors.white70),
+                      style: AppTypography.caption.copyWith(color: AppColors.textSecondary),
                     ),
                     const SizedBox(height: 2),
                     Text(
@@ -417,7 +417,7 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
                           ? 'Thoracic CT'
                           : (modality.contains('H&E') ? 'H&E Microscopy' : (modality.contains('MRI') ? 'T1-Gd MRI' : 'Digital Scan')),
                       style: AppTypography.headingLarge.copyWith(
-                        color: AppColors.neonCyan,
+                        color: AppColors.secondaryBlue,
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
                       ),
@@ -442,9 +442,9 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
     return GlowContainer(
       borderRadius: 18,
       padding: const EdgeInsets.all(18),
-      backgroundColor: AppColors.surfaceCard,
-      borderGradient: AppGradients.neonBorderBluePurple,
-      glowColor: AppColors.neonPurple,
+      backgroundColor: Colors.white,
+      borderGradient: AppGradients.subtleBorder,
+      glowColor: AppColors.primaryMedicalTeal,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -453,12 +453,12 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.auto_awesome_rounded, color: AppColors.neonPurple, size: 18),
+                  const Icon(Icons.auto_awesome_rounded, color: AppColors.primaryMedicalTeal, size: 18),
                   const SizedBox(width: 8),
                   Text(
                     'GRAD-CAM SALIENCY HEATMAP',
                     style: AppTypography.caption.copyWith(
-                      color: AppColors.neonPurple,
+                      color: AppColors.primaryMedicalTeal,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 1.1,
                     ),
@@ -472,13 +472,13 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
                     Text(
                       'Heatmap',
                       style: AppTypography.caption.copyWith(
-                        color: _showGradCamOverlay ? AppColors.neonPurple : AppColors.textSecondary,
+                        color: _showGradCamOverlay ? AppColors.primaryMedicalTeal : AppColors.textSecondary,
                         fontSize: 11,
                       ),
                     ),
                     Switch.adaptive(
                       value: _showGradCamOverlay,
-                      activeTrackColor: AppColors.neonPurple,
+                      activeTrackColor: AppColors.primaryMedicalTeal,
                       onChanged: (val) {
                         setState(() {
                           _showGradCamOverlay = val;
@@ -494,9 +494,9 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
             height: 220,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: const Color(0xFF070B18),
+              color: AppColors.lightBlue.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: AppColors.surfaceElevated),
+              border: Border.all(color: AppColors.borderSubtle),
             ),
             clipBehavior: Clip.antiAlias,
             child: displayBytes != null
@@ -511,7 +511,7 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
                         const Icon(
                           Icons.image_search_rounded,
                           size: 48,
-                          color: AppColors.neonPurple,
+                          color: AppColors.primaryMedicalTeal,
                         ),
                         const SizedBox(height: 8),
                         Text(
@@ -541,20 +541,20 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
     return GlowContainer(
       borderRadius: 18,
       padding: const EdgeInsets.all(18),
-      backgroundColor: AppColors.surfaceCard,
-      borderGradient: AppGradients.neonBorderCyan,
-      glowColor: AppColors.neonCyan,
+      backgroundColor: Colors.white,
+      borderGradient: AppGradients.subtleBorder,
+      glowColor: AppColors.secondaryBlue,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.biotech_outlined, color: AppColors.neonCyan, size: 18),
+              const Icon(Icons.biotech_outlined, color: AppColors.secondaryBlue, size: 18),
               const SizedBox(width: 8),
               Text(
                 'IMAGING FINDINGS & MARGINS',
                 style: AppTypography.caption.copyWith(
-                  color: AppColors.neonCyan,
+                  color: AppColors.secondaryBlue,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 1.1,
                 ),
@@ -578,16 +578,16 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
     return GlowContainer(
       borderRadius: 18,
       padding: const EdgeInsets.all(18),
-      backgroundColor: AppColors.surfaceCard,
-      borderGradient: AppGradients.neonBorderBluePurple,
-      glowColor: AppColors.neonPurple,
+      backgroundColor: Colors.white,
+      borderGradient: AppGradients.subtleBorder,
+      glowColor: AppColors.primaryMedicalTeal,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'DIFFERENTIAL RADIOLOGICAL & PATHOLOGICAL PROBABILITIES',
             style: AppTypography.caption.copyWith(
-              color: AppColors.neonPurple,
+              color: AppColors.primaryMedicalTeal,
               fontWeight: FontWeight.w700,
               letterSpacing: 1.1,
             ),
@@ -613,7 +613,7 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
                       Text(
                         '${pct.toStringAsFixed(1)}%',
                         style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.neonPurple,
+                          color: AppColors.primaryMedicalTeal,
                           fontWeight: FontWeight.w700,
                           fontSize: 12,
                         ),
@@ -625,8 +625,8 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
                     borderRadius: BorderRadius.circular(4),
                     child: LinearProgressIndicator(
                       value: (entry.value).clamp(0.0, 1.0),
-                      backgroundColor: AppColors.surfaceElevated,
-                      valueColor: const AlwaysStoppedAnimation<Color>(AppColors.neonPurple),
+                      backgroundColor: AppColors.lightBlue,
+                      valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primaryMedicalTeal),
                       minHeight: 5,
                     ),
                   ),
@@ -643,20 +643,20 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.neonCyan.withValues(alpha: 0.12),
+        color: AppColors.lightBlue.withValues(alpha: 0.6),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.neonCyan.withValues(alpha: 0.4)),
+        border: Border.all(color: AppColors.secondaryBlue.withValues(alpha: 0.3)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.info_outline_rounded, color: AppColors.neonCyan, size: 18),
+          const Icon(Icons.info_outline_rounded, color: AppColors.secondaryBlue, size: 18),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               'Standard therapeutic classes associated with this cancer type. Mutation-targeted therapies CANNOT be determined from imaging alone and require diagnostic molecular/biomarker confirmation.',
               style: AppTypography.caption.copyWith(
-                color: AppColors.neonCyan,
+                color: AppColors.textPrimary,
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
                 height: 1.35,
@@ -687,9 +687,9 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
       child: GlowContainer(
         borderRadius: 16,
         padding: const EdgeInsets.all(16),
-        backgroundColor: AppColors.surfaceCard,
-        borderGradient: AppGradients.neonBorderCyan,
-        glowColor: AppColors.neonCyan,
+        backgroundColor: Colors.white,
+        borderGradient: AppGradients.subtleBorder,
+        glowColor: AppColors.primaryMedicalTeal,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -701,16 +701,16 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColors.neonCyan.withValues(alpha: 0.15),
+                      color: AppColors.lightCyan,
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppColors.neonCyan.withValues(alpha: 0.4)),
+                      border: Border.all(color: AppColors.primaryMedicalTeal.withValues(alpha: 0.3)),
                     ),
                     child: Text(
                       therapy.treatmentClass.toUpperCase(),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: AppTypography.caption.copyWith(
-                        color: AppColors.neonCyan,
+                        color: AppColors.primaryMedicalTealDark,
                         fontWeight: FontWeight.w700,
                         fontSize: 10,
                       ),
@@ -721,7 +721,7 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
                 Text(
                   therapy.fdaStatus.contains('Approved') ? 'FDA Approved' : 'Guideline',
                   style: AppTypography.caption.copyWith(
-                    color: AppColors.neonGreen,
+                    color: AppColors.successGreen,
                     fontWeight: FontWeight.w700,
                     fontSize: 11,
                   ),
@@ -734,7 +734,7 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
             Text(
               therapy.drugName,
               style: AppTypography.headingSmall.copyWith(
-                color: Colors.white,
+                color: AppColors.textPrimary,
                 fontSize: 16,
                 fontWeight: FontWeight.w800,
               ),
@@ -746,7 +746,7 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
               _buildTherapyAttribute(
                 label: 'Molecular Target',
                 value: therapy.molecularTarget,
-                valueColor: AppColors.neonCyan,
+                valueColor: AppColors.secondaryBlue,
               ),
               const SizedBox(height: 6),
             ],
@@ -769,19 +769,19 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
               const SizedBox(height: 8),
             ],
 
-            // Biomarker Requirement Warning Banner (Requirement 8)
+            // Biomarker Requirement Warning Banner
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: requiresBiomarker
-                    ? const Color(0xFF331F10)
-                    : const Color(0xFF0D2538),
+                    ? AppColors.warningOrange.withValues(alpha: 0.1)
+                    : AppColors.lightBlue.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
                   color: requiresBiomarker
-                      ? const Color(0xFFF59E0B)
-                      : AppColors.neonCyan.withValues(alpha: 0.4),
+                      ? AppColors.warningOrange.withValues(alpha: 0.4)
+                      : AppColors.secondaryBlue.withValues(alpha: 0.3),
                 ),
               ),
               child: Row(
@@ -789,7 +789,7 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
                 children: [
                   Icon(
                     requiresBiomarker ? Icons.warning_amber_rounded : Icons.check_circle_outline,
-                    color: requiresBiomarker ? const Color(0xFFF59E0B) : AppColors.neonCyan,
+                    color: requiresBiomarker ? AppColors.warningOrange : AppColors.secondaryBlue,
                     size: 16,
                   ),
                   const SizedBox(width: 8),
@@ -802,7 +802,7 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
                               ? 'BIOMARKER REQUIREMENT'
                               : 'HISTOLOGY INDICATION',
                           style: TextStyle(
-                            color: requiresBiomarker ? const Color(0xFFF59E0B) : AppColors.neonCyan,
+                            color: requiresBiomarker ? AppColors.warningOrange : AppColors.secondaryBlue,
                             fontWeight: FontWeight.w800,
                             fontSize: 10,
                             letterSpacing: 0.8,
@@ -814,7 +814,7 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
                               ? 'Requires molecular/biomarker confirmation (${therapy.requiredGenomicAlteration.isNotEmpty ? therapy.requiredGenomicAlteration : "Diagnostic DNA NGS/IHC required"}). Cannot be inferred from image alone.'
                               : 'Standard histology-directed regimen. Clinical confirmation by medical oncologist required.',
                           style: AppTypography.caption.copyWith(
-                            color: Colors.white70,
+                            color: AppColors.textPrimary,
                             fontSize: 11,
                             height: 1.3,
                           ),
@@ -881,20 +881,20 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
     return GlowContainer(
       borderRadius: 16,
       padding: const EdgeInsets.all(16),
-      backgroundColor: AppColors.surfaceCard,
-      borderGradient: AppGradients.neonBorderBluePurple,
-      glowColor: AppColors.neonPurple,
+      backgroundColor: Colors.white,
+      borderGradient: AppGradients.subtleBorder,
+      glowColor: AppColors.secondaryBlue,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.science_outlined, color: AppColors.neonPurple, size: 18),
+              const Icon(Icons.science_outlined, color: AppColors.secondaryBlue, size: 18),
               const SizedBox(width: 8),
               Text(
                 'RESISTANCE PATHWAYS & CLINICAL TRIALS',
                 style: AppTypography.caption.copyWith(
-                  color: AppColors.neonPurple,
+                  color: AppColors.secondaryBlue,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 1.1,
                 ),
@@ -907,7 +907,7 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
               'Known Resistance Pathways:',
               style: AppTypography.bodySmall.copyWith(
                 fontWeight: FontWeight.w700,
-                color: Colors.white,
+                color: AppColors.textPrimary,
                 fontSize: 11,
               ),
             ),
@@ -918,7 +918,7 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('• ', style: TextStyle(color: AppColors.neonPurple)),
+                    const Text('• ', style: TextStyle(color: AppColors.secondaryBlue)),
                     Expanded(
                       child: Text(
                         r,
@@ -936,7 +936,7 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
               'Active Clinical Trial Frameworks:',
               style: AppTypography.bodySmall.copyWith(
                 fontWeight: FontWeight.w700,
-                color: Colors.white,
+                color: AppColors.textPrimary,
                 fontSize: 11,
               ),
             ),
@@ -947,7 +947,7 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('• ', style: TextStyle(color: AppColors.neonCyan)),
+                    const Text('• ', style: TextStyle(color: AppColors.primaryMedicalTeal)),
                     Expanded(
                       child: Text(
                         t,
@@ -974,20 +974,20 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
     return GlowContainer(
       borderRadius: 16,
       padding: const EdgeInsets.all(16),
-      backgroundColor: AppColors.surfaceCard,
-      borderGradient: AppGradients.neonBorderCyan,
-      glowColor: AppColors.neonCyan,
+      backgroundColor: Colors.white,
+      borderGradient: AppGradients.subtleBorder,
+      glowColor: AppColors.successGreen,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.restaurant_menu_rounded, color: AppColors.neonGreen, size: 18),
+              const Icon(Icons.restaurant_menu_rounded, color: AppColors.successGreen, size: 18),
               const SizedBox(width: 8),
               Text(
                 'ONCOLOGY METABOLIC & NUTRITION GUIDANCE',
                 style: AppTypography.caption.copyWith(
-                  color: AppColors.neonGreen,
+                  color: AppColors.successGreen,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 1.1,
                 ),
@@ -1008,7 +1008,7 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('• ', style: TextStyle(color: AppColors.neonGreen)),
+                    const Text('• ', style: TextStyle(color: AppColors.successGreen)),
                     Expanded(
                       child: Text(
                         n,
@@ -1029,7 +1029,7 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.surfaceElevated,
+        color: AppColors.surfaceCard,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.borderSubtle),
       ),
@@ -1055,22 +1055,22 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
     return GlowContainer(
       borderRadius: 18,
       padding: const EdgeInsets.all(18),
-      backgroundColor: const Color(0xFF0F1E36),
+      backgroundColor: Colors.white,
       borderGradient: const LinearGradient(
-        colors: [Color(0xFF0284C7), Color(0xFF06B6D4)],
+        colors: [AppColors.secondaryBlue, AppColors.primaryMedicalTeal],
       ),
-      glowColor: AppColors.neonCyan,
+      glowColor: AppColors.primaryMedicalTeal,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.biotech_rounded, color: AppColors.neonCyan, size: 20),
+              const Icon(Icons.biotech_rounded, color: AppColors.primaryMedicalTeal, size: 20),
               const SizedBox(width: 8),
               Text(
                 'RECOMMENDED NEXT CLINICAL STEPS',
                 style: AppTypography.caption.copyWith(
-                  color: AppColors.neonCyan,
+                  color: AppColors.primaryMedicalTeal,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 1.1,
                 ),
@@ -1081,7 +1081,7 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
           Text(
             'Imaging findings indicate localized tissue attenuation. For high-resolution multiclass RNA-Seq cancer profiling and biomarker XAI attributions, run the Genomic Cancer Screening pipeline.',
             style: AppTypography.bodySmall.copyWith(
-              color: Colors.white70,
+              color: AppColors.textSecondary,
               height: 1.4,
             ),
           ),
@@ -1090,9 +1090,9 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
             width: double.infinity,
             child: ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.neonCyan.withValues(alpha: 0.2),
-                foregroundColor: AppColors.neonCyan,
-                side: BorderSide(color: AppColors.neonCyan.withValues(alpha: 0.6)),
+                backgroundColor: AppColors.lightCyan,
+                foregroundColor: AppColors.primaryMedicalTealDark,
+                side: BorderSide(color: AppColors.primaryMedicalTeal.withValues(alpha: 0.4)),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 padding: const EdgeInsets.symmetric(vertical: 12),
               ),
@@ -1116,22 +1116,20 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
     return GlowContainer(
       borderRadius: 16,
       padding: const EdgeInsets.all(16),
-      backgroundColor: const Color(0xFF150D24),
-      borderGradient: const LinearGradient(
-        colors: [Color(0xFF7C3AED), Color(0xFF4F46E5)],
-      ),
-      glowColor: AppColors.neonPurple,
+      backgroundColor: Colors.white,
+      borderGradient: AppGradients.subtleBorder,
+      glowColor: AppColors.secondaryBlue,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.verified_user_outlined, color: AppColors.neonPurple, size: 18),
+              const Icon(Icons.verified_user_outlined, color: AppColors.secondaryBlue, size: 18),
               const SizedBox(width: 8),
               Text(
                 'CLINICAL SAFETY & REGULATORY NOTICE',
                 style: AppTypography.caption.copyWith(
-                  color: AppColors.neonPurple,
+                  color: AppColors.secondaryBlue,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 1.1,
                 ),
@@ -1142,7 +1140,7 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
           Text(
             'This application is an AI investigational research system designed for medical and academic evaluation. It does not provide medical prescriptions, dosing advice, or definitive radiological diagnoses.\n\nAll treatment decisions must be made by qualified oncologists and medical boards following definitive histopathological staging, tissue biopsy, and verified molecular biomarker testing.',
             style: AppTypography.caption.copyWith(
-              color: Colors.white70,
+              color: AppColors.textSecondary,
               fontSize: 11,
               height: 1.4,
             ),
@@ -1156,21 +1154,21 @@ class _MedicalImageResultScreenState extends State<MedicalImageResultScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
       decoration: BoxDecoration(
-        color: AppColors.surfaceCard,
-        border: Border(top: BorderSide(color: AppColors.surfaceElevated)),
+        color: Colors.white,
+        border: Border(top: BorderSide(color: AppColors.borderSubtle)),
       ),
       child: Row(
         children: [
           Expanded(
             child: OutlinedButton.icon(
               onPressed: () => Navigator.of(context).pushNamed(AppRoutes.screeningHistory),
-              icon: const Icon(Icons.history_rounded, size: 18, color: AppColors.neonPurple),
+              icon: const Icon(Icons.history_rounded, size: 18, color: AppColors.primaryMedicalTeal),
               label: const Text(
                 'History',
-                style: TextStyle(color: AppColors.neonPurple, fontSize: 13, fontWeight: FontWeight.w600),
+                style: TextStyle(color: AppColors.primaryMedicalTealDark, fontSize: 13, fontWeight: FontWeight.w600),
               ),
               style: OutlinedButton.styleFrom(
-                side: BorderSide(color: AppColors.neonPurple.withValues(alpha: 0.6)),
+                side: BorderSide(color: AppColors.primaryMedicalTeal.withValues(alpha: 0.5)),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                 padding: const EdgeInsets.symmetric(vertical: 14),
               ),

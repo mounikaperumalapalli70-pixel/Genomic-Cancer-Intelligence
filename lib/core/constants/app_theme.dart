@@ -6,16 +6,16 @@ import 'app_typography.dart';
 class AppTheme {
   AppTheme._();
 
-  static ThemeData get darkTheme {
+  static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
-      brightness: Brightness.dark,
+      brightness: Brightness.light,
       scaffoldBackgroundColor: AppColors.background,
-      primaryColor: AppColors.neonBlue,
-      colorScheme: const ColorScheme.dark(
-        primary: AppColors.neonBlue,
-        secondary: AppColors.neonCyan,
-        tertiary: AppColors.neonPurple,
+      primaryColor: AppColors.primaryTeal,
+      colorScheme: const ColorScheme.light(
+        primary: AppColors.primaryTeal,
+        secondary: AppColors.secondaryBlue,
+        tertiary: AppColors.mintGreen,
         surface: AppColors.surface,
         error: AppColors.statusDanger,
         onPrimary: Colors.white,
@@ -29,10 +29,10 @@ class AppTheme {
         centerTitle: true,
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.light,
-          statusBarBrightness: Brightness.dark,
+          statusBarIconBrightness: Brightness.dark,
+          statusBarBrightness: Brightness.light,
         ),
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: IconThemeData(color: AppColors.textPrimary),
       ),
       cardTheme: CardThemeData(
         color: AppColors.surfaceCard,
@@ -50,6 +50,30 @@ class AppTheme {
         bodySmall: AppTypography.bodySmall,
         labelLarge: AppTypography.buttonText,
       ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: AppColors.surfaceElevated,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: AppColors.borderSubtle, width: 1),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: AppColors.borderSubtle, width: 1),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: AppColors.primaryTeal, width: 1.5),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: AppColors.statusDanger, width: 1),
+        ),
+      ),
     );
   }
+
+  // Backwards compatibility getter so any code referencing darkTheme gets the light clinical theme
+  static ThemeData get darkTheme => lightTheme;
 }

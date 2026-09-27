@@ -42,7 +42,7 @@ class GenomicUploadScreen extends StatelessWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            backgroundColor: AppColors.surfaceElevated,
+            backgroundColor: AppColors.primaryTeal,
             content: Text('File picker notice: $e'),
           ),
         );
@@ -69,21 +69,21 @@ class GenomicUploadScreen extends StatelessWidget {
               ),
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 8),
 
                       // Title & Subtitle
                       Center(
                         child: Text(
                           'Upload Genomic Data',
                           textAlign: TextAlign.center,
-                          style: AppTypography.headingLarge,
+                          style: AppTypography.headingLarge.copyWith(fontSize: 22),
                         ),
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 4),
                       Center(
                         child: Text(
                           'Select your expression matrix or load a curated TCGA benchmark sample',
@@ -92,18 +92,18 @@ class GenomicUploadScreen extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 22),
 
                       // Section A: 1-Click Curated TCGA Pan-Cancer Benchmark Samples
                       _buildCuratedSamplesSection(context, screeningProvider),
 
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 22),
 
-                      // Section B: Custom File Upload (Drag & Drop Dropzone)
+                      // Section B: Custom File Upload Dropzone
                       Text(
                         'OR UPLOAD CUSTOM FILE',
                         style: AppTypography.caption.copyWith(
-                          color: AppColors.textTertiary,
+                          color: AppColors.textSecondary,
                           letterSpacing: 1.2,
                           fontWeight: FontWeight.w700,
                         ),
@@ -112,7 +112,7 @@ class GenomicUploadScreen extends StatelessWidget {
 
                       _buildUploadDropZone(context, screeningProvider),
 
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 18),
 
                       // Uploaded / Selected File Card
                       if (screeningProvider.hasUploadedGenomicFile)
@@ -126,9 +126,10 @@ class GenomicUploadScreen extends StatelessWidget {
 
               // Bottom Action: Start Analysis Button
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 child: GradientButton(
                   text: 'Start AI Analysis',
+                  gradient: AppGradients.primaryButton,
                   onPressed: screeningProvider.hasUploadedGenomicFile
                       ? () {
                           screeningProvider.setActiveInputType(ScreeningInputType.genomicData);
@@ -159,7 +160,7 @@ class GenomicUploadScreen extends StatelessWidget {
             Text(
               '1-CLICK TCGA BENCHMARK SAMPLES',
               style: AppTypography.caption.copyWith(
-                color: AppColors.neonCyan,
+                color: AppColors.primaryTeal,
                 letterSpacing: 1.2,
                 fontWeight: FontWeight.w700,
               ),
@@ -167,14 +168,14 @@ class GenomicUploadScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
-                color: AppColors.neonCyan.withValues(alpha: 0.12),
+                color: AppColors.surfaceMint,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColors.neonCyan.withValues(alpha: 0.3)),
+                border: Border.all(color: AppColors.primaryTeal.withValues(alpha: 0.3)),
               ),
               child: Text(
                 'Trained Model Ready',
                 style: AppTypography.bodySmall.copyWith(
-                  color: AppColors.neonCyan,
+                  color: AppColors.darkTeal,
                   fontSize: 10,
                   fontWeight: FontWeight.w600,
                 ),
@@ -184,7 +185,7 @@ class GenomicUploadScreen extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         SizedBox(
-          height: 125,
+          height: 130,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: samples.length,
@@ -196,28 +197,28 @@ class GenomicUploadScreen extends StatelessWidget {
               return GestureDetector(
                 onTap: () => screeningProvider.selectCuratedSample(sample),
                 child: Container(
-                  width: 200,
+                  width: 210,
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? AppColors.neonCyan.withValues(alpha: 0.15)
+                        ? AppColors.surfaceLightBlue
                         : AppColors.surfaceCard,
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                       color: isSelected
-                          ? AppColors.neonCyan
-                          : AppColors.surfaceElevated,
+                          ? AppColors.primaryTeal
+                          : AppColors.borderSubtle,
                       width: isSelected ? 1.8 : 1.0,
                     ),
-                    boxShadow: isSelected
-                        ? [
-                            BoxShadow(
-                              color: AppColors.neonCyan.withValues(alpha: 0.3),
-                              blurRadius: 12,
-                              spreadRadius: 1,
-                            ),
-                          ]
-                        : null,
+                    boxShadow: [
+                      BoxShadow(
+                        color: isSelected
+                            ? AppColors.primaryTeal.withValues(alpha: 0.18)
+                            : AppColors.shadowLight,
+                        blurRadius: isSelected ? 10 : 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -230,14 +231,14 @@ class GenomicUploadScreen extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
                               color: isSelected
-                                  ? AppColors.neonCyan
+                                  ? AppColors.primaryTeal.withValues(alpha: 0.15)
                                   : AppColors.surfaceElevated,
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
                               sample.id,
                               style: TextStyle(
-                                color: isSelected ? Colors.black : AppColors.textSecondary,
+                                color: isSelected ? AppColors.darkTeal : AppColors.textSecondary,
                                 fontSize: 10,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -246,26 +247,26 @@ class GenomicUploadScreen extends StatelessWidget {
                           if (isSelected)
                             const Icon(
                               Icons.check_circle_rounded,
-                              color: AppColors.neonCyan,
+                              color: AppColors.primaryTeal,
                               size: 16,
                             ),
                         ],
                       ),
                       Text(
-                        sample.cancerType.toUpperCase(),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTypography.bodyMedium.copyWith(
+                        sample.name,
+                        style: AppTypography.headingSmall.copyWith(
+                          fontSize: 13,
                           fontWeight: FontWeight.w700,
-                          fontSize: 12,
-                          color: isSelected ? Colors.white : AppColors.textPrimary,
+                          color: AppColors.textHeading,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       Text(
-                        '${sample.expressionData.isNotEmpty ? sample.expressionData.length : 25} Driver Genes Matrix',
+                        '${sample.biomarkerHighlights.length} Biomarkers • RNA-Seq',
                         style: AppTypography.bodySmall.copyWith(
-                          fontSize: 10,
                           color: AppColors.textSecondary,
+                          fontSize: 11,
                         ),
                       ),
                     ],
@@ -289,48 +290,52 @@ class GenomicUploadScreen extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 20),
         decoration: BoxDecoration(
-          color: AppColors.surfaceCard.withValues(alpha: 0.6),
-          borderRadius: BorderRadius.circular(20),
+          color: AppColors.surfaceLightBlue,
+          borderRadius: BorderRadius.circular(18),
           border: Border.all(
-            color: AppColors.neonCyan.withValues(alpha: 0.45),
+            color: AppColors.primaryTeal.withValues(alpha: 0.4),
             width: 1.5,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.neonCyan.withValues(alpha: 0.1),
-              blurRadius: 16,
-            ),
-          ],
         ),
         child: Column(
           children: [
             Container(
-              width: 56,
-              height: 56,
+              width: 52,
+              height: 52,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.neonCyan.withValues(alpha: 0.15),
-                border: Border.all(
-                  color: AppColors.neonCyan.withValues(alpha: 0.4),
-                  width: 1.5,
-                ),
+                color: Colors.white,
+                border: Border.all(color: AppColors.primaryTeal.withValues(alpha: 0.3)),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.shadowLight,
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               child: const Icon(
                 Icons.cloud_upload_outlined,
-                color: AppColors.neonCyan,
+                color: AppColors.primaryTeal,
                 size: 28,
               ),
             ),
             const SizedBox(height: 12),
             Text(
               'Browse Expression File',
-              style: AppTypography.headingSmall.copyWith(fontSize: 15),
+              style: AppTypography.headingSmall.copyWith(
+                fontSize: 15,
+                color: AppColors.primaryTeal,
+                fontWeight: FontWeight.w700,
+              ),
             ),
             const SizedBox(height: 4),
             Text(
-              'Supports CSV, TSV, TXT, or JSON (Gene Symbol + log2 Expression)',
-              textAlign: TextAlign.center,
-              style: AppTypography.caption.copyWith(color: AppColors.textSecondary),
+              'Supports TCGA-formatted CSV, TSV, or TXT matrix',
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.textSecondary,
+                fontSize: 12,
+              ),
             ),
           ],
         ),
@@ -343,46 +348,43 @@ class GenomicUploadScreen extends StatelessWidget {
     ScreeningProvider screeningProvider,
   ) {
     return GlowContainer(
-      borderRadius: 16,
-      padding: const EdgeInsets.all(16),
+      borderRadius: 14,
+      padding: const EdgeInsets.all(14),
       backgroundColor: AppColors.surfaceCard,
-      borderGradient: AppGradients.neonBorderCyanGreen,
-      glowColor: AppColors.neonCyan,
+      borderColor: AppColors.primaryTeal,
       child: Row(
         children: [
           Container(
-            width: 44,
-            height: 44,
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.neonCyan.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(12),
+              color: AppColors.surfaceMint,
+              borderRadius: BorderRadius.circular(10),
             ),
             child: const Icon(
-              Icons.biotech_rounded,
-              color: AppColors.neonCyan,
-              size: 24,
+              Icons.insert_drive_file_rounded,
+              color: AppColors.primaryTeal,
+              size: 22,
             ),
           ),
-          const SizedBox(width: 14),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   screeningProvider.uploadedGenomicFileName ?? 'expression_matrix.csv',
+                  style: AppTypography.bodyMedium.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textHeading,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTypography.bodyMedium.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
                 ),
-                const SizedBox(height: 3),
                 Text(
-                  '${screeningProvider.uploadedGenomicFileSize ?? '2.4 MB'} • Validated Profile',
+                  screeningProvider.uploadedGenomicFileSize ?? 'Ready for inference',
                   style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.neonGreen,
+                    color: AppColors.textSecondary,
                     fontSize: 11,
-                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ],

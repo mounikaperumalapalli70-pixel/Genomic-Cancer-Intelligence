@@ -81,19 +81,14 @@ class _GradientButtonState extends State<GradientButton>
             gradient: isEnabled
                 ? (widget.gradient ?? AppGradients.primaryButton)
                 : const LinearGradient(
-                    colors: [Color(0xFF334155), Color(0xFF1E293B)],
+                    colors: [Color(0xFFE2EFF3), Color(0xFFD5EBF0)],
                   ),
             boxShadow: isEnabled
                 ? [
                     BoxShadow(
-                      color: AppColors.neonPurple.withValues(alpha: 0.35),
-                      blurRadius: 16,
+                      color: AppColors.primaryTeal.withValues(alpha: 0.28),
+                      blurRadius: 14,
                       offset: const Offset(0, 4),
-                    ),
-                    BoxShadow(
-                      color: AppColors.neonBlue.withValues(alpha: 0.25),
-                      blurRadius: 24,
-                      offset: const Offset(0, 6),
                     ),
                   ]
                 : null,
@@ -115,7 +110,7 @@ class _GradientButtonState extends State<GradientButton>
                       if (widget.icon != null) ...[
                         Icon(
                           widget.icon,
-                          color: Colors.white,
+                          color: isEnabled ? Colors.white : AppColors.textDisabled,
                           size: 18,
                         ),
                         const SizedBox(width: 8),
@@ -126,13 +121,14 @@ class _GradientButtonState extends State<GradientButton>
                           color: isEnabled
                               ? Colors.white
                               : AppColors.textDisabled,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       if (widget.showArrow) ...[
                         const SizedBox(width: 8),
-                        const Icon(
+                        Icon(
                           Icons.arrow_forward_rounded,
-                          color: Colors.white,
+                          color: isEnabled ? Colors.white : AppColors.textDisabled,
                           size: 18,
                         ),
                       ],

@@ -39,7 +39,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.surfaceElevated,
+      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -54,15 +54,15 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: AppColors.neonBlue.withValues(alpha: 0.2),
+                    color: AppColors.lightBlue,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Icon(Icons.notification_add_rounded, color: AppColors.neonCyan),
+                  child: const Icon(Icons.notification_add_rounded, color: AppColors.primaryMedicalTeal),
                 ),
                 const SizedBox(width: 12),
                 Text(
                   'Test Real Notifications',
-                  style: AppTypography.headingSmall.copyWith(fontSize: 16),
+                  style: AppTypography.headingSmall.copyWith(fontSize: 16, color: AppColors.textPrimary),
                 ),
               ],
             ),
@@ -78,9 +78,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 side: const BorderSide(color: AppColors.borderSubtle),
               ),
               tileColor: AppColors.surfaceCard,
-              leading: const Icon(Icons.flash_on_rounded, color: AppColors.neonCyan),
-              title: const Text('Instant Test Notification', style: TextStyle(color: Colors.white, fontSize: 14)),
-              subtitle: const Text('Triggers right now on your device', style: TextStyle(color: AppColors.textMuted, fontSize: 11)),
+              leading: const Icon(Icons.flash_on_rounded, color: AppColors.primaryMedicalTeal),
+              title: const Text('Instant Test Notification', style: TextStyle(color: AppColors.textPrimary, fontSize: 14, fontWeight: FontWeight.w600)),
+              subtitle: const Text('Triggers right now on your device', style: TextStyle(color: AppColors.textSecondary, fontSize: 11)),
               onTap: () async {
                 Navigator.of(ctx).pop();
                 final notifId = DateTime.now().millisecondsSinceEpoch ~/ 1000;
@@ -103,7 +103,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      backgroundColor: AppColors.surfaceElevated,
+                      backgroundColor: AppColors.textPrimary,
                       content: Text('Instant test notification sent to device.'),
                     ),
                   );
@@ -117,9 +117,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 side: const BorderSide(color: AppColors.borderSubtle),
               ),
               tileColor: AppColors.surfaceCard,
-              leading: const Icon(Icons.timer_outlined, color: AppColors.neonPink),
-              title: const Text('Schedule in 1 Minute (Test while closed/locked)', style: TextStyle(color: Colors.white, fontSize: 14)),
-              subtitle: const Text('Close app & lock device to test background delivery', style: TextStyle(color: AppColors.textMuted, fontSize: 11)),
+              leading: const Icon(Icons.timer_outlined, color: AppColors.secondaryBlue),
+              title: const Text('Schedule in 1 Minute (Test while closed/locked)', style: TextStyle(color: AppColors.textPrimary, fontSize: 14, fontWeight: FontWeight.w600)),
+              subtitle: const Text('Close app & lock device to test background delivery', style: TextStyle(color: AppColors.textSecondary, fontSize: 11)),
               onTap: () async {
                 Navigator.of(ctx).pop();
                 final scheduledTime = DateTime.now().add(const Duration(minutes: 1));
@@ -144,7 +144,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      backgroundColor: AppColors.surfaceElevated,
+                      backgroundColor: AppColors.textPrimary,
                       content: Text('Notification scheduled for 1 min. You may close app and lock screen now.'),
                       duration: Duration(seconds: 4),
                     ),
@@ -159,9 +159,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 side: const BorderSide(color: AppColors.borderSubtle),
               ),
               tileColor: AppColors.surfaceCard,
-              leading: const Icon(Icons.alarm_on_rounded, color: AppColors.neonAmber),
-              title: const Text('Schedule in 2 Minutes (Test while closed/locked)', style: TextStyle(color: Colors.white, fontSize: 14)),
-              subtitle: const Text('Close app & lock device to test background delivery', style: TextStyle(color: AppColors.textMuted, fontSize: 11)),
+              leading: const Icon(Icons.alarm_on_rounded, color: AppColors.warningOrange),
+              title: const Text('Schedule in 2 Minutes (Test while closed/locked)', style: TextStyle(color: AppColors.textPrimary, fontSize: 14, fontWeight: FontWeight.w600)),
+              subtitle: const Text('Close app & lock device to test background delivery', style: TextStyle(color: AppColors.textSecondary, fontSize: 11)),
               onTap: () async {
                 Navigator.of(ctx).pop();
                 final scheduledTime = DateTime.now().add(const Duration(minutes: 2));
@@ -186,7 +186,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      backgroundColor: AppColors.surfaceElevated,
+                      backgroundColor: AppColors.textPrimary,
                       content: Text('Notification scheduled for 2 mins. You may close app and lock screen now.'),
                       duration: Duration(seconds: 4),
                     ),
@@ -231,7 +231,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               right: 20,
             ),
             decoration: BoxDecoration(
-              color: AppColors.surfaceElevated,
+              color: Colors.white,
               borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
               border: Border.all(color: AppColors.borderSubtle),
             ),
@@ -245,10 +245,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     children: [
                       Text(
                         existingReminder == null ? 'Create Smart Reminder' : 'Edit Reminder',
-                        style: AppTypography.headingSmall.copyWith(fontSize: 16),
+                        style: AppTypography.headingSmall.copyWith(fontSize: 16, color: AppColors.textPrimary),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.close_rounded, color: Colors.white70, size: 20),
+                        icon: const Icon(Icons.close_rounded, color: AppColors.textSecondary, size: 20),
                         onPressed: () => Navigator.of(ctx).pop(),
                       ),
                     ],
@@ -258,7 +258,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   // Quick AI Wellness Suggestions
                   Text(
                     'AI-Suggested Wellness Reminders',
-                    style: AppTypography.label.copyWith(fontSize: 11, color: AppColors.neonCyan),
+                    style: AppTypography.label.copyWith(fontSize: 11, color: AppColors.primaryMedicalTealDark),
                   ),
                   const SizedBox(height: 8),
                   SingleChildScrollView(
@@ -308,7 +308,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   const SizedBox(height: 16),
 
                   // Reminder Type Selection
-                  Text('Reminder Category', style: AppTypography.label.copyWith(fontSize: 12)),
+                  Text('Reminder Category', style: AppTypography.label.copyWith(fontSize: 12, color: AppColors.textPrimary)),
                   const SizedBox(height: 6),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -321,13 +321,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       child: DropdownButton<ReminderType>(
                         value: selectedType,
                         isExpanded: true,
-                        dropdownColor: AppColors.surfaceElevated,
+                        dropdownColor: Colors.white,
                         items: ReminderType.values.map((type) {
                           return DropdownMenuItem(
                             value: type,
                             child: Text(
                               _getReminderTypeTitle(type),
-                              style: const TextStyle(color: Colors.white, fontSize: 13),
+                              style: const TextStyle(color: AppColors.textPrimary, fontSize: 13),
                             ),
                           );
                         }).toList(),
@@ -343,14 +343,14 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   const SizedBox(height: 14),
 
                   // Title Input
-                  Text('Reminder Title', style: AppTypography.label.copyWith(fontSize: 12)),
+                  Text('Reminder Title', style: AppTypography.label.copyWith(fontSize: 12, color: AppColors.textPrimary)),
                   const SizedBox(height: 6),
                   TextField(
                     controller: titleController,
-                    style: const TextStyle(color: Colors.white, fontSize: 13),
+                    style: const TextStyle(color: AppColors.textPrimary, fontSize: 13),
                     decoration: InputDecoration(
                       hintText: 'e.g. Drink coconut water / Take my medicine',
-                      hintStyle: const TextStyle(color: AppColors.textMuted, fontSize: 12),
+                      hintStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
                       filled: true,
                       fillColor: AppColors.surfaceCard,
                       border: OutlineInputBorder(
@@ -363,14 +363,14 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   const SizedBox(height: 14),
 
                   // Message Input
-                  Text('Notification Message', style: AppTypography.label.copyWith(fontSize: 12)),
+                  Text('Notification Message', style: AppTypography.label.copyWith(fontSize: 12, color: AppColors.textPrimary)),
                   const SizedBox(height: 6),
                   TextField(
                     controller: messageController,
-                    style: const TextStyle(color: Colors.white, fontSize: 13),
+                    style: const TextStyle(color: AppColors.textPrimary, fontSize: 13),
                     decoration: InputDecoration(
                       hintText: 'e.g. Time for your coconut water refresher',
-                      hintStyle: const TextStyle(color: AppColors.textMuted, fontSize: 12),
+                      hintStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
                       filled: true,
                       fillColor: AppColors.surfaceCard,
                       border: OutlineInputBorder(
@@ -392,19 +392,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                             final picked = await showTimePicker(
                               context: context,
                               initialTime: selectedTime,
-                              builder: (pickerCtx, child) {
-                                return Theme(
-                                  data: Theme.of(pickerCtx).copyWith(
-                                    colorScheme: const ColorScheme.dark(
-                                      primary: AppColors.neonCyan,
-                                      onPrimary: Colors.black,
-                                      surface: AppColors.surfaceElevated,
-                                      onSurface: Colors.white,
-                                    ),
-                                  ),
-                                  child: child!,
-                                );
-                              },
                             );
                             if (picked != null) {
                               setModalState(() => selectedTime = picked);
@@ -419,12 +406,12 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                             ),
                             child: Row(
                               children: [
-                                const Icon(Icons.access_time_rounded, size: 16, color: AppColors.neonCyan),
+                                const Icon(Icons.access_time_rounded, size: 16, color: AppColors.primaryMedicalTeal),
                                 const SizedBox(width: 6),
                                 Text(
                                   formattedTime,
                                   style: const TextStyle(
-                                    color: Colors.white,
+                                    color: AppColors.textPrimary,
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -449,7 +436,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                             child: DropdownButton<ReminderFrequency>(
                               value: selectedFrequency,
                               isExpanded: true,
-                              dropdownColor: AppColors.surfaceElevated,
+                              dropdownColor: Colors.white,
                               items: ReminderFrequency.values.map((freq) {
                                 return DropdownMenuItem(
                                   value: freq,
@@ -457,7 +444,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                     freq == ReminderFrequency.oneTime
                                         ? 'One-time'
                                         : (freq == ReminderFrequency.daily ? 'Daily' : 'Weekly'),
-                                    style: const TextStyle(color: Colors.white, fontSize: 12),
+                                    style: const TextStyle(color: AppColors.textPrimary, fontSize: 12),
                                   ),
                                 );
                               }).toList(),
@@ -508,7 +495,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                         Navigator.of(ctx).pop();
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            backgroundColor: AppColors.surfaceElevated,
+                            backgroundColor: AppColors.textPrimary,
                             content: Text(
                               'Reminder scheduled for ${reminder.formattedTime} (${reminder.frequencyLabel}). Works in background/locked state.',
                             ),
@@ -536,14 +523,14 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
-          color: AppColors.surfaceCard,
+          color: AppColors.lightCyan,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: AppColors.neonCyan.withValues(alpha: 0.5)),
+          border: Border.all(color: AppColors.primaryMedicalTeal.withValues(alpha: 0.4)),
         ),
         child: Text(
           label,
           style: const TextStyle(
-            color: Colors.white,
+            color: AppColors.primaryMedicalTealDark,
             fontSize: 11,
             fontWeight: FontWeight.w600,
           ),
@@ -608,18 +595,18 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 onBackPressed: () => Navigator.of(context).maybePop(),
                 actions: [
                   IconButton(
-                    icon: const Icon(Icons.add_alarm_rounded, color: AppColors.neonCyan, size: 22),
+                    icon: const Icon(Icons.add_alarm_rounded, color: AppColors.primaryMedicalTeal, size: 22),
                     tooltip: 'Add Smart Reminder',
                     onPressed: () => _showAddEditReminderModal(context),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.science_outlined, color: AppColors.neonCyan, size: 20),
+                    icon: const Icon(Icons.science_outlined, color: AppColors.primaryMedicalTeal, size: 20),
                     tooltip: 'Test Device Notification',
                     onPressed: () => _triggerTestNotification(context),
                   ),
                   PopupMenuButton<String>(
-                    icon: const Icon(Icons.more_vert_rounded, color: Colors.white70),
-                    color: AppColors.surfaceElevated,
+                    icon: const Icon(Icons.more_vert_rounded, color: AppColors.textPrimary),
+                    color: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                       side: const BorderSide(color: AppColors.borderSubtle),
@@ -636,9 +623,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                         value: 'read_all',
                         child: Row(
                           children: [
-                            Icon(Icons.done_all_rounded, size: 18, color: AppColors.neonCyan),
+                            Icon(Icons.done_all_rounded, size: 18, color: AppColors.primaryMedicalTeal),
                             SizedBox(width: 8),
-                            Text('Mark all as read', style: TextStyle(color: Colors.white, fontSize: 13)),
+                            Text('Mark all as read', style: TextStyle(color: AppColors.textPrimary, fontSize: 13)),
                           ],
                         ),
                       ),
@@ -646,9 +633,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                         value: 'clear_all',
                         child: Row(
                           children: [
-                            Icon(Icons.delete_sweep_rounded, size: 18, color: AppColors.neonRed),
+                            Icon(Icons.delete_sweep_rounded, size: 18, color: AppColors.alertRed),
                             SizedBox(width: 8),
-                            Text('Clear all', style: TextStyle(color: Colors.white, fontSize: 13)),
+                            Text('Clear all', style: TextStyle(color: AppColors.textPrimary, fontSize: 13)),
                           ],
                         ),
                       ),
@@ -716,7 +703,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           child: GlowContainer(
                             borderRadius: 18,
                             padding: const EdgeInsets.all(28),
-                            backgroundColor: AppColors.surfaceCard,
+                            backgroundColor: Colors.white,
                             child: Column(
                               children: [
                                 Container(
@@ -724,19 +711,19 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                   height: 56,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: AppColors.surfaceElevated,
+                                    color: AppColors.surfaceCard,
                                     border: Border.all(color: AppColors.borderSubtle),
                                   ),
                                   child: const Icon(
                                     Icons.notifications_off_outlined,
-                                    color: AppColors.textMuted,
+                                    color: AppColors.textSecondary,
                                     size: 28,
                                   ),
                                 ),
                                 const SizedBox(height: 16),
                                 Text(
                                   'No Notifications',
-                                  style: AppTypography.headingSmall.copyWith(fontSize: 16),
+                                  style: AppTypography.headingSmall.copyWith(fontSize: 16, color: AppColors.textPrimary),
                                 ),
                                 const SizedBox(height: 6),
                                 Text(
@@ -766,10 +753,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                 alignment: Alignment.centerRight,
                                 padding: const EdgeInsets.only(right: 20),
                                 decoration: BoxDecoration(
-                                  color: AppColors.neonRed.withValues(alpha: 0.25),
+                                  color: AppColors.alertRed.withValues(alpha: 0.15),
                                   borderRadius: BorderRadius.circular(16),
                                 ),
-                                child: const Icon(Icons.delete_outline_rounded, color: AppColors.neonRed),
+                                child: const Icon(Icons.delete_outline_rounded, color: AppColors.alertRed),
                               ),
                               onDismissed: (_) {
                                 screeningProvider.deleteNotification(item.id);
@@ -808,26 +795,26 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             return GlowContainer(
               borderRadius: 16,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              backgroundColor: reminder.isEnabled ? const Color(0xFF131D3B) : AppColors.surfaceCard,
-              borderGradient: reminder.isEnabled ? AppGradients.neonBorderCyan : null,
+              backgroundColor: Colors.white,
+              borderGradient: reminder.isEnabled ? AppGradients.subtleBorder : null,
               child: Row(
                 children: [
                   Container(
                     width: 44,
                     height: 44,
                     decoration: BoxDecoration(
-                      color: AppColors.surfaceElevated,
+                      color: reminder.isEnabled ? AppColors.lightCyan : AppColors.surfaceCard,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                         color: reminder.isEnabled
-                            ? AppColors.neonCyan.withValues(alpha: 0.6)
+                            ? AppColors.primaryMedicalTeal.withValues(alpha: 0.5)
                             : AppColors.borderSubtle,
                         width: 1,
                       ),
                     ),
                     child: Icon(
                       reminder.icon,
-                      color: reminder.isEnabled ? AppColors.neonCyan : AppColors.textMuted,
+                      color: reminder.isEnabled ? AppColors.primaryMedicalTealDark : AppColors.textSecondary,
                       size: 22,
                     ),
                   ),
@@ -844,7 +831,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                 style: AppTypography.headingSmall.copyWith(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700,
-                                  color: reminder.isEnabled ? Colors.white : Colors.white60,
+                                  color: reminder.isEnabled ? AppColors.textPrimary : AppColors.textSecondary,
                                 ),
                               ),
                             ),
@@ -852,13 +839,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                 decoration: BoxDecoration(
-                                  color: AppColors.neonGreen.withValues(alpha: 0.2),
+                                  color: AppColors.mintLight,
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: const Text(
                                   'AI Suggested',
                                   style: TextStyle(
-                                    color: AppColors.neonGreen,
+                                    color: AppColors.successGreen,
                                     fontSize: 9,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -870,7 +857,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                         Text(
                           reminder.message,
                           style: AppTypography.bodySmall.copyWith(
-                            color: reminder.isEnabled ? AppColors.textSecondary : AppColors.textMuted,
+                            color: AppColors.textSecondary,
                             fontSize: 11,
                           ),
                         ),
@@ -880,7 +867,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                             Text(
                               reminder.formattedTime,
                               style: TextStyle(
-                                color: reminder.isEnabled ? AppColors.neonCyan : AppColors.textMuted,
+                                color: reminder.isEnabled ? AppColors.primaryMedicalTealDark : AppColors.textSecondary,
                                 fontSize: 11,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -889,7 +876,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                             Text(
                               '• ${reminder.frequencyLabel}',
                               style: const TextStyle(
-                                color: AppColors.textMuted,
+                                color: AppColors.textSecondary,
                                 fontSize: 10,
                               ),
                             ),
@@ -901,12 +888,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   const SizedBox(width: 8),
                   Column(
                     children: [
-                      Switch(
+                      Switch.adaptive(
                         value: reminder.isEnabled,
-                        activeThumbColor: AppColors.neonCyan,
-                        activeTrackColor: AppColors.neonBlue.withValues(alpha: 0.4),
-                        inactiveThumbColor: Colors.grey,
-                        inactiveTrackColor: Colors.white12,
+                        activeTrackColor: AppColors.primaryMedicalTeal,
                         onChanged: (val) {
                           screeningProvider.toggleReminder(reminder.id);
                         },
@@ -921,7 +905,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           const SizedBox(width: 12),
                           GestureDetector(
                             onTap: () => screeningProvider.deleteReminder(reminder.id),
-                            child: const Icon(Icons.delete_outline_rounded, size: 16, color: AppColors.neonRed),
+                            child: const Icon(Icons.delete_outline_rounded, size: 16, color: AppColors.alertRed),
                           ),
                         ],
                       ),
@@ -951,7 +935,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.neonBlue : Colors.transparent,
+          color: isSelected ? AppColors.primaryMedicalTeal : Colors.transparent,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Center(
@@ -980,46 +964,46 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     switch (item.type) {
       case NotificationType.medicine:
         iconData = Icons.medication_outlined;
-        iconColor = AppColors.neonPink;
-        iconBg = const Color(0xFF381428);
+        iconColor = AppColors.secondaryBlue;
+        iconBg = AppColors.lightBlue;
         break;
       case NotificationType.screeningReminder:
         iconData = Icons.science_outlined;
-        iconColor = AppColors.neonCyan;
-        iconBg = const Color(0xFF0C2B4E);
+        iconColor = AppColors.primaryMedicalTeal;
+        iconBg = AppColors.lightCyan;
         break;
       case NotificationType.healthReminder:
         iconData = Icons.favorite_border_rounded;
-        iconColor = AppColors.neonGreen;
-        iconBg = const Color(0xFF0E382B);
+        iconColor = AppColors.successGreen;
+        iconBg = AppColors.mintLight;
         break;
       case NotificationType.foodGuidance:
         iconData = Icons.restaurant_menu_rounded;
-        iconColor = AppColors.neonCyan;
-        iconBg = const Color(0xFF0C2B4E);
+        iconColor = AppColors.primaryMedicalTeal;
+        iconBg = AppColors.lightCyan;
         break;
       case NotificationType.healthyMeal:
         iconData = Icons.lunch_dining_rounded;
-        iconColor = AppColors.neonAmber;
-        iconBg = const Color(0xFF3A2411);
+        iconColor = AppColors.warningOrange;
+        iconBg = AppColors.warningOrange.withValues(alpha: 0.12);
         break;
       case NotificationType.water:
         iconData = Icons.water_drop_outlined;
-        iconColor = AppColors.statusInfo;
-        iconBg = const Color(0xFF0D2D44);
+        iconColor = AppColors.secondaryBlue;
+        iconBg = AppColors.lightBlue;
         break;
       case NotificationType.screeningCompleted:
         iconData = Icons.verified_user_outlined;
-        iconColor = AppColors.neonGreen;
-        iconBg = const Color(0xFF0E382B);
+        iconColor = AppColors.successGreen;
+        iconBg = AppColors.mintLight;
         break;
     }
 
     return GlowContainer(
       borderRadius: 16,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      backgroundColor: item.isRead ? AppColors.surfaceCard : const Color(0xFF131D3B),
-      borderGradient: item.isRead ? null : AppGradients.neonBorderCyan,
+      backgroundColor: Colors.white,
+      borderGradient: item.isRead ? null : AppGradients.subtleBorder,
       onTap: () {
         screeningProvider.markAsRead(item.id);
         screeningProvider.setActiveVoiceNotification(item);
@@ -1035,7 +1019,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               color: iconBg,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: iconColor.withValues(alpha: 0.5),
+                color: iconColor.withValues(alpha: 0.4),
                 width: 1,
               ),
             ),
@@ -1054,11 +1038,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   children: [
                     Expanded(
                       child: Text(
-                        item.title, // ALWAYS IN ENGLISH
+                        item.title,
                         style: AppTypography.headingSmall.copyWith(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
-                          color: item.isRead ? Colors.white70 : Colors.white,
+                          color: AppColors.textPrimary,
                         ),
                       ),
                     ),
@@ -1069,16 +1053,16 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                         margin: const EdgeInsets.only(left: 6),
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
-                          color: AppColors.neonCyan,
+                          color: AppColors.primaryMedicalTeal,
                         ),
                       ),
                   ],
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  item.message, // ALWAYS IN ENGLISH
+                  item.message,
                   style: AppTypography.bodySmall.copyWith(
-                    color: item.isRead ? AppColors.textMuted : AppColors.textSecondary,
+                    color: AppColors.textSecondary,
                     fontSize: 12,
                     height: 1.3,
                   ),
@@ -1093,7 +1077,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               Text(
                 item.time,
                 style: AppTypography.bodySmall.copyWith(
-                  color: AppColors.neonCyan,
+                  color: AppColors.primaryMedicalTealDark,
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
                 ),
@@ -1111,11 +1095,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       padding: const EdgeInsets.all(4),
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppColors.surfaceElevated,
+                        color: AppColors.surfaceCard,
                       ),
                       child: Icon(
                         item.isRead ? Icons.done_rounded : Icons.check_circle_outline_rounded,
-                        color: item.isRead ? AppColors.neonGreen : AppColors.neonCyan,
+                        color: item.isRead ? AppColors.successGreen : AppColors.primaryMedicalTeal,
                         size: 14,
                       ),
                     ),
@@ -1129,11 +1113,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       padding: const EdgeInsets.all(4),
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppColors.surfaceElevated,
+                        color: AppColors.surfaceCard,
                       ),
                       child: const Icon(
                         Icons.close_rounded,
-                        color: AppColors.textMuted,
+                        color: AppColors.textSecondary,
                         size: 14,
                       ),
                     ),

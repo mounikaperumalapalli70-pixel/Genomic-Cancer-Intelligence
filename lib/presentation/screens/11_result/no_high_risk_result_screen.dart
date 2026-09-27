@@ -48,17 +48,17 @@ class NoHighRiskResultScreen extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: AppColors.neonGreen.withValues(alpha: 0.15),
+                          color: AppColors.mintLight,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: AppColors.neonGreen.withValues(alpha: 0.5),
+                            color: AppColors.successGreen.withValues(alpha: 0.4),
                             width: 1,
                           ),
                         ),
                         child: Text(
                           'TCGA Pan-Cancer Model Evaluated',
                           style: AppTypography.bodySmall.copyWith(
-                            color: AppColors.neonGreen,
+                            color: AppColors.successGreen,
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
                           ),
@@ -71,11 +71,11 @@ class NoHighRiskResultScreen extends StatelessWidget {
                       GlowContainer(
                         borderRadius: 18,
                         padding: const EdgeInsets.all(18),
-                        backgroundColor: const Color(0xFF0F3628),
+                        backgroundColor: Colors.white,
                         borderGradient: const LinearGradient(
-                          colors: [Color(0xFF10B981), Color(0xFF059669)],
+                          colors: [AppColors.successGreen, AppColors.primaryMedicalTeal],
                         ),
-                        glowColor: AppColors.neonGreen,
+                        glowColor: AppColors.successGreen,
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -83,12 +83,12 @@ class NoHighRiskResultScreen extends StatelessWidget {
                               width: 44,
                               height: 44,
                               decoration: BoxDecoration(
-                                color: const Color(0xFF165B43),
+                                color: AppColors.mintLight,
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: const Icon(
                                 Icons.check_circle_outline_rounded,
-                                color: Color(0xFF10B981),
+                                color: AppColors.successGreen,
                                 size: 26,
                               ),
                             ),
@@ -102,14 +102,14 @@ class NoHighRiskResultScreen extends StatelessWidget {
                                     style: AppTypography.headingSmall.copyWith(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w700,
-                                      color: const Color(0xFF10B981),
+                                      color: AppColors.successGreen,
                                     ),
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
                                     'Expression profile aligns with healthy baseline references. No high-risk oncogenic signatures identified.',
                                     style: AppTypography.bodySmall.copyWith(
-                                      color: Colors.white70,
+                                      color: AppColors.textSecondary,
                                       fontSize: 12,
                                       height: 1.35,
                                     ),
@@ -127,9 +127,9 @@ class NoHighRiskResultScreen extends StatelessWidget {
                       GlowContainer(
                         borderRadius: 18,
                         padding: const EdgeInsets.all(18),
-                        backgroundColor: AppColors.surfaceCard,
-                        borderGradient: AppGradients.neonBorderCyanGreen,
-                        glowColor: AppColors.neonCyan,
+                        backgroundColor: Colors.white,
+                        borderGradient: AppGradients.subtleBorder,
+                        glowColor: AppColors.primaryMedicalTeal,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
@@ -137,15 +137,15 @@ class NoHighRiskResultScreen extends StatelessWidget {
                               children: [
                                 Text('Baseline Integrity', style: AppTypography.caption.copyWith(color: AppColors.textSecondary)),
                                 const SizedBox(height: 4),
-                                Text('${confidence.toStringAsFixed(1)}%', style: AppTypography.headingMedium.copyWith(color: AppColors.neonGreen, fontSize: 22)),
+                                Text('${confidence.toStringAsFixed(1)}%', style: AppTypography.headingMedium.copyWith(color: AppColors.successGreen, fontSize: 22)),
                               ],
                             ),
-                            Container(height: 36, width: 1, color: AppColors.surfaceElevated),
+                            Container(height: 36, width: 1, color: AppColors.borderSubtle),
                             Column(
                               children: [
                                 Text('Biomarkers Tested', style: AppTypography.caption.copyWith(color: AppColors.textSecondary)),
                                 const SizedBox(height: 4),
-                                Text('${genResult?.inputSummary.selectedBiomarkersMatched ?? 25} Genes', style: AppTypography.headingMedium.copyWith(color: AppColors.neonCyan, fontSize: 22)),
+                                Text('${genResult?.inputSummary.selectedBiomarkersMatched ?? 25} Genes', style: AppTypography.headingMedium.copyWith(color: AppColors.primaryMedicalTeal, fontSize: 22)),
                               ],
                             ),
                           ],
@@ -158,16 +158,16 @@ class NoHighRiskResultScreen extends StatelessWidget {
                       GlowContainer(
                         borderRadius: 18,
                         padding: const EdgeInsets.all(18),
-                        backgroundColor: AppColors.surfaceCard,
-                        borderGradient: AppGradients.neonBorderCyanGreen,
-                        glowColor: AppColors.neonGreen,
+                        backgroundColor: Colors.white,
+                        borderGradient: AppGradients.subtleBorder,
+                        glowColor: AppColors.primaryMedicalTeal,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               'PREVENTATIVE WELLNESS GUIDANCE',
                               style: AppTypography.caption.copyWith(
-                                color: AppColors.neonGreen,
+                                color: AppColors.primaryMedicalTealDark,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -190,8 +190,8 @@ class NoHighRiskResultScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
                 decoration: BoxDecoration(
-                  color: AppColors.surfaceCard,
-                  border: Border(top: BorderSide(color: AppColors.surfaceElevated)),
+                  color: Colors.white,
+                  border: Border(top: BorderSide(color: AppColors.borderSubtle)),
                 ),
                 child: Row(
                   children: [
@@ -199,11 +199,11 @@ class NoHighRiskResultScreen extends StatelessWidget {
                       child: OutlinedButton(
                         onPressed: () => Navigator.of(context).pushNamed(AppRoutes.foodGuidance),
                         style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: AppColors.neonCyan.withValues(alpha: 0.6)),
+                          side: BorderSide(color: AppColors.primaryMedicalTeal.withValues(alpha: 0.5)),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                           padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
-                        child: const Text('Nutritional Guidance', style: TextStyle(color: AppColors.neonCyan, fontSize: 13, fontWeight: FontWeight.w600)),
+                        child: const Text('Nutritional Guidance', style: TextStyle(color: AppColors.primaryMedicalTealDark, fontSize: 13, fontWeight: FontWeight.w600)),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -229,7 +229,7 @@ class NoHighRiskResultScreen extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: AppColors.neonGreen, size: 18),
+          Icon(icon, color: AppColors.primaryMedicalTeal, size: 18),
           const SizedBox(width: 10),
           Expanded(
             child: Text(

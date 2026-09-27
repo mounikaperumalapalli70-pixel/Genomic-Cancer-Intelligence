@@ -42,7 +42,7 @@ class MedicalImageUploadScreen extends StatelessWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            backgroundColor: AppColors.surfaceElevated,
+            backgroundColor: AppColors.primaryTeal,
             content: Text('File picker notice: $e'),
           ),
         );
@@ -69,30 +69,30 @@ class MedicalImageUploadScreen extends StatelessWidget {
               ),
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     children: [
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 8),
 
                       // Title & Subtitle
                       Text(
                         'Upload Medical Scan',
                         textAlign: TextAlign.center,
-                        style: AppTypography.headingLarge,
+                        style: AppTypography.headingLarge.copyWith(fontSize: 22),
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 4),
                       Text(
                         'Select your medical image or scan\n(X-ray, CT, MRI, Histopathology)',
                         textAlign: TextAlign.center,
                         style: AppTypography.subtitle,
                       ),
 
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 28),
 
                       // Drag & Drop Upload Container
                       _buildUploadDropZone(context, screeningProvider),
 
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 20),
 
                       // Uploaded File Card
                       if (screeningProvider.hasUploadedMedicalImage)
@@ -106,9 +106,10 @@ class MedicalImageUploadScreen extends StatelessWidget {
 
               // Bottom Action: Start Analysis Button
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 child: GradientButton(
                   text: 'Start Image Analysis',
+                  gradient: AppGradients.primaryButton,
                   onPressed: screeningProvider.hasUploadedMedicalImage
                       ? () {
                           screeningProvider.setActiveInputType(ScreeningInputType.medicalImage);
@@ -134,47 +135,48 @@ class MedicalImageUploadScreen extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 20),
         decoration: BoxDecoration(
-          color: AppColors.surfaceCard.withValues(alpha: 0.6),
-          borderRadius: BorderRadius.circular(20),
+          color: AppColors.surfaceLightBlue,
+          borderRadius: BorderRadius.circular(18),
           border: Border.all(
-            color: AppColors.neonPurple.withValues(alpha: 0.5),
+            color: AppColors.secondaryBlue.withValues(alpha: 0.4),
             width: 1.5,
-            strokeAlign: BorderSide.strokeAlignCenter,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.neonPurple.withValues(alpha: 0.12),
-              blurRadius: 16,
-            ),
-          ],
         ),
         child: Column(
           children: [
             Container(
-              width: 72,
-              height: 72,
+              width: 60,
+              height: 60,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.neonPurple.withValues(alpha: 0.15),
-                border: Border.all(
-                  color: AppColors.neonPurple.withValues(alpha: 0.4),
-                  width: 1.5,
-                ),
+                color: Colors.white,
+                border: Border.all(color: AppColors.secondaryBlue.withValues(alpha: 0.3)),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.shadowLight,
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               child: const Icon(
                 Icons.image_search_rounded,
-                color: AppColors.neonPurple,
-                size: 36,
+                color: AppColors.secondaryBlue,
+                size: 32,
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 14),
             Text(
               'Browse Medical Scan',
-              style: AppTypography.headingSmall,
+              style: AppTypography.headingSmall.copyWith(
+                fontSize: 16,
+                color: AppColors.secondaryBlue,
+                fontWeight: FontWeight.w700,
+              ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 4),
             Text(
-              'Supported: JPG, PNG, DICOM (.dcm)',
+              'Supported: JPG, PNG, DICOM (.dcm, max 50MB)',
               style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
             ),
           ],
@@ -189,26 +191,25 @@ class MedicalImageUploadScreen extends StatelessWidget {
   ) {
     return GlowContainer(
       borderRadius: 16,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(14),
       backgroundColor: AppColors.surfaceCard,
-      borderGradient: AppGradients.neonBorderBluePurple,
-      glowColor: AppColors.neonPurple,
+      borderColor: AppColors.secondaryBlue,
       child: Row(
         children: [
           Container(
-            width: 44,
-            height: 44,
+            width: 42,
+            height: 42,
             decoration: BoxDecoration(
-              color: AppColors.neonPurple.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(12),
+              color: AppColors.surfaceLightBlue,
+              borderRadius: BorderRadius.circular(10),
             ),
             child: const Icon(
               Icons.image_outlined,
-              color: AppColors.neonPurple,
-              size: 24,
+              color: AppColors.secondaryBlue,
+              size: 22,
             ),
           ),
-          const SizedBox(width: 14),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -217,13 +218,16 @@ class MedicalImageUploadScreen extends StatelessWidget {
                   screeningProvider.uploadedMedicalImageName ?? 'scan.png',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTypography.bodyMedium.copyWith(fontWeight: FontWeight.w600),
+                  style: AppTypography.bodyMedium.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textHeading,
+                  ),
                 ),
-                const SizedBox(height: 3),
+                const SizedBox(height: 2),
                 Text(
                   '${screeningProvider.uploadedMedicalImageSize ?? '3.5 MB'} • Ready for Grad-CAM',
                   style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.neonPurple,
+                    color: AppColors.secondaryBlue,
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
                   ),

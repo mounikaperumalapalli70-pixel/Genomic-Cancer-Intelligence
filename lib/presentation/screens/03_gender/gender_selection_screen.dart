@@ -12,8 +12,16 @@ import '../../widgets/custom_app_bar.dart';
 import '../../widgets/glow_container.dart';
 import '../../widgets/gradient_button.dart';
 
-class GenderSelectionScreen extends StatelessWidget {
+class GenderSelectionScreen extends StatefulWidget {
   const GenderSelectionScreen({super.key});
+
+  @override
+  State<GenderSelectionScreen> createState() => _GenderSelectionScreenState();
+}
+
+class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
+  String _assistantSpeech = 'Almost there!\nPlease select your gender to continue.';
+  bool _isAutoProgressing = false;
 
   void _openAiAssistant(BuildContext context, OnboardingProvider onboardingProvider) {
     AiVoiceAssistantSheet.show(
@@ -21,9 +29,41 @@ class GenderSelectionScreen extends StatelessWidget {
       mode: AssistantMode.genderSelection,
       initialLanguageCode: onboardingProvider.selectedLanguageCode,
       onGenderSelected: (gender) {
-        onboardingProvider.selectGender(gender);
+        _handleGenderSelection(gender, onboardingProvider, isVoice: true);
+      },
+      onComplete: () {
+        if (mounted) {
+          Navigator.of(context).pushNamed(AppRoutes.howItWorks);
+        }
       },
     );
+  }
+
+  void _handleGenderSelection(
+    Gender gender,
+    OnboardingProvider onboardingProvider, {
+    bool isVoice = false,
+  }) {
+    if (_isAutoProgressing) return;
+    onboardingProvider.selectGender(gender);
+
+    final genderLabel = gender == Gender.male
+        ? 'Male'
+        : (gender == Gender.female ? 'Female' : 'Other');
+
+    setState(() {
+      _assistantSpeech = 'Thank you! $genderLabel selected. Preparing your screening portal...';
+      _isAutoProgressing = true;
+    });
+
+    Future.delayed(const Duration(milliseconds: 650), () {
+      if (mounted) {
+        Navigator.of(context).pushNamed(AppRoutes.howItWorks);
+        setState(() {
+          _isAutoProgressing = false;
+        });
+      }
+    });
   }
 
   @override
@@ -33,6 +73,9 @@ class GenderSelectionScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
+      floatingActionButton: AiAssistantFab(
+        onTap: () => _openAiAssistant(context, onboardingProvider),
+      ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: AppGradients.backgroundAura,
@@ -46,104 +89,155 @@ class GenderSelectionScreen extends StatelessWidget {
               ),
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     children: [
+                      const SizedBox(height: 8),
+
+                      // Step 3 Indicator
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: AppColors.surfaceLightBlue,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppColors.borderSubtle),
+                        ),
+                        child: Text(
+                          'Step 3 of 4 • Gender',
+                          style: AppTypography.caption.copyWith(
+                            color: AppColors.primaryTeal,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 14),
+
+                      // AI Assistant Guiding Card at Top
+                      GlowContainer(
+                        borderRadius: 18,
+                        padding: const EdgeInsets.all(16),
+                        backgroundColor: AppColors.surfaceCard,
+                        borderWidth: 1.2,
+                        borderColor: AppColors.borderTeal.withValues(alpha: 0.3),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: 44,
+                              height: 44,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: AppGradients.tealMint,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.primaryTeal.withValues(alpha: 0.25),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: const Center(
+                                child: Icon(
+                                  Icons.smart_toy_rounded,
+                                  color: Colors.white,
+                                  size: 24,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'AI Care Assistant',
+                                    style: AppTypography.headingSmall.copyWith(fontSize: 14),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    _assistantSpeech,
+                                    style: AppTypography.bodySmall.copyWith(
+                                      color: AppColors.textPrimary,
+                                      fontWeight: FontWeight.w500,
+                                      height: 1.35,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
                       const SizedBox(height: 24),
 
                       // Title & Subtitle
                       Text(
-                        'Tell Us About You',
+                        'Select Your Gender',
                         textAlign: TextAlign.center,
-                        style: AppTypography.headingLarge,
+                        style: AppTypography.headingLarge.copyWith(fontSize: 22),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 4),
                       Text(
-                        'Select your gender',
+                        'Gender biomarkers assist in hormone receptor oncology models.',
                         textAlign: TextAlign.center,
                         style: AppTypography.subtitle,
                       ),
 
-                      const SizedBox(height: 48),
+                      const SizedBox(height: 32),
 
-                      // Male & Female Row Cards
+                      // Male & Female Cards
                       Row(
                         children: [
-                          // Male Card
                           Expanded(
-                            child: _GenderCard(
+                            child: _GenderOptionCard(
                               label: 'Male',
-                              icon: Icons.person_rounded,
+                              icon: Icons.male_rounded,
                               isSelected: selectedGender == Gender.male,
-                              accentColor: AppColors.neonCyan,
-                              backgroundGradient: AppGradients.maleCard,
-                              borderGradient: selectedGender == Gender.male
-                                  ? AppGradients.neonBorderCyan
-                                  : null,
-                              glowColor: AppColors.neonCyan,
-                              onTap: () => onboardingProvider.selectGender(Gender.male),
+                              accentColor: AppColors.secondaryBlue,
+                              onTap: () => _handleGenderSelection(Gender.male, onboardingProvider),
                             ),
                           ),
-                          const SizedBox(width: 16),
-
-                          // Female Card
+                          const SizedBox(width: 14),
                           Expanded(
-                            child: _GenderCard(
+                            child: _GenderOptionCard(
                               label: 'Female',
-                              icon: Icons.person_rounded,
+                              icon: Icons.female_rounded,
                               isSelected: selectedGender == Gender.female,
-                              accentColor: AppColors.neonMagenta,
-                              backgroundGradient: AppGradients.femaleCard,
-                              borderGradient: selectedGender == Gender.female
-                                  ? AppGradients.neonBorderPink
-                                  : null,
-                              glowColor: AppColors.neonMagenta,
-                              onTap: () => onboardingProvider.selectGender(Gender.female),
+                              accentColor: const Color(0xFFE879F9),
+                              onTap: () => _handleGenderSelection(Gender.female, onboardingProvider),
                             ),
                           ),
                         ],
                       ),
 
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 14),
 
-                      // Other Card (Full Width)
-                      _GenderCard(
-                        label: 'Other',
-                        icon: Icons.person_outline_rounded,
+                      // Other Card
+                      _GenderOptionCard(
+                        label: 'Other / Prefer not to say',
+                        icon: Icons.transgender_rounded,
                         isSelected: selectedGender == Gender.other,
-                        accentColor: AppColors.neonPurple,
-                        backgroundGradient: AppGradients.otherCard,
-                        borderGradient: selectedGender == Gender.other
-                            ? AppGradients.primaryButton
-                            : null,
-                        glowColor: AppColors.neonPurple,
-                        height: 130,
-                        onTap: () => onboardingProvider.selectGender(Gender.other),
+                        accentColor: AppColors.primaryTeal,
+                        isFullWidth: true,
+                        onTap: () => _handleGenderSelection(Gender.other, onboardingProvider),
                       ),
 
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 36),
 
-                      // Floating AI Assistant Button
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: AiAssistantFab(
-                          onTap: () => _openAiAssistant(context, onboardingProvider),
-                        ),
+                      // Continue Button
+                      GradientButton(
+                        text: 'Continue',
+                        gradient: AppGradients.primaryButton,
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(AppRoutes.howItWorks);
+                        },
                       ),
-                      const SizedBox(height: 16),
+
+                      const SizedBox(height: 80),
                     ],
                   ),
-                ),
-              ),
-
-              // Bottom Action Button
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                child: GradientButton(
-                  text: 'Continue',
-                  onPressed: () {
-                    Navigator.of(context).pushNamed(AppRoutes.basicInfo);
-                  },
                 ),
               ),
             ],
@@ -154,72 +248,86 @@ class GenderSelectionScreen extends StatelessWidget {
   }
 }
 
-class _GenderCard extends StatelessWidget {
+class _GenderOptionCard extends StatelessWidget {
   final String label;
   final IconData icon;
   final bool isSelected;
   final Color accentColor;
-  final Gradient backgroundGradient;
-  final Gradient? borderGradient;
-  final Color glowColor;
-  final double height;
+  final bool isFullWidth;
   final VoidCallback onTap;
 
-  const _GenderCard({
+  const _GenderOptionCard({
     required this.label,
     required this.icon,
     required this.isSelected,
     required this.accentColor,
-    required this.backgroundGradient,
-    this.borderGradient,
-    required this.glowColor,
-    this.height = 150,
+    this.isFullWidth = false,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return GlowContainer(
-      isSelected: isSelected,
-      height: height,
-      borderRadius: 18,
-      backgroundGradient: backgroundGradient,
-      borderGradient: borderGradient,
-      glowColor: glowColor,
-      onTap: onTap,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 52,
-            height: 52,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: accentColor.withValues(alpha: isSelected ? 0.25 : 0.12),
-              border: Border.all(
-                color: accentColor.withValues(alpha: isSelected ? 0.8 : 0.3),
-                width: 1.2,
-              ),
-            ),
-            child: Icon(
-              icon,
-              size: 26,
-              color: isSelected ? Colors.white : accentColor,
-            ),
-          ),
-          const SizedBox(height: 14),
-          Text(
-            label,
-            style: AppTypography.headingSmall.copyWith(
-              fontSize: 16,
-              color: isSelected ? Colors.white : AppColors.textSecondary,
-              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-            ),
-          ),
-        ],
+      borderRadius: 16,
+      padding: EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: isFullWidth ? 16 : 24,
       ),
+      backgroundColor: isSelected ? AppColors.surfaceLightBlue : AppColors.surfaceCard,
+      isSelected: isSelected,
+      borderWidth: isSelected ? 2.0 : 1.0,
+      borderColor: isSelected ? AppColors.primaryTeal : AppColors.borderSubtle,
+      onTap: onTap,
+      child: isFullWidth
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  size: 24,
+                  color: isSelected ? AppColors.primaryTeal : AppColors.textSecondary,
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  label,
+                  style: AppTypography.headingSmall.copyWith(
+                    fontSize: 15,
+                    color: isSelected ? AppColors.textHeading : AppColors.textPrimary,
+                  ),
+                ),
+              ],
+            )
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 54,
+                  height: 54,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: isSelected
+                        ? AppColors.primaryTeal.withValues(alpha: 0.15)
+                        : AppColors.surfaceElevated,
+                    border: Border.all(
+                      color: isSelected ? AppColors.primaryTeal : AppColors.borderSubtle,
+                    ),
+                  ),
+                  child: Icon(
+                    icon,
+                    size: 30,
+                    color: isSelected ? AppColors.primaryTeal : AppColors.textSecondary,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                Text(
+                  label,
+                  style: AppTypography.headingSmall.copyWith(
+                    fontSize: 16,
+                    color: isSelected ? AppColors.textHeading : AppColors.textPrimary,
+                  ),
+                ),
+              ],
+            ),
     );
   }
 }
-
-

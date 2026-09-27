@@ -94,18 +94,18 @@ class _AIAnalysisScreenState extends State<AIAnalysisScreen>
               ),
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     children: [
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 8),
 
                       // Title & Subtitle
                       Text(
                         'AI Analysis in Progress',
                         textAlign: TextAlign.center,
-                        style: AppTypography.headingLarge,
+                        style: AppTypography.headingLarge.copyWith(fontSize: 22),
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 4),
                       Text(
                         isImage
                             ? 'Analyzing medical scan & neural feature maps...'
@@ -116,10 +116,10 @@ class _AIAnalysisScreenState extends State<AIAnalysisScreen>
 
                       const SizedBox(height: 28),
 
-                      // Circular DNA Radar Scanner
+                      // Circular Radar Scanner
                       SizedBox(
-                        width: 220,
-                        height: 220,
+                        width: 200,
+                        height: 200,
                         child: AnimatedBuilder(
                           animation: _animController,
                           builder: (context, child) {
@@ -129,27 +129,27 @@ class _AIAnalysisScreenState extends State<AIAnalysisScreen>
                               ),
                               child: Center(
                                 child: Container(
-                                  width: 90,
-                                  height: 90,
+                                  width: 84,
+                                  height: 84,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: AppColors.surfaceElevated.withValues(alpha: 0.8),
+                                    color: Colors.white,
                                     border: Border.all(
-                                      color: AppColors.neonCyan.withValues(alpha: 0.8),
-                                      width: 1.5,
+                                      color: AppColors.primaryTeal,
+                                      width: 2,
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: AppColors.neonCyan.withValues(alpha: 0.4),
-                                        blurRadius: 18,
+                                        color: AppColors.primaryTeal.withValues(alpha: 0.25),
+                                        blurRadius: 16,
                                         spreadRadius: 2,
                                       ),
                                     ],
                                   ),
                                   child: Icon(
                                     isImage ? Icons.image_search_rounded : Icons.biotech_rounded,
-                                    size: 44,
-                                    color: AppColors.neonCyan,
+                                    size: 40,
+                                    color: AppColors.primaryTeal,
                                   ),
                                 ),
                               ),
@@ -171,7 +171,7 @@ class _AIAnalysisScreenState extends State<AIAnalysisScreen>
                                 child: LinearProgressIndicator(
                                   value: progress / 100.0,
                                   backgroundColor: AppColors.surfaceElevated,
-                                  valueColor: const AlwaysStoppedAnimation<Color>(AppColors.neonCyan),
+                                  valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primaryTeal),
                                 ),
                               ),
                             ),
@@ -180,7 +180,7 @@ class _AIAnalysisScreenState extends State<AIAnalysisScreen>
                           Text(
                             '$progress%',
                             style: AppTypography.headingSmall.copyWith(
-                              color: AppColors.neonCyan,
+                              color: AppColors.primaryTeal,
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
                             ),
@@ -195,7 +195,7 @@ class _AIAnalysisScreenState extends State<AIAnalysisScreen>
                         stageText,
                         textAlign: TextAlign.center,
                         style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.neonCyan,
+                          color: AppColors.textHeading,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -207,13 +207,13 @@ class _AIAnalysisScreenState extends State<AIAnalysisScreen>
                         Container(
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: Colors.red.withValues(alpha: 0.15),
+                            color: AppColors.statusDanger.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.red.withValues(alpha: 0.4)),
+                            border: Border.all(color: AppColors.statusDanger.withValues(alpha: 0.3)),
                           ),
                           child: Text(
                             'Pipeline Notice: $error',
-                            style: const TextStyle(color: Colors.redAccent, fontSize: 12),
+                            style: const TextStyle(color: AppColors.statusDanger, fontSize: 12),
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -233,48 +233,47 @@ class _AIAnalysisScreenState extends State<AIAnalysisScreen>
                         borderRadius: 16,
                         padding: const EdgeInsets.all(16),
                         backgroundColor: AppColors.surfaceCard,
-                        borderGradient: AppGradients.neonBorderCyanGreen,
-                        glowColor: AppColors.neonCyan,
+                        borderColor: AppColors.borderSubtle,
                         child: Column(
                           children: [
                             _buildStepItem(
                               step: '1',
                               title: isImage
-                                  ? 'Image Feature Extraction'
-                                  : 'Genomic Matrix Normalization',
+                                  ? 'Image Feature Extraction & Normalization'
+                                  : 'Genomic Matrix Normalization (Top 2,000 Genes)',
                               status: progress >= 25 ? 'Completed' : 'Processing',
                               isDone: progress >= 25,
                             ),
-                            const Divider(color: AppColors.surfaceElevated, height: 20),
+                            const Divider(color: AppColors.borderSubtle, height: 20),
                             _buildStepItem(
                               step: '2',
                               title: isImage
-                                  ? 'Neural Lesion Segmentation'
-                                  : '2,000 TCGA Biomarkers Alignment',
-                              status: progress >= 50 ? 'Completed' : (progress >= 25 ? 'Processing' : 'Pending'),
-                              isDone: progress >= 50,
+                                  ? 'Deep Neural Lesion Segmentation'
+                                  : 'Pan-Cancer Multiclass Inference',
+                              status: progress >= 60 ? 'Completed' : (progress >= 25 ? 'In Progress' : 'Pending'),
+                              isDone: progress >= 60,
                             ),
-                            const Divider(color: AppColors.surfaceElevated, height: 20),
+                            const Divider(color: AppColors.borderSubtle, height: 20),
                             _buildStepItem(
                               step: '3',
                               title: isImage
-                                  ? 'Grad-CAM Saliency Heatmap Synthesis'
-                                  : 'Calibrated Multiclass Model Inference',
-                              status: progress >= 75 ? 'Completed' : (progress >= 50 ? 'Processing' : 'Pending'),
-                              isDone: progress >= 75,
+                                  ? 'Grad-CAM Saliency Heatmap Generation'
+                                  : 'Biomarker XAI Attribution & Z-Score Analysis',
+                              status: progress >= 80 ? 'Completed' : (progress >= 60 ? 'In Progress' : 'Pending'),
+                              isDone: progress >= 80,
                             ),
-                            const Divider(color: AppColors.surfaceElevated, height: 20),
+                            const Divider(color: AppColors.borderSubtle, height: 20),
                             _buildStepItem(
                               step: '4',
-                              title: 'Precision Treatment & Quantum Synthesis',
-                              status: progress >= 100 ? 'Completed' : (progress >= 75 ? 'Processing' : 'Pending'),
+                              title: 'Precision Oncology & Quantum Verification',
+                              status: progress >= 100 ? 'Completed' : (progress >= 80 ? 'In Progress' : 'Pending'),
                               isDone: progress >= 100,
                             ),
                           ],
                         ),
                       ),
 
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 32),
                     ],
                   ),
                 ),
@@ -295,24 +294,23 @@ class _AIAnalysisScreenState extends State<AIAnalysisScreen>
     return Row(
       children: [
         Container(
-          width: 28,
-          height: 28,
+          width: 24,
+          height: 24,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: isDone ? AppColors.neonGreen.withValues(alpha: 0.2) : AppColors.surfaceElevated,
+            color: isDone ? AppColors.primaryTeal : AppColors.surfaceElevated,
             border: Border.all(
-              color: isDone ? AppColors.neonGreen : AppColors.textSecondary.withValues(alpha: 0.4),
-              width: 1.5,
+              color: isDone ? AppColors.primaryTeal : AppColors.borderSubtle,
             ),
           ),
           child: Center(
             child: isDone
-                ? const Icon(Icons.check, size: 16, color: AppColors.neonGreen)
+                ? const Icon(Icons.check_rounded, color: Colors.white, size: 14)
                 : Text(
                     step,
                     style: TextStyle(
                       color: AppColors.textSecondary,
-                      fontSize: 12,
+                      fontSize: 11,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -323,16 +321,24 @@ class _AIAnalysisScreenState extends State<AIAnalysisScreen>
           child: Text(
             title,
             style: AppTypography.bodySmall.copyWith(
-              color: isDone ? AppColors.textPrimary : AppColors.textSecondary,
+              color: isDone ? AppColors.textHeading : AppColors.textSecondary,
               fontWeight: isDone ? FontWeight.w600 : FontWeight.w400,
             ),
           ),
         ),
-        Text(
-          status,
-          style: AppTypography.caption.copyWith(
-            color: isDone ? AppColors.neonGreen : (status == 'Processing' ? AppColors.neonCyan : AppColors.textTertiary),
-            fontWeight: FontWeight.w600,
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          decoration: BoxDecoration(
+            color: isDone ? AppColors.surfaceMint : AppColors.surfaceElevated,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Text(
+            status,
+            style: TextStyle(
+              color: isDone ? AppColors.darkTeal : AppColors.textTertiary,
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ),
       ],
@@ -350,41 +356,33 @@ class _RadarDnaPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final maxRadius = size.width / 2;
 
+    // Rings
     final ringPaint = Paint()
-      ..color = AppColors.neonCyan.withValues(alpha: 0.2)
+      ..color = AppColors.primaryTeal.withValues(alpha: 0.15)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
 
-    // Concentric rings
-    for (int i = 1; i <= 3; i++) {
-      canvas.drawCircle(center, maxRadius * (i / 3), ringPaint);
-    }
+    canvas.drawCircle(center, maxRadius * 0.45, ringPaint);
+    canvas.drawCircle(center, maxRadius * 0.7, ringPaint);
+    canvas.drawCircle(center, maxRadius * 0.95, ringPaint);
 
-    // Crosshairs
-    final linePaint = Paint()
-      ..color = AppColors.neonCyan.withValues(alpha: 0.15)
-      ..strokeWidth = 1.0;
-    canvas.drawLine(Offset(center.dx, 0), Offset(center.dx, size.height), linePaint);
-    canvas.drawLine(Offset(0, center.dy), Offset(size.width, center.dy), linePaint);
-
-    // Rotating Radar Sweep
+    // Rotating Sweep
     final sweepAngle = progress * 2 * math.pi;
     final sweepPaint = Paint()
       ..shader = SweepGradient(
         startAngle: 0.0,
-        endAngle: math.pi / 2,
+        endAngle: math.pi * 0.6,
         colors: [
-          AppColors.neonCyan.withValues(alpha: 0.5),
-          AppColors.neonCyan.withValues(alpha: 0.0),
+          AppColors.primaryTeal.withValues(alpha: 0.35),
+          Colors.transparent,
         ],
-        transform: GradientRotation(sweepAngle - math.pi / 2),
+        transform: GradientRotation(sweepAngle),
       ).createShader(Rect.fromCircle(center: center, radius: maxRadius))
       ..style = PaintingStyle.fill;
 
-    canvas.drawCircle(center, maxRadius, sweepPaint);
+    canvas.drawCircle(center, maxRadius * 0.95, sweepPaint);
   }
 
   @override
-  bool shouldRepaint(covariant _RadarDnaPainter oldDelegate) =>
-      oldDelegate.progress != progress;
+  bool shouldRepaint(covariant _RadarDnaPainter oldDelegate) => true;
 }

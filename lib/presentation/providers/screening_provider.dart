@@ -562,4 +562,29 @@ class ScreeningProvider extends ChangeNotifier {
     _activeVoiceNotification = item;
     notifyListeners();
   }
+
+  void resetSessionState() {
+    _uploadedGenomicFileName = null;
+    _uploadedGenomicFileSize = null;
+    _uploadedGenomicFileBytes = null;
+    _uploadedGenomicExpression = null;
+    _selectedCuratedSample = null;
+    _hasUploadedGenomicFile = false;
+
+    _uploadedMedicalImageName = null;
+    _uploadedMedicalImageSize = null;
+    _uploadedMedicalImageBytes = null;
+    _hasUploadedMedicalImage = false;
+
+    _isAnalyzing = false;
+    _analysisProgress = 0;
+    _analysisStage = 'Initializing analysis pipeline...';
+    _analysisError = null;
+
+    _activeGenomicResult = null;
+    _activeTreatmentIntelligence = null;
+    _activeQuantumResult = null;
+    _activeImageResult = null;
+    notifyListeners();
+  }
 }

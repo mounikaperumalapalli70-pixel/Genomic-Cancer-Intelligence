@@ -45,14 +45,14 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
           final formattedTime = DateFormat('hh:mm a').format(dt);
 
           return AlertDialog(
-            backgroundColor: AppColors.surfaceElevated,
+            backgroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(18),
               side: const BorderSide(color: AppColors.borderSubtle),
             ),
             title: Text(
               'Add Doctor-Prescribed Medicine',
-              style: AppTypography.headingSmall.copyWith(fontSize: 16),
+              style: AppTypography.headingSmall.copyWith(fontSize: 16, color: AppColors.textPrimary),
             ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
@@ -68,10 +68,10 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
                 const SizedBox(height: 14),
                 TextField(
                   controller: _medicineNameController,
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: AppColors.textPrimary),
                   decoration: InputDecoration(
                     hintText: 'e.g. Paracetamol / Vitamin D3',
-                    hintStyle: TextStyle(color: AppColors.textMuted),
+                    hintStyle: const TextStyle(color: AppColors.textSecondary),
                     filled: true,
                     fillColor: AppColors.surfaceCard,
                     border: OutlineInputBorder(
@@ -86,19 +86,6 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
                     final picked = await showTimePicker(
                       context: context,
                       initialTime: selectedTime,
-                      builder: (pickerCtx, child) {
-                        return Theme(
-                          data: Theme.of(pickerCtx).copyWith(
-                            colorScheme: const ColorScheme.dark(
-                              primary: AppColors.neonCyan,
-                              onPrimary: Colors.black,
-                              surface: AppColors.surfaceElevated,
-                              onSurface: Colors.white,
-                            ),
-                          ),
-                          child: child!,
-                        );
-                      },
                     );
                     if (picked != null) {
                       setDialogState(() {
@@ -115,18 +102,18 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.access_time_rounded, size: 18, color: AppColors.neonCyan),
+                        const Icon(Icons.access_time_rounded, size: 18, color: AppColors.primaryMedicalTeal),
                         const SizedBox(width: 8),
-                        Text('Reminder Time: ', style: AppTypography.bodySmall),
+                        Text('Reminder Time: ', style: AppTypography.bodySmall.copyWith(color: AppColors.textPrimary)),
                         Text(
                           formattedTime,
                           style: AppTypography.bodySmall.copyWith(
-                            color: AppColors.neonCyan,
+                            color: AppColors.primaryMedicalTealDark,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                         const Spacer(),
-                        const Icon(Icons.edit_calendar_rounded, size: 16, color: AppColors.textMuted),
+                        const Icon(Icons.edit_calendar_rounded, size: 16, color: AppColors.textSecondary),
                       ],
                     ),
                   ),
@@ -140,7 +127,7 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.neonBlue,
+                  backgroundColor: AppColors.primaryMedicalTeal,
                   foregroundColor: Colors.white,
                 ),
                 onPressed: () async {
@@ -193,7 +180,7 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          backgroundColor: AppColors.surfaceElevated,
+                          backgroundColor: AppColors.textPrimary,
                           content: Text('Scheduled daily reminder for $medicineName at $formattedTime.'),
                         ),
                       );
@@ -246,9 +233,9 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
                       GlowContainer(
                         borderRadius: 18,
                         padding: const EdgeInsets.all(18),
-                        backgroundGradient: AppGradients.heroCard,
-                        borderGradient: AppGradients.neonBorderCyan,
-                        glowColor: AppColors.neonCyan,
+                        backgroundColor: Colors.white,
+                        borderGradient: AppGradients.subtleBorder,
+                        glowColor: AppColors.primaryMedicalTeal,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -259,11 +246,11 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
                                   height: 36,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: AppColors.neonCyan.withValues(alpha: 0.15),
+                                    color: AppColors.lightCyan,
                                   ),
                                   child: const Icon(
                                     Icons.restaurant_rounded,
-                                    color: AppColors.neonCyan,
+                                    color: AppColors.primaryMedicalTeal,
                                     size: 20,
                                   ),
                                 ),
@@ -274,6 +261,7 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
                                     style: AppTypography.headingSmall.copyWith(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w700,
+                                      color: AppColors.textPrimary,
                                     ),
                                   ),
                                 ),
@@ -297,8 +285,8 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
                       _buildGuidanceSection(
                         title: 'Foods to Include',
                         icon: Icons.check_circle_outline_rounded,
-                        accentColor: AppColors.neonGreen,
-                        iconBg: const Color(0xFF0F382B),
+                        accentColor: AppColors.successGreen,
+                        iconBg: AppColors.mintLight,
                         items: guidance.foodsToInclude,
                       ),
 
@@ -308,8 +296,8 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
                       _buildGuidanceSection(
                         title: 'Foods to Limit',
                         icon: Icons.highlight_off_rounded,
-                        accentColor: AppColors.neonRed,
-                        iconBg: const Color(0xFF3B1520),
+                        accentColor: AppColors.alertRed,
+                        iconBg: AppColors.alertRed.withValues(alpha: 0.12),
                         items: guidance.foodsToLimit,
                       ),
 
@@ -319,7 +307,8 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
                       GlowContainer(
                         borderRadius: 16,
                         padding: const EdgeInsets.all(16),
-                        backgroundColor: AppColors.surfaceCard,
+                        backgroundColor: Colors.white,
+                        borderGradient: AppGradients.subtleBorder,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -329,12 +318,12 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
                                   width: 32,
                                   height: 32,
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF0D2D44),
+                                    color: AppColors.lightBlue,
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: const Icon(
                                     Icons.water_drop_outlined,
-                                    color: AppColors.statusInfo,
+                                    color: AppColors.secondaryBlue,
                                     size: 18,
                                   ),
                                 ),
@@ -344,6 +333,7 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
                                   style: AppTypography.headingSmall.copyWith(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w700,
+                                    color: AppColors.textPrimary,
                                   ),
                                 ),
                               ],
@@ -366,8 +356,8 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
                       _buildGuidanceSection(
                         title: 'Meal Timing & Schedule',
                         icon: Icons.schedule_rounded,
-                        accentColor: AppColors.neonPurple,
-                        iconBg: const Color(0xFF221344),
+                        accentColor: AppColors.primaryMedicalTeal,
+                        iconBg: AppColors.lightCyan,
                         items: guidance.mealGuidance,
                       ),
 
@@ -377,16 +367,14 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
                       GlowContainer(
                         borderRadius: 14,
                         padding: const EdgeInsets.all(14),
-                        backgroundColor: const Color(0xFF131B33),
-                        borderGradient: const LinearGradient(
-                          colors: [Color(0xFF2563EB), Color(0xFF1E3A8A)],
-                        ),
+                        backgroundColor: AppColors.lightBlue.withValues(alpha: 0.5),
+                        borderGradient: AppGradients.subtleBorder,
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Icon(
                               Icons.verified_outlined,
-                              color: AppColors.neonCyan,
+                              color: AppColors.secondaryBlue,
                               size: 18,
                             ),
                             const SizedBox(width: 10),
@@ -394,7 +382,7 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
                               child: Text(
                                 guidance.disclaimer,
                                 style: AppTypography.bodySmall.copyWith(
-                                  color: AppColors.textSecondary,
+                                  color: AppColors.textPrimary,
                                   fontSize: 11,
                                   height: 1.3,
                                 ),
@@ -418,6 +406,7 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
                                 style: AppTypography.headingSmall.copyWith(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w700,
+                                  color: AppColors.textPrimary,
                                 ),
                               ),
                               const SizedBox(height: 2),
@@ -433,7 +422,7 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
                           IconButton(
                             icon: const Icon(
                               Icons.add_circle_outline_rounded,
-                              color: AppColors.neonCyan,
+                              color: AppColors.primaryMedicalTeal,
                             ),
                             onPressed: () => _showAddMedicineDialog(context),
                           ),
@@ -447,7 +436,7 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
                         Text(
                           'No doctor-prescribed medicines added yet. Tap + to set a reminder.',
                           style: AppTypography.bodySmall.copyWith(
-                            color: AppColors.textMuted,
+                            color: AppColors.textSecondary,
                           ),
                         )
                       else
@@ -466,12 +455,12 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
                                 horizontal: 14,
                                 vertical: 10,
                               ),
-                              backgroundColor: AppColors.surfaceCard,
+                              backgroundColor: Colors.white,
                               child: Row(
                                 children: [
                                   const Icon(
                                     Icons.medication_outlined,
-                                    color: AppColors.neonPink,
+                                    color: AppColors.secondaryBlue,
                                     size: 18,
                                   ),
                                   const SizedBox(width: 10),
@@ -484,22 +473,22 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
                                           style: AppTypography.bodyMedium.copyWith(
                                             fontSize: 13,
                                             fontWeight: FontWeight.w600,
+                                            color: AppColors.textPrimary,
                                           ),
                                         ),
                                         Text(
                                           'Scheduled: ${med.time}',
                                           style: AppTypography.bodySmall.copyWith(
-                                            color: AppColors.neonCyan,
+                                            color: AppColors.primaryMedicalTealDark,
                                             fontSize: 11,
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                  Switch(
+                                  Switch.adaptive(
                                     value: med.reminderEnabled,
-                                    activeThumbColor: AppColors.neonCyan,
-                                    activeTrackColor: AppColors.neonBlue.withValues(alpha: 0.5),
+                                    activeTrackColor: AppColors.primaryMedicalTeal,
                                     onChanged: (val) async {
                                       screeningProvider.toggleMedicineReminder(med.id);
                                       if (!val) {
@@ -518,7 +507,7 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
                                     },
                                   ),
                                   IconButton(
-                                    icon: const Icon(Icons.delete_outline_rounded, color: AppColors.textMuted, size: 18),
+                                    icon: const Icon(Icons.delete_outline_rounded, color: AppColors.alertRed, size: 18),
                                     onPressed: () async {
                                       await NotificationService().cancelNotification(notifId);
                                       screeningProvider.removeUserMedicine(med.id);
@@ -564,7 +553,7 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
     return GlowContainer(
       borderRadius: 16,
       padding: const EdgeInsets.all(16),
-      backgroundColor: AppColors.surfaceCard,
+      backgroundColor: Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -589,6 +578,7 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
                 style: AppTypography.headingSmall.copyWith(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary,
                 ),
               ),
             ],
@@ -614,7 +604,7 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
                     child: Text(
                       item,
                       style: AppTypography.bodySmall.copyWith(
-                        color: Colors.white70,
+                        color: AppColors.textSecondary,
                         fontSize: 12,
                         height: 1.35,
                       ),
@@ -629,5 +619,3 @@ class _FoodGuidanceScreenState extends State<FoodGuidanceScreen> {
     );
   }
 }
-
-

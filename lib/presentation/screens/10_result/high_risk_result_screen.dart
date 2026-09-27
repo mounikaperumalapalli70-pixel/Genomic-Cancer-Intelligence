@@ -123,21 +123,21 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: AppColors.neonAmber.withValues(alpha: 0.12),
+        color: AppColors.statusWarning.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.neonAmber.withValues(alpha: 0.4)),
+        border: Border.all(color: AppColors.statusWarning.withValues(alpha: 0.35)),
       ),
       child: Row(
         children: [
-          const Icon(Icons.info_outline_rounded, color: AppColors.neonAmber, size: 18),
+          const Icon(Icons.info_outline_rounded, color: AppColors.statusWarningDark, size: 18),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               'Research Prototype: Provides AI biomarker insights. Not a definitive clinical diagnosis or replacement for an oncologist.',
               style: AppTypography.caption.copyWith(
-                color: AppColors.neonAmber,
+                color: AppColors.statusWarningDark,
                 fontSize: 11,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
@@ -155,11 +155,9 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
     return GlowContainer(
       borderRadius: 20,
       padding: const EdgeInsets.all(20),
-      backgroundColor: const Color(0xFF2E1218),
-      borderGradient: const LinearGradient(
-        colors: [Color(0xFFEF4444), Color(0xFFB91C1C), Color(0xFF9333EA)],
-      ),
-      glowColor: AppColors.neonRed,
+      backgroundColor: AppColors.surfaceCard,
+      borderColor: AppColors.statusDanger.withValues(alpha: 0.35),
+      borderWidth: 1.5,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -169,19 +167,19 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.red.withValues(alpha: 0.25),
+                  color: AppColors.statusDanger.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.redAccent.withValues(alpha: 0.6)),
+                  border: Border.all(color: AppColors.statusDanger.withValues(alpha: 0.3)),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.warning_amber_rounded, color: Colors.redAccent, size: 14),
+                    const Icon(Icons.warning_amber_rounded, color: AppColors.statusDanger, size: 14),
                     const SizedBox(width: 4),
                     Text(
                       'High Risk Molecular Signature',
                       style: AppTypography.bodySmall.copyWith(
-                        color: Colors.redAccent,
+                        color: AppColors.statusDanger,
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
                       ),
@@ -191,7 +189,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
               ),
               Text(
                 'TCGA Pan-Cancer v1.0',
-                style: AppTypography.caption.copyWith(color: Colors.white60),
+                style: AppTypography.caption.copyWith(color: AppColors.textSecondary),
               ),
             ],
           ),
@@ -199,7 +197,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
           Text(
             'Predicted Cancer Type',
             style: AppTypography.bodySmall.copyWith(
-              color: Colors.white70,
+              color: AppColors.textSecondary,
               fontSize: 12,
             ),
           ),
@@ -209,7 +207,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
             style: AppTypography.headingMedium.copyWith(
               fontSize: 20,
               fontWeight: FontWeight.w800,
-              color: Colors.white,
+              color: AppColors.textHeading,
             ),
           ),
           const SizedBox(height: 16),
@@ -221,13 +219,13 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                   children: [
                     Text(
                       'Model Confidence',
-                      style: AppTypography.caption.copyWith(color: Colors.white70),
+                      style: AppTypography.caption.copyWith(color: AppColors.textSecondary),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       '${confidence.toStringAsFixed(1)}%',
                       style: AppTypography.headingLarge.copyWith(
-                        color: Colors.white,
+                        color: AppColors.statusDanger,
                         fontSize: 26,
                         fontWeight: FontWeight.w800,
                       ),
@@ -238,7 +236,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
               Container(
                 height: 38,
                 width: 1,
-                color: Colors.white24,
+                color: AppColors.borderSubtle,
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -247,13 +245,13 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                   children: [
                     Text(
                       'Biomarkers Matched',
-                      style: AppTypography.caption.copyWith(color: Colors.white70),
+                      style: AppTypography.caption.copyWith(color: AppColors.textSecondary),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       '$biomarkersMatched / $totalFeatures',
                       style: AppTypography.headingLarge.copyWith(
-                        color: AppColors.neonCyan,
+                        color: AppColors.primaryTeal,
                         fontSize: 22,
                         fontWeight: FontWeight.w700,
                       ),
@@ -272,9 +270,9 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: AppColors.surfaceCard,
+        color: AppColors.surfaceElevated,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.surfaceElevated),
+        border: Border.all(color: AppColors.borderSubtle),
       ),
       child: Row(
         children: [
@@ -294,9 +292,18 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-            color: isSelected ? AppColors.neonCyan.withValues(alpha: 0.2) : Colors.transparent,
+            color: isSelected ? Colors.white : Colors.transparent,
             borderRadius: BorderRadius.circular(10),
-            border: isSelected ? Border.all(color: AppColors.neonCyan.withValues(alpha: 0.6)) : null,
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: AppColors.shadowLight,
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : null,
+            border: isSelected ? Border.all(color: AppColors.primaryTeal.withValues(alpha: 0.4)) : null,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -304,14 +311,14 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
               Icon(
                 icon,
                 size: 16,
-                color: isSelected ? AppColors.neonCyan : AppColors.textSecondary,
+                color: isSelected ? AppColors.primaryTeal : AppColors.textSecondary,
               ),
-              const SizedBox(width: 6),
+              const SizedBox(width: 5),
               Text(
                 label,
                 style: TextStyle(
-                  color: isSelected ? Colors.white : AppColors.textSecondary,
-                  fontSize: 12,
+                  color: isSelected ? AppColors.primaryTeal : AppColors.textSecondary,
+                  fontSize: 11.5,
                   fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                 ),
               ),
@@ -327,15 +334,14 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
       borderRadius: 18,
       padding: const EdgeInsets.all(18),
       backgroundColor: AppColors.surfaceCard,
-      borderGradient: AppGradients.neonBorderCyanGreen,
-      glowColor: AppColors.neonCyan,
+      borderColor: AppColors.borderSubtle,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'ALTERNATIVE CANCER PREDICTIONS',
             style: AppTypography.caption.copyWith(
-              color: AppColors.neonCyan,
+              color: AppColors.primaryTeal,
               fontWeight: FontWeight.w700,
               letterSpacing: 1.1,
             ),
@@ -355,12 +361,13 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                         style: AppTypography.bodySmall.copyWith(
                           fontWeight: FontWeight.w600,
                           fontSize: 12,
+                          color: AppColors.textHeading,
                         ),
                       ),
                       Text(
                         '${c.percentage.toStringAsFixed(1)}%',
                         style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.neonCyan,
+                          color: AppColors.primaryTeal,
                           fontWeight: FontWeight.w700,
                           fontSize: 12,
                         ),
@@ -375,7 +382,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                       minHeight: 6,
                       backgroundColor: AppColors.surfaceElevated,
                       valueColor: AlwaysStoppedAnimation<Color>(
-                        c.probability > 0.5 ? AppColors.neonRed : AppColors.neonCyan,
+                        c.probability > 0.5 ? AppColors.statusDanger : AppColors.primaryTeal,
                       ),
                     ),
                   ),
@@ -393,8 +400,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
       borderRadius: 18,
       padding: const EdgeInsets.all(18),
       backgroundColor: AppColors.surfaceCard,
-      borderGradient: AppGradients.neonBorderBluePurple,
-      glowColor: AppColors.neonPurple,
+      borderColor: AppColors.borderSubtle,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -404,7 +410,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
               Text(
                 'TOP CONTRIBUTING BIOMARKERS (XAI)',
                 style: AppTypography.caption.copyWith(
-                  color: AppColors.neonPurple,
+                  color: AppColors.primaryTeal,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 1.1,
                 ),
@@ -412,7 +418,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
               Text(
                 'Z-Score vs TCGA Baseline',
                 style: AppTypography.caption.copyWith(
-                  color: AppColors.textTertiary,
+                  color: AppColors.textSecondary,
                   fontSize: 10,
                 ),
               ),
@@ -422,16 +428,16 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
           ...biomarkers.map((b) {
             final isUpreg = b.status == 'upregulated';
             final statusColor = isUpreg
-                ? AppColors.neonRed
-                : (b.status == 'downregulated' ? AppColors.neonCyan : AppColors.neonGreen);
+                ? AppColors.statusDanger
+                : (b.status == 'downregulated' ? AppColors.secondaryBlue : AppColors.statusSuccess);
 
             return Container(
               margin: const EdgeInsets.only(bottom: 8),
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: AppColors.surfaceElevated.withValues(alpha: 0.5),
+                color: AppColors.surfaceElevated,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.surfaceElevated),
+                border: Border.all(color: AppColors.borderSubtle),
               ),
               child: Row(
                 children: [
@@ -439,7 +445,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                     width: 38,
                     height: 38,
                     decoration: BoxDecoration(
-                      color: statusColor.withValues(alpha: 0.15),
+                      color: statusColor.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Center(
@@ -463,6 +469,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                           style: AppTypography.bodyMedium.copyWith(
                             fontWeight: FontWeight.w700,
                             fontSize: 13,
+                            color: AppColors.textHeading,
                           ),
                         ),
                         Text(
@@ -481,9 +488,9 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: statusColor.withValues(alpha: 0.15),
+                          color: statusColor.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(6),
-                          border: Border.all(color: statusColor.withValues(alpha: 0.5)),
+                          border: Border.all(color: statusColor.withValues(alpha: 0.3)),
                         ),
                         child: Text(
                           b.status.toUpperCase(),
@@ -519,7 +526,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
       return const Center(
         child: Padding(
           padding: EdgeInsets.all(24.0),
-          child: CircularProgressIndicator(color: AppColors.neonCyan),
+          child: CircularProgressIndicator(color: AppColors.primaryTeal),
         ),
       );
     }
@@ -532,8 +539,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
           borderRadius: 18,
           padding: const EdgeInsets.all(16),
           backgroundColor: AppColors.surfaceCard,
-          borderGradient: AppGradients.neonBorderCyanGreen,
-          glowColor: AppColors.neonCyan,
+          borderColor: AppColors.borderSubtle,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -543,7 +549,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                   Text(
                     'CANCER & ANATOMICAL LOCATION',
                     style: AppTypography.caption.copyWith(
-                      color: AppColors.neonCyan,
+                      color: AppColors.primaryTeal,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 1.1,
                     ),
@@ -551,14 +557,14 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
-                      color: AppColors.neonCyan.withValues(alpha: 0.15),
+                      color: AppColors.surfaceMint,
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppColors.neonCyan.withValues(alpha: 0.4)),
+                      border: Border.all(color: AppColors.primaryTeal.withValues(alpha: 0.3)),
                     ),
                     child: const Text(
                       'Evidence Profile',
                       style: TextStyle(
-                        color: AppColors.neonCyan,
+                        color: AppColors.darkTeal,
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
                       ),
@@ -571,20 +577,20 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                 treatment.diseaseName,
                 style: AppTypography.headingSmall.copyWith(
                   fontSize: 17,
-                  color: Colors.white,
+                  color: AppColors.textHeading,
                   fontWeight: FontWeight.w800,
                 ),
               ),
               const SizedBox(height: 6),
               Row(
                 children: [
-                  const Icon(Icons.location_on_outlined, size: 14, color: AppColors.neonGreen),
+                  const Icon(Icons.location_on_outlined, size: 14, color: AppColors.statusSuccess),
                   const SizedBox(width: 4),
                   Expanded(
                     child: Text(
                       'Primary Site: ${treatment.cancerSite}',
                       style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.textSecondary,
+                        color: AppColors.textPrimary,
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
                       ),
@@ -595,7 +601,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
               const SizedBox(height: 4),
               Row(
                 children: [
-                  const Icon(Icons.category_outlined, size: 14, color: AppColors.neonCyan),
+                  const Icon(Icons.category_outlined, size: 14, color: AppColors.secondaryBlue),
                   const SizedBox(width: 4),
                   Expanded(
                     child: Text(
@@ -608,11 +614,11 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                   ),
                 ],
               ),
-              const Divider(color: AppColors.surfaceElevated, height: 20),
+              const Divider(color: AppColors.borderSubtle, height: 20),
               Text(
                 'NCCN 1st-Line Testing Guideline:',
                 style: AppTypography.caption.copyWith(
-                  color: AppColors.neonGreen,
+                  color: AppColors.darkTeal,
                   fontWeight: FontWeight.w700,
                   fontSize: 11,
                 ),
@@ -621,7 +627,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
               Text(
                 treatment.firstLineGuideline,
                 style: AppTypography.bodySmall.copyWith(
-                  color: Colors.white70,
+                  color: AppColors.textPrimary,
                   fontSize: 11,
                   height: 1.35,
                 ),
@@ -636,14 +642,14 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: AppColors.neonAmber.withValues(alpha: 0.1),
+            color: AppColors.statusWarning.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: AppColors.neonAmber.withValues(alpha: 0.35)),
+            border: Border.all(color: AppColors.statusWarning.withValues(alpha: 0.3)),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.science_outlined, color: AppColors.neonAmber, size: 18),
+              const Icon(Icons.science_outlined, color: AppColors.statusWarningDark, size: 18),
               const SizedBox(width: 8),
               Expanded(
                 child: Column(
@@ -652,7 +658,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                     Text(
                       'DATA DISTINCTION & CLINICAL ACTIONABILITY',
                       style: AppTypography.caption.copyWith(
-                        color: AppColors.neonAmber,
+                        color: AppColors.statusWarningDark,
                         fontWeight: FontWeight.w700,
                         fontSize: 10,
                       ),
@@ -661,7 +667,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                     Text(
                       treatment.genomicDataLimitationNotice,
                       style: AppTypography.bodySmall.copyWith(
-                        color: Colors.white70,
+                        color: AppColors.textHeading,
                         fontSize: 11,
                         height: 1.3,
                       ),
@@ -682,7 +688,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
             Text(
               'EVIDENCE-BASED TARGETED THERAPIES',
               style: AppTypography.caption.copyWith(
-                color: AppColors.neonGreen,
+                color: AppColors.primaryTeal,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 1.1,
               ),
@@ -690,7 +696,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
             Text(
               '${treatment.targetedTherapies.length} Therapies Profiled',
               style: AppTypography.caption.copyWith(
-                color: AppColors.textTertiary,
+                color: AppColors.textSecondary,
                 fontSize: 10,
               ),
             ),
@@ -706,8 +712,8 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
             padding: const EdgeInsets.all(16),
             margin: const EdgeInsets.only(bottom: 14),
             backgroundColor: AppColors.surfaceCard,
-            borderGradient: isMatched ? AppGradients.neonBorderCyanGreen : null,
-            glowColor: isMatched ? AppColors.neonGreen : null,
+            borderColor: isMatched ? AppColors.primaryTeal : AppColors.borderSubtle,
+            borderWidth: isMatched ? 1.5 : 1.0,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -724,14 +730,14 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                             style: AppTypography.headingSmall.copyWith(
                               fontSize: 16,
                               fontWeight: FontWeight.w800,
-                              color: Colors.white,
+                              color: AppColors.textHeading,
                             ),
                           ),
                           const SizedBox(height: 2),
                           Text(
                             rx.treatmentClass,
                             style: AppTypography.caption.copyWith(
-                              color: AppColors.neonCyan,
+                              color: AppColors.primaryTeal,
                               fontWeight: FontWeight.w600,
                               fontSize: 11,
                             ),
@@ -745,14 +751,14 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
-                            color: AppColors.neonGreen.withValues(alpha: 0.15),
+                            color: AppColors.surfaceMint,
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: AppColors.neonGreen.withValues(alpha: 0.5)),
+                            border: Border.all(color: AppColors.primaryTeal.withValues(alpha: 0.4)),
                           ),
                           child: Text(
                             rx.nccnEvidenceTier,
                             style: const TextStyle(
-                              color: AppColors.neonGreen,
+                              color: AppColors.darkTeal,
                               fontSize: 10,
                               fontWeight: FontWeight.w700,
                             ),
@@ -761,8 +767,8 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                         const SizedBox(height: 4),
                         Text(
                           rx.fdaStatus.contains('FDA Approved') ? 'FDA Approved' : 'Accelerated',
-                          style: const TextStyle(
-                            color: Colors.white60,
+                          style: TextStyle(
+                            color: AppColors.textSecondary,
                             fontSize: 9,
                             fontWeight: FontWeight.w500,
                           ),
@@ -778,21 +784,22 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: AppColors.surfaceElevated.withValues(alpha: 0.6),
+                    color: AppColors.surfaceElevated,
                     borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: AppColors.borderSubtle),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.bubble_chart_outlined, color: AppColors.neonCyan, size: 14),
+                          const Icon(Icons.bubble_chart_outlined, color: AppColors.primaryTeal, size: 14),
                           const SizedBox(width: 6),
                           Expanded(
                             child: Text(
                               'Target: ${rx.molecularTarget}',
                               style: AppTypography.bodySmall.copyWith(
-                                color: Colors.white,
+                                color: AppColors.textHeading,
                                 fontSize: 11,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -819,7 +826,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                 Text(
                   'How It Works:',
                   style: AppTypography.caption.copyWith(
-                    color: Colors.white70,
+                    color: AppColors.textHeading,
                     fontWeight: FontWeight.w700,
                     fontSize: 11,
                   ),
@@ -828,7 +835,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                 Text(
                   rx.howItWorks,
                   style: AppTypography.bodySmall.copyWith(
-                    color: Colors.white70,
+                    color: AppColors.textPrimary,
                     fontSize: 11,
                     height: 1.35,
                   ),
@@ -840,7 +847,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                 Text(
                   'Why Relevant to this Tumor/Biomarker:',
                   style: AppTypography.caption.copyWith(
-                    color: AppColors.neonGreen,
+                    color: AppColors.darkTeal,
                     fontWeight: FontWeight.w700,
                     fontSize: 11,
                   ),
@@ -849,7 +856,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                 Text(
                   rx.whyRelevant,
                   style: AppTypography.bodySmall.copyWith(
-                    color: Colors.white70,
+                    color: AppColors.textPrimary,
                     fontSize: 11,
                     height: 1.35,
                   ),
@@ -862,13 +869,13 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: isMatched
-                        ? AppColors.neonGreen.withValues(alpha: 0.1)
+                        ? AppColors.surfaceMint
                         : AppColors.surfaceElevated,
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
                       color: isMatched
-                          ? AppColors.neonGreen.withValues(alpha: 0.4)
-                          : AppColors.surfaceElevated,
+                          ? AppColors.primaryTeal.withValues(alpha: 0.3)
+                          : AppColors.borderSubtle,
                     ),
                   ),
                   child: Column(
@@ -878,7 +885,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                         children: [
                           Icon(
                             isMatched ? Icons.check_circle_outline_rounded : Icons.info_outline_rounded,
-                            color: isMatched ? AppColors.neonGreen : AppColors.neonAmber,
+                            color: isMatched ? AppColors.darkTeal : AppColors.statusWarningDark,
                             size: 14,
                           ),
                           const SizedBox(width: 6),
@@ -886,7 +893,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                             child: Text(
                               'Biomarker Status: ${rx.biomarkerStatus ?? (isMatched ? 'Expression Elevated' : 'Not established from available genomic data')}',
                               style: TextStyle(
-                                color: isMatched ? AppColors.neonGreen : AppColors.neonAmber,
+                                color: isMatched ? AppColors.darkTeal : AppColors.statusWarningDark,
                                 fontSize: 11,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -947,7 +954,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
           Text(
             'ACTIVE CLINICAL TRIAL CRITERIA (ClinicalTrials.gov)',
             style: AppTypography.caption.copyWith(
-              color: AppColors.neonPurple,
+              color: AppColors.primaryTeal,
               fontWeight: FontWeight.w700,
               letterSpacing: 1.1,
             ),
@@ -958,7 +965,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
             decoration: BoxDecoration(
               color: AppColors.surfaceCard,
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: AppColors.surfaceElevated),
+              border: Border.all(color: AppColors.borderSubtle),
             ),
             child: Column(
               children: treatment.clinicalTrialsCriteria.map((trial) {
@@ -967,12 +974,12 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(Icons.arrow_right_rounded, color: AppColors.neonPurple, size: 20),
+                      const Icon(Icons.arrow_right_rounded, color: AppColors.primaryTeal, size: 20),
                       Expanded(
                         child: Text(
                           trial,
                           style: AppTypography.bodySmall.copyWith(
-                            color: Colors.white70,
+                            color: AppColors.textPrimary,
                             fontSize: 11,
                             height: 1.3,
                           ),
@@ -992,15 +999,15 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: Colors.black45,
+            color: AppColors.surfaceElevated,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.surfaceElevated),
+            border: Border.all(color: AppColors.borderSubtle),
           ),
           child: Text(
             treatment.disclaimer,
             textAlign: TextAlign.center,
             style: AppTypography.caption.copyWith(
-              color: AppColors.textTertiary,
+              color: AppColors.textSecondary,
               fontSize: 10,
               height: 1.35,
             ),
@@ -1027,8 +1034,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
           borderRadius: 18,
           padding: const EdgeInsets.all(18),
           backgroundColor: AppColors.surfaceCard,
-          borderGradient: AppGradients.neonBorderBluePurple,
-          glowColor: AppColors.neonPurple,
+          borderColor: AppColors.borderSubtle,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1038,7 +1044,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                   Text(
                     'QUANTUM KERNEL CLASSIFIER (QISKIT)',
                     style: AppTypography.caption.copyWith(
-                      color: AppColors.neonPurple,
+                      color: AppColors.primaryTeal,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 1.1,
                     ),
@@ -1046,7 +1052,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                   Text(
                     quantum.quantumFramework,
                     style: AppTypography.caption.copyWith(
-                      color: AppColors.neonCyan,
+                      color: AppColors.secondaryBlue,
                       fontSize: 10,
                     ),
                   ),
@@ -1060,7 +1066,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Qubit Register', style: AppTypography.caption.copyWith(color: AppColors.textSecondary)),
-                        Text('${quantum.qubitCount} Qubits', style: AppTypography.headingSmall.copyWith(fontSize: 18)),
+                        Text('${quantum.qubitCount} Qubits', style: AppTypography.headingSmall.copyWith(fontSize: 18, color: AppColors.textHeading)),
                       ],
                     ),
                   ),
@@ -1069,7 +1075,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Hilbert Space', style: AppTypography.caption.copyWith(color: AppColors.textSecondary)),
-                        Text('${quantum.hilbertSpaceDimension}-Dim', style: AppTypography.headingSmall.copyWith(fontSize: 18, color: AppColors.neonCyan)),
+                        Text('${quantum.hilbertSpaceDimension}-Dim', style: AppTypography.headingSmall.copyWith(fontSize: 18, color: AppColors.secondaryBlue)),
                       ],
                     ),
                   ),
@@ -1078,7 +1084,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Quantum State Fidelity', style: AppTypography.caption.copyWith(color: AppColors.textSecondary)),
-                        Text('${(quantum.quantumStateFidelity * 100).toStringAsFixed(1)}%', style: AppTypography.headingSmall.copyWith(fontSize: 18, color: AppColors.neonGreen)),
+                        Text('${(quantum.quantumStateFidelity * 100).toStringAsFixed(1)}%', style: AppTypography.headingSmall.copyWith(fontSize: 18, color: AppColors.statusSuccess)),
                       ],
                     ),
                   ),
@@ -1087,7 +1093,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
               const SizedBox(height: 14),
               Text(
                 'Quantum Circuit Architecture',
-                style: AppTypography.caption.copyWith(color: AppColors.textPrimary, fontWeight: FontWeight.w600),
+                style: AppTypography.caption.copyWith(color: AppColors.textHeading, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 4),
               Text(
@@ -1095,14 +1101,14 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                 style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary, fontSize: 11),
               ),
               const SizedBox(height: 12),
-              // OpenQASM Snippet
+              // OpenQASM Snippet in Clean Container
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.black45,
+                  color: AppColors.surfaceElevated,
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppColors.surfaceElevated),
+                  border: Border.all(color: AppColors.borderSubtle),
                 ),
                 child: Text(
                   quantum.qasmRepresentation.isNotEmpty
@@ -1111,7 +1117,7 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
                   style: const TextStyle(
                     fontFamily: 'monospace',
                     fontSize: 10,
-                    color: AppColors.neonGreen,
+                    color: AppColors.darkTeal,
                   ),
                 ),
               ),
@@ -1125,9 +1131,9 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
   Widget _buildBottomActions(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceCard,
-        border: Border(top: BorderSide(color: AppColors.surfaceElevated)),
+      decoration: const BoxDecoration(
+        color: AppColors.surface,
+        border: Border(top: BorderSide(color: AppColors.borderSubtle)),
       ),
       child: Row(
         children: [
@@ -1135,17 +1141,18 @@ class _HighRiskResultScreenState extends State<HighRiskResultScreen> {
             child: OutlinedButton(
               onPressed: () => Navigator.of(context).pushNamed(AppRoutes.foodGuidance),
               style: OutlinedButton.styleFrom(
-                side: BorderSide(color: AppColors.neonCyan.withValues(alpha: 0.6)),
+                side: const BorderSide(color: AppColors.primaryTeal, width: 1.2),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                 padding: const EdgeInsets.symmetric(vertical: 14),
               ),
-              child: const Text('Nutritional Guidance', style: TextStyle(color: AppColors.neonCyan, fontSize: 13, fontWeight: FontWeight.w600)),
+              child: const Text('Nutritional Guidance', style: TextStyle(color: AppColors.primaryTeal, fontSize: 13, fontWeight: FontWeight.w600)),
             ),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: GradientButton(
               text: 'Save Report',
+              gradient: AppGradients.primaryButton,
               onPressed: () => Navigator.of(context).pushNamed(AppRoutes.reports),
             ),
           ),

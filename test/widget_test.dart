@@ -220,8 +220,8 @@ void main() {
     );
     await tester.pump(const Duration(milliseconds: 300));
 
-    expect(find.textContaining('👋 Charan'), findsOneWidget);
-    expect(find.text('Your health is our priority.'), findsOneWidget);
+    expect(find.textContaining('Charan'), findsOneWidget);
+    expect(find.textContaining('healthier tomorrow'), findsOneWidget);
   });
 
   testWidgets('Notifications screen displays history and options', (WidgetTester tester) async {

@@ -56,9 +56,10 @@ class _AiAssistantFabState extends State<AiAssistantFab>
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: AppColors.borderSubtle),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.35),
+                color: AppColors.shadowLight,
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -71,15 +72,15 @@ class _AiAssistantFabState extends State<AiAssistantFab>
               Text(
                 'Need help?',
                 style: TextStyle(
-                  color: Colors.grey.shade700,
+                  color: AppColors.textSecondary,
                   fontSize: 10,
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const Text(
+              Text(
                 'Ask AI Assistant',
                 style: TextStyle(
-                  color: Colors.black,
+                  color: AppColors.textHeading,
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
                 ),
@@ -100,32 +101,22 @@ class _AiAssistantFabState extends State<AiAssistantFab>
                 height: 50,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: const RadialGradient(
-                    colors: [
-                      Color(0xFF24488A),
-                      Color(0xFF0E1A38),
-                    ],
-                  ),
-                  border: Border.all(
-                    color: AppColors.neonCyan.withValues(
-                      alpha: 0.7 + _pulseController.value * 0.3,
-                    ),
-                    width: 2,
-                  ),
+                  gradient: AppGradients.tealMint,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.neonCyan.withValues(
-                        alpha: 0.3 + _pulseController.value * 0.3,
+                      color: AppColors.primaryTeal.withValues(
+                        alpha: 0.25 + _pulseController.value * 0.2,
                       ),
-                      blurRadius: 14 + _pulseController.value * 6,
-                      spreadRadius: 1 + _pulseController.value * 2,
+                      blurRadius: 12 + _pulseController.value * 6,
+                      spreadRadius: 1 + _pulseController.value * 1.5,
                     ),
                   ],
                 ),
-                child: Center(
-                  child: RobotAvatar(
-                    size: 32,
-                    isGlowing: _pulseController.value > 0.5,
+                child: const Center(
+                  child: Icon(
+                    Icons.smart_toy_rounded,
+                    color: Colors.white,
+                    size: 26,
                   ),
                 ),
               );
@@ -167,7 +158,6 @@ class _RobotAvatarPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width * 0.42;
 
     // Outer Head Capsule
     final headRect = RRect.fromRectAndRadius(
@@ -181,14 +171,14 @@ class _RobotAvatarPainter extends CustomPainter {
 
     final headPaint = Paint()
       ..shader = const LinearGradient(
-        colors: [Color(0xFFE8EEF8), Color(0xFFB0C4DE)],
+        colors: [Color(0xFFE8FAF6), Color(0xFFC2EFEB)],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ).createShader(headRect.outerRect);
 
     canvas.drawRRect(headRect, headPaint);
 
-    // Dark Screen Visor
+    // Visor
     final visorRect = RRect.fromRectAndRadius(
       Rect.fromCenter(
         center: Offset(center.dx, center.dy - 2),
@@ -198,74 +188,18 @@ class _RobotAvatarPainter extends CustomPainter {
       Radius.circular(size.width * 0.14),
     );
 
-    final visorPaint = Paint()..color = const Color(0xFF091224);
+    final visorPaint = Paint()
+      ..color = const Color(0xFF173B4D)
+      ..style = PaintingStyle.fill;
     canvas.drawRRect(visorRect, visorPaint);
 
-    // Glowing Cyan Eyes (Happy curved arches or circles)
+    // Cyan Eyes
     final eyePaint = Paint()
-      ..color = isGlowing ? const Color(0xFF00FFFF) : const Color(0xFF00E5FF)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = size.width * 0.08
-      ..strokeCap = StrokeCap.round;
-
-    final leftEye = Offset(center.dx - size.width * 0.13, center.dy - 3);
-    final rightEye = Offset(center.dx + size.width * 0.13, center.dy - 3);
-
-    final leftEyePath = Path()
-      ..moveTo(leftEye.dx - 3, leftEye.dy + 1)
-      ..quadraticBezierTo(leftEye.dx, leftEye.dy - 3, leftEye.dx + 3, leftEye.dy + 1);
-
-    final rightEyePath = Path()
-      ..moveTo(rightEye.dx - 3, rightEye.dy + 1)
-      ..quadraticBezierTo(rightEye.dx, rightEye.dy - 3, rightEye.dx + 3, rightEye.dy + 1);
-
-    canvas.drawPath(leftEyePath, eyePaint);
-    canvas.drawPath(rightEyePath, eyePaint);
-
-    // Headphones (Left & Right Ear Cups)
-    final earPaint = Paint()
-      ..color = const Color(0xFF2C5BA8)
+      ..color = AppColors.primaryTeal
       ..style = PaintingStyle.fill;
 
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromCenter(
-          center: Offset(center.dx - radius * 0.88, center.dy - 2),
-          width: size.width * 0.14,
-          height: size.height * 0.32,
-        ),
-        Radius.circular(size.width * 0.06),
-      ),
-      earPaint,
-    );
-
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromCenter(
-          center: Offset(center.dx + radius * 0.88, center.dy - 2),
-          width: size.width * 0.14,
-          height: size.height * 0.32,
-        ),
-        Radius.circular(size.width * 0.06),
-      ),
-      earPaint,
-    );
-
-    // Headband
-    final bandPaint = Paint()
-      ..color = const Color(0xFF2C5BA8)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = size.width * 0.08;
-
-    final bandPath = Path()
-      ..moveTo(center.dx - radius * 0.7, center.dy - size.height * 0.28)
-      ..quadraticBezierTo(
-        center.dx,
-        center.dy - size.height * 0.48,
-        center.dx + radius * 0.7,
-        center.dy - size.height * 0.28,
-      );
-    canvas.drawPath(bandPath, bandPaint);
+    canvas.drawCircle(Offset(center.dx - size.width * 0.13, center.dy - 2), size.width * 0.065, eyePaint);
+    canvas.drawCircle(Offset(center.dx + size.width * 0.13, center.dy - 2), size.width * 0.065, eyePaint);
   }
 
   @override
@@ -273,7 +207,6 @@ class _RobotAvatarPainter extends CustomPainter {
       oldDelegate.isGlowing != isGlowing;
 }
 
-/// Modal Bottom Sheet for Real Two-Way Voice Interaction
 class AiVoiceAssistantSheet extends StatefulWidget {
   final AssistantMode mode;
   final String initialLanguageCode;
@@ -296,7 +229,7 @@ class AiVoiceAssistantSheet extends StatefulWidget {
     this.onComplete,
   });
 
-  static Future<void> show({
+  static Future<T?> show<T>({
     required BuildContext context,
     required AssistantMode mode,
     required String initialLanguageCode,
@@ -352,7 +285,6 @@ class _AiVoiceAssistantSheetState extends State<AiVoiceAssistantSheet>
       duration: const Duration(milliseconds: 1200),
     )..repeat();
 
-    // Start voice session ONLY when bottom sheet is explicitly opened by user
     _startSession();
   }
 
@@ -454,15 +386,15 @@ class _AiVoiceAssistantSheetState extends State<AiVoiceAssistantSheet>
         right: 20,
       ),
       decoration: BoxDecoration(
-        color: const Color(0xFF0D1B36),
+        color: AppColors.surface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
         border: Border.all(
-          color: AppColors.neonBlue.withValues(alpha: 0.6),
+          color: AppColors.borderSubtle,
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.neonBlue.withValues(alpha: 0.35),
+            color: AppColors.shadowLight,
             blurRadius: 28,
             spreadRadius: 2,
           ),
@@ -476,7 +408,7 @@ class _AiVoiceAssistantSheetState extends State<AiVoiceAssistantSheet>
             width: 44,
             height: 4,
             decoration: BoxDecoration(
-              color: Colors.white24,
+              color: AppColors.borderMedium,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -490,21 +422,21 @@ class _AiVoiceAssistantSheetState extends State<AiVoiceAssistantSheet>
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: AppColors.surfaceElevated,
+                  color: AppColors.surfaceLightBlue,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: AppColors.neonCyan.withValues(alpha: 0.4),
+                    color: AppColors.primaryTeal.withValues(alpha: 0.3),
                   ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.record_voice_over_rounded, size: 13, color: AppColors.neonCyan),
+                    const Icon(Icons.record_voice_over_rounded, size: 13, color: AppColors.primaryTeal),
                     const SizedBox(width: 5),
                     Text(
                       languageName,
                       style: const TextStyle(
-                        color: AppColors.neonCyan,
+                        color: AppColors.primaryTeal,
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
                       ),
@@ -514,7 +446,7 @@ class _AiVoiceAssistantSheetState extends State<AiVoiceAssistantSheet>
               ),
 
               IconButton(
-                icon: const Icon(Icons.close_rounded, color: Colors.white70, size: 22),
+                icon: const Icon(Icons.close_rounded, color: AppColors.textSecondary, size: 22),
                 onPressed: () {
                   _voiceService.stopSession();
                   Navigator.of(context).pop();
@@ -529,26 +461,26 @@ class _AiVoiceAssistantSheetState extends State<AiVoiceAssistantSheet>
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // 3D Avatar
               Container(
-                width: 72,
-                height: 72,
+                width: 64,
+                height: 64,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: AppColors.surfaceElevated,
+                  border: Border.all(color: AppColors.borderTeal.withValues(alpha: 0.3)),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.neonCyan.withValues(alpha: 0.3),
-                      blurRadius: 16,
-                      spreadRadius: 1,
+                      color: AppColors.primaryTeal.withValues(alpha: 0.18),
+                      blurRadius: 14,
+                      offset: const Offset(0, 3),
                     ),
                   ],
                 ),
                 child: const Center(
-                  child: RobotAvatar(size: 56, isGlowing: true),
+                  child: RobotAvatar(size: 48, isGlowing: true),
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 14),
 
               // AI Message
               Expanded(
@@ -560,7 +492,7 @@ class _AiVoiceAssistantSheetState extends State<AiVoiceAssistantSheet>
                       style: AppTypography.headingSmall.copyWith(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                        color: AppColors.textHeading,
                         height: 1.3,
                       ),
                     ),
@@ -570,7 +502,7 @@ class _AiVoiceAssistantSheetState extends State<AiVoiceAssistantSheet>
                         _phoneticMessage!,
                         style: AppTypography.bodySmall.copyWith(
                           fontSize: 12,
-                          color: AppColors.neonCyan,
+                          color: AppColors.primaryTeal,
                         ),
                       ),
                     ],
@@ -587,8 +519,8 @@ class _AiVoiceAssistantSheetState extends State<AiVoiceAssistantSheet>
             _status,
             style: TextStyle(
               color: _status.contains('Listening')
-                  ? AppColors.neonGreen
-                  : AppColors.neonCyan,
+                  ? AppColors.statusSuccess
+                  : AppColors.primaryTeal,
               fontSize: 12,
               fontWeight: FontWeight.w600,
             ),
@@ -598,114 +530,66 @@ class _AiVoiceAssistantSheetState extends State<AiVoiceAssistantSheet>
 
           // Audio Waveform Visualizer
           SizedBox(
-            width: double.infinity,
             height: 36,
             child: AnimatedBuilder(
               animation: _waveformController,
               builder: (context, child) {
-                return CustomPaint(
-                  painter: _VoiceSheetWaveformPainter(
-                    progress: _waveformController.value,
-                    isListening: _stt.isListening,
-                  ),
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: List.generate(18, (i) {
+                    final normalized = math.sin(_waveformController.value * 2 * math.pi + i * 0.4);
+                    final h = (normalized.abs() * 26).clamp(4.0, 32.0);
+                    return Container(
+                      width: 3.5,
+                      height: h,
+                      margin: const EdgeInsets.symmetric(horizontal: 2),
+                      decoration: BoxDecoration(
+                        gradient: AppGradients.tealMint,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    );
+                  }),
                 );
               },
             ),
           ),
 
-          const SizedBox(height: 14),
+          const SizedBox(height: 20),
 
-          // Large Microphone Action Button
+          // Mic Control Button
           GestureDetector(
             onTap: _handleMicTap,
-            child: ValueListenableBuilder<bool>(
-              valueListenable: _stt.isListeningNotifier,
-              builder: (context, isListening, child) {
-                return Container(
-                  width: 58,
-                  height: 58,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: AppGradients.primaryButton,
-                    border: Border.all(
-                      color: isListening ? AppColors.neonCyan : Colors.white24,
-                      width: 2,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.neonBlue.withValues(
-                          alpha: isListening ? 0.75 : 0.4,
-                        ),
-                        blurRadius: isListening ? 26 : 14,
-                        spreadRadius: isListening ? 3 : 1,
-                      ),
-                    ],
+            child: Container(
+              width: 58,
+              height: 58,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: AppGradients.primaryButton,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primaryTeal.withValues(alpha: 0.3),
+                    blurRadius: 16,
+                    offset: const Offset(0, 4),
                   ),
-                  child: Icon(
-                    isListening ? Icons.mic_rounded : Icons.mic_none_rounded,
-                    size: 28,
-                    color: Colors.white,
-                  ),
-                );
-              },
+                ],
+              ),
+              child: const Center(
+                child: Icon(
+                  Icons.mic_rounded,
+                  color: Colors.white,
+                  size: 28,
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 8),
+          Text(
+            'Tap microphone to speak',
+            style: AppTypography.caption,
+          ),
         ],
       ),
     );
   }
-}
-
-class _VoiceSheetWaveformPainter extends CustomPainter {
-  final double progress;
-  final bool isListening;
-
-  _VoiceSheetWaveformPainter({
-    required this.progress,
-    required this.isListening,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    const barCount = 30;
-    final barWidth = size.width / (barCount * 1.6);
-    final midY = size.height / 2;
-
-    final paint = Paint()
-      ..shader = const LinearGradient(
-        colors: [
-          AppColors.neonCyan,
-          AppColors.neonBlue,
-          AppColors.neonPurple,
-        ],
-      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = barWidth;
-
-    for (int i = 0; i < barCount; i++) {
-      final x = i * (size.width / barCount) + barWidth / 2;
-      double waveHeight = 4.0;
-
-      final frequency = (i / barCount) * 4 * math.pi;
-      final animOffset = progress * 2 * math.pi;
-      final sinVal = math.sin(frequency + animOffset).abs();
-      final cosVal = math.cos((i / barCount) * 2 * math.pi - animOffset).abs();
-
-      if (isListening) {
-        waveHeight = 6 + (sinVal * 0.7 + cosVal * 0.3) * (size.height * 0.8);
-      } else {
-        waveHeight = 4 + (sinVal * 0.3) * (size.height * 0.35);
-      }
-
-      canvas.drawLine(
-        Offset(x, midY - waveHeight / 2),
-        Offset(x, midY + waveHeight / 2),
-        paint,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant _VoiceSheetWaveformPainter oldDelegate) => true;
 }

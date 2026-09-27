@@ -39,13 +39,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
             Icon(
               widget.icon,
               size: 16,
-              color: _isFocused ? AppColors.neonCyan : AppColors.textSecondary,
+              color: _isFocused ? AppColors.primaryTeal : AppColors.textSecondary,
             ),
             const SizedBox(width: 8),
             Text(
               widget.label,
               style: AppTypography.label.copyWith(
-                color: _isFocused ? AppColors.neonCyan : AppColors.textSecondary,
+                color: _isFocused ? AppColors.primaryTeal : AppColors.textSecondary,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ],
@@ -60,19 +61,19 @@ class _CustomTextFieldState extends State<CustomTextField> {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             decoration: BoxDecoration(
-              color: AppColors.surfaceCard,
+              color: AppColors.surfaceElevated,
               borderRadius: BorderRadius.circular(14),
               border: Border.all(
                 color: _isFocused
-                    ? AppColors.neonCyan
-                    : AppColors.borderSubtle.withValues(alpha: 0.8),
+                    ? AppColors.primaryTeal
+                    : AppColors.borderSubtle,
                 width: _isFocused ? 1.5 : 1.0,
               ),
               boxShadow: _isFocused
                   ? [
                       BoxShadow(
-                        color: AppColors.neonCyan.withValues(alpha: 0.2),
-                        blurRadius: 10,
+                        color: AppColors.primaryTeal.withValues(alpha: 0.15),
+                        blurRadius: 8,
                         spreadRadius: 1,
                       ),
                     ]
@@ -83,18 +84,21 @@ class _CustomTextFieldState extends State<CustomTextField> {
               keyboardType: widget.keyboardType,
               onChanged: widget.onChanged,
               validator: widget.validator,
-              style: AppTypography.bodyMedium.copyWith(color: Colors.white),
-              cursorColor: AppColors.neonCyan,
+              style: AppTypography.bodyMedium.copyWith(color: AppColors.textPrimary),
+              cursorColor: AppColors.primaryTeal,
               decoration: InputDecoration(
                 hintText: widget.hintText,
                 hintStyle: AppTypography.bodyMedium.copyWith(
-                  color: AppColors.textMuted,
+                  color: AppColors.textTertiary,
                 ),
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 14,
                 ),
                 border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                errorBorder: InputBorder.none,
               ),
             ),
           ),

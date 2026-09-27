@@ -4,94 +4,115 @@ import 'app_colors.dart';
 class AppGradients {
   AppGradients._();
 
-  // Primary Action Button (Blue to Purple Neon)
+  // Primary Clinical Action Button (Teal -> Mint Gradient)
   static const LinearGradient primaryButton = LinearGradient(
     colors: [
-      Color(0xFF2563EB),
-      Color(0xFF7C3AED),
-      Color(0xFF9333EA),
+      Color(0xFF149C91),
+      Color(0xFF18B6A4),
+      Color(0xFF40D0A5),
     ],
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
   );
 
-  // Cyan to Blue Gradient
+  // Teal to Mint Gradient
+  static const LinearGradient tealMint = LinearGradient(
+    colors: [
+      Color(0xFF149C91),
+      Color(0xFF18B6A4),
+      Color(0xFF40D0A5),
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  // Cyan to Blue Clinical Gradient
   static const LinearGradient cyanBlue = LinearGradient(
     colors: [
-      AppColors.neonCyan,
-      AppColors.neonBlue,
+      Color(0xFF3AA7E8),
+      Color(0xFF18B6A4),
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  // Purple to Pink Gradient
+  // Soft Purple to Pink Tint
   static const LinearGradient purplePink = LinearGradient(
     colors: [
-      AppColors.neonPurple,
-      AppColors.neonMagenta,
+      Color(0xFF818CF8),
+      Color(0xFFF472B6),
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  // Card Background Gradient
+  // Card Background Gradient (Clean Hospital White to Off-White)
   static const LinearGradient cardDark = LinearGradient(
     colors: [
-      Color(0xFF111D3E),
-      Color(0xFF0B142B),
+      Color(0xFFFFFFFF),
+      Color(0xFFF8FCFC),
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  // Male Card Gradient (Cyan Tint)
+  // Male Card Gradient (Soft Light Blue Tint)
   static const LinearGradient maleCard = LinearGradient(
     colors: [
-      Color(0xFF0B2545),
-      Color(0xFF09162E),
+      Color(0xFFEAF7FF),
+      Color(0xFFFFFFFF),
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  // Female Card Gradient (Pink Tint)
+  // Female Card Gradient (Soft Rose / Pink Tint)
   static const LinearGradient femaleCard = LinearGradient(
     colors: [
-      Color(0xFF33142D),
-      Color(0xFF1B0B24),
+      Color(0xFFFDF2F8),
+      Color(0xFFFFFFFF),
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  // Other Card Gradient (Purple Tint)
+  // Other Card Gradient (Soft Purple Tint)
   static const LinearGradient otherCard = LinearGradient(
     colors: [
-      Color(0xFF221544),
-      Color(0xFF120C28),
+      Color(0xFFF5F3FF),
+      Color(0xFFFFFFFF),
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  // Hero Card Gradient (Dashboard)
+  // Hero Card Gradient (Dashboard - Soft Clinical Blue-Mint)
   static const LinearGradient heroCard = LinearGradient(
     colors: [
-      Color(0xFF162553),
-      Color(0xFF0E1A3D),
-      Color(0xFF081028),
+      Color(0xFFEAF7FF),
+      Color(0xFFE8FAF3),
+      Color(0xFFFFFFFF),
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  // Glowing Border Gradients
+  // Subtle Clinical Border
+  static const LinearGradient subtleBorder = LinearGradient(
+    colors: [
+      Color(0xFFD5EBF0),
+      Color(0xFFE2EFF3),
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  // Glowing / Subtle Clinical Border Gradients
   static const LinearGradient neonBorderBluePurple = LinearGradient(
     colors: [
-      AppColors.neonCyan,
-      AppColors.neonBlue,
-      AppColors.neonPurple,
+      AppColors.primaryTeal,
+      AppColors.secondaryBlue,
+      Color(0xFF818CF8),
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
@@ -99,8 +120,8 @@ class AppGradients {
 
   static const LinearGradient neonBorderPink = LinearGradient(
     colors: [
-      AppColors.neonMagenta,
-      Color(0xFFF43F5E),
+      Color(0xFFF472B6),
+      Color(0xFFFB7185),
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
@@ -108,8 +129,8 @@ class AppGradients {
 
   static const LinearGradient neonBorderCyan = LinearGradient(
     colors: [
-      AppColors.neonCyan,
-      Color(0xFF38BDF8),
+      AppColors.primaryTeal,
+      AppColors.secondaryBlue,
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
@@ -117,22 +138,22 @@ class AppGradients {
 
   static const LinearGradient neonBorderCyanGreen = LinearGradient(
     colors: [
-      AppColors.neonCyan,
-      AppColors.neonGreen,
+      AppColors.primaryTeal,
+      AppColors.mintGreen,
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  // Background Ambient Glow (Radial)
+  // Background Ambient Glow (Light Clean Radial)
   static const RadialGradient backgroundAura = RadialGradient(
     center: Alignment(0.0, -0.4),
     radius: 1.2,
     colors: [
-      Color(0xFF132454),
-      Color(0xFF080D21),
-      Color(0xFF04060F),
+      Color(0xFFF0F9FB),
+      Color(0xFFF8FCFC),
+      Color(0xFFFFFFFF),
     ],
-    stops: [0.0, 0.6, 1.0],
+    stops: [0.0, 0.5, 1.0],
   );
 }

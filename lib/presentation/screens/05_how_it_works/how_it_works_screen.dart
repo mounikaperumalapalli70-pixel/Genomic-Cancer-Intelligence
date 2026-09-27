@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_gradients.dart';
 import '../../../core/constants/app_typography.dart';
 import '../../../core/routes/app_routes.dart';
+import '../../providers/onboarding_provider.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/glow_container.dart';
 import '../../widgets/gradient_button.dart';
@@ -12,6 +14,8 @@ class HowItWorksScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final onboarding = Provider.of<OnboardingProvider>(context, listen: false);
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Container(
@@ -27,98 +31,113 @@ class HowItWorksScreen extends StatelessWidget {
               ),
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     children: [
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 8),
+
+                      // Step 4 Progress Badge
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: AppColors.surfaceLightBlue,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppColors.borderSubtle),
+                        ),
+                        child: Text(
+                          'Step 4 of 4 • Overview',
+                          style: AppTypography.caption.copyWith(
+                            color: AppColors.primaryTeal,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
 
                       // Title & Subtitle
                       Text(
                         'How Our Genomic\nScreening Works',
                         textAlign: TextAlign.center,
-                        style: AppTypography.headingLarge.copyWith(height: 1.2),
+                        style: AppTypography.headingLarge.copyWith(height: 1.2, fontSize: 24),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 6),
                       Text(
-                        'From a simple blood sample to\npowerful AI analysis',
+                        'From a simple blood sample or scan to\npowerful precision oncology intelligence',
                         textAlign: TextAlign.center,
                         style: AppTypography.subtitle,
                       ),
 
-                      const SizedBox(height: 28),
+                      const SizedBox(height: 24),
 
-                      // Step 1 Card: Blood / Liquid-Biopsy Genomic Data
+                      // Step 1 Card
                       _buildStepCard(
                         stepNumber: '1',
                         icon: Icons.science_outlined,
-                        iconColor: const Color(0xFFEF4444),
-                        iconBackground: const Color(0xFF3B1520),
-                        title: 'Blood / Liquid-Biopsy\nGenomic Data',
+                        iconColor: AppColors.primaryTeal,
+                        iconBackground: AppColors.surfaceMint,
+                        title: 'Blood / Liquid-Biopsy Genomic Data',
                         description:
-                            'We analyze cancer-related DNA and cell information from your blood sample.',
+                            'We analyze 2,000+ cancer-related RNA-seq gene expression biomarkers from your blood sample.',
                       ),
 
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 14),
 
-                      // Step 2 Card: AI Analysis
+                      // Step 2 Card
                       _buildStepCard(
                         stepNumber: '2',
                         icon: Icons.memory_rounded,
-                        iconColor: AppColors.neonCyan,
-                        iconBackground: const Color(0xFF0C2B4E),
-                        title: 'AI Analysis',
+                        iconColor: AppColors.secondaryBlue,
+                        iconBackground: AppColors.surfaceLightBlue,
+                        title: 'Calibrated Multimodal AI Pipeline',
                         description:
-                            'Advanced AI models analyze the data to find cancer signals and patterns.',
+                            'TCGA-trained machine learning classifiers analyze pan-cancer signatures and compute biomarker attributions (XAI).',
                       ),
 
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 14),
 
-                      // Step 3 Card: Early Cancer Risk / Detection
+                      // Step 3 Card
                       _buildStepCard(
                         stepNumber: '3',
                         icon: Icons.verified_user_outlined,
-                        iconColor: AppColors.neonGreen,
-                        iconBackground: const Color(0xFF0F382B),
-                        title: 'Early Cancer Risk / Detection',
+                        iconColor: AppColors.statusSuccess,
+                        iconBackground: AppColors.surfaceMint,
+                        title: 'Targeted Rx & Quantum Verification',
                         description:
-                            'Get early risk assessment and detection results for better outcomes.',
+                            'Receive NCCN guideline evidence-based targeted therapies and 4-qubit simulated statevector calculations.',
                       ),
 
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 20),
 
-                      // Disclaimer Banner
+                      // Safety Notice Banner
                       GlowContainer(
                         borderRadius: 14,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 12,
-                        ),
-                        backgroundColor: const Color(0xFF0E1A38),
-                        borderGradient: const LinearGradient(
-                          colors: [Color(0xFF2563EB), Color(0xFF1E3A8A)],
-                        ),
+                        padding: const EdgeInsets.all(14),
+                        backgroundColor: AppColors.surfaceLightBlue,
+                        borderColor: AppColors.borderTeal.withValues(alpha: 0.3),
                         child: Row(
                           children: [
                             Container(
-                              width: 26,
-                              height: 26,
+                              width: 28,
+                              height: 28,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: AppColors.neonBlue.withValues(alpha: 0.25),
+                                color: AppColors.primaryTeal.withValues(alpha: 0.15),
                               ),
                               child: const Icon(
                                 Icons.info_outline_rounded,
-                                size: 16,
-                                color: AppColors.neonCyan,
+                                size: 18,
+                                color: AppColors.primaryTeal,
                               ),
                             ),
                             const SizedBox(width: 12),
                             Expanded(
                               child: Text(
-                                'This screening is AI-assisted and not a definitive diagnosis.',
+                                'This platform is for clinical research decision support and not a substitute for formal histopathological diagnosis.',
                                 style: AppTypography.bodySmall.copyWith(
-                                  color: AppColors.textSecondary,
+                                  color: AppColors.textPrimary,
                                   fontSize: 12,
+                                  height: 1.35,
                                 ),
                               ),
                             ),
@@ -134,11 +153,16 @@ class HowItWorksScreen extends StatelessWidget {
 
               // Bottom Action Button: Continue to Dashboard
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 child: GradientButton(
-                  text: 'Continue',
+                  text: 'Enter Clinical Dashboard',
+                  gradient: AppGradients.primaryButton,
                   onPressed: () {
-                    Navigator.of(context).pushNamed(AppRoutes.dashboard);
+                    onboarding.completeOnboarding();
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      AppRoutes.dashboard,
+                      (route) => false,
+                    );
                   },
                 ),
               ),
@@ -161,6 +185,7 @@ class HowItWorksScreen extends StatelessWidget {
       borderRadius: 16,
       padding: const EdgeInsets.all(16),
       backgroundColor: AppColors.surfaceCard,
+      borderColor: AppColors.borderSubtle,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -171,7 +196,7 @@ class HowItWorksScreen extends StatelessWidget {
             margin: const EdgeInsets.only(top: 2),
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.neonBlue,
+              color: AppColors.primaryTeal,
             ),
             child: Center(
               child: Text(
@@ -188,20 +213,20 @@ class HowItWorksScreen extends StatelessWidget {
 
           // Step Icon Frame
           Container(
-            width: 48,
-            height: 48,
+            width: 44,
+            height: 44,
             decoration: BoxDecoration(
               color: iconBackground,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: iconColor.withValues(alpha: 0.5),
+                color: iconColor.withValues(alpha: 0.3),
                 width: 1.0,
               ),
             ),
             child: Icon(
               icon,
               color: iconColor,
-              size: 24,
+              size: 22,
             ),
           ),
           const SizedBox(width: 14),
@@ -217,9 +242,10 @@ class HowItWorksScreen extends StatelessWidget {
                     fontSize: 15,
                     height: 1.2,
                     fontWeight: FontWeight.w700,
+                    color: AppColors.textHeading,
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 4),
                 Text(
                   description,
                   style: AppTypography.bodySmall.copyWith(
@@ -236,5 +262,3 @@ class HowItWorksScreen extends StatelessWidget {
     );
   }
 }
-
-

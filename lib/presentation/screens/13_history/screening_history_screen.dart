@@ -34,123 +34,133 @@ class ScreeningHistoryScreen extends StatelessWidget {
                 onBackPressed: () => Navigator.of(context).maybePop(),
               ),
               Expanded(
-                child: ListView.separated(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                  itemCount: records.length,
-                  separatorBuilder: (context, index) => const SizedBox(height: 14),
-                  itemBuilder: (context, index) {
-                    final record = records[index];
-                    final formattedDate = dateFormat.format(record.timestamp);
+                child: records.isEmpty
+                    ? Center(
+                        child: Text(
+                          'No history records found.',
+                          style: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary),
+                        ),
+                      )
+                    : ListView.separated(
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                        itemCount: records.length,
+                        separatorBuilder: (context, index) => const SizedBox(height: 14),
+                        itemBuilder: (context, index) {
+                          final record = records[index];
+                          final formattedDate = dateFormat.format(record.timestamp);
 
-                    Color statusColor;
-                    String statusText;
-                    IconData recordIcon;
+                          Color statusColor;
+                          String statusText;
+                          IconData recordIcon;
 
-                    switch (record.riskLevel) {
-                      case ScreeningRiskLevel.highRisk:
-                        statusColor = AppColors.neonRed;
-                        statusText = 'High Risk Detected';
-                        recordIcon = Icons.warning_amber_rounded;
-                        break;
-                      case ScreeningRiskLevel.lowRisk:
-                        statusColor = AppColors.neonAmber;
-                        statusText = 'Low Risk';
-                        recordIcon = Icons.info_outline_rounded;
-                        break;
-                      case ScreeningRiskLevel.noAbnormality:
-                        statusColor = AppColors.neonGreen;
-                        statusText = 'No Abnormality Detected';
-                        recordIcon = Icons.check_circle_outline_rounded;
-                        break;
-                    }
+                          switch (record.riskLevel) {
+                            case ScreeningRiskLevel.highRisk:
+                              statusColor = AppColors.alertRed;
+                              statusText = 'High Risk Detected';
+                              recordIcon = Icons.warning_amber_rounded;
+                              break;
+                            case ScreeningRiskLevel.lowRisk:
+                              statusColor = AppColors.warningOrange;
+                              statusText = 'Low Risk';
+                              recordIcon = Icons.info_outline_rounded;
+                              break;
+                            case ScreeningRiskLevel.noAbnormality:
+                              statusColor = AppColors.successGreen;
+                              statusText = 'No Abnormality Detected';
+                              recordIcon = Icons.check_circle_outline_rounded;
+                              break;
+                          }
 
-                    return GlowContainer(
-                      borderRadius: 16,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                      backgroundColor: AppColors.surfaceCard,
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 44,
-                            height: 44,
-                            decoration: BoxDecoration(
-                              color: statusColor.withValues(alpha: 0.15),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: statusColor.withValues(alpha: 0.5),
-                                width: 1,
-                              ),
-                            ),
-                            child: Icon(
-                              recordIcon,
-                              color: statusColor,
-                              size: 22,
-                            ),
-                          ),
-                          const SizedBox(width: 14),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                          return GlowContainer(
+                            borderRadius: 16,
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                            backgroundColor: Colors.white,
+                            borderGradient: AppGradients.subtleBorder,
+                            glowColor: AppColors.primaryMedicalTeal,
+                            child: Row(
                               children: [
-                                Text(
-                                  formattedDate,
-                                  style: AppTypography.bodySmall.copyWith(
-                                    fontSize: 11,
-                                    color: AppColors.textSecondary,
+                                Container(
+                                  width: 44,
+                                  height: 44,
+                                  decoration: BoxDecoration(
+                                    color: statusColor.withValues(alpha: 0.12),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: statusColor.withValues(alpha: 0.4),
+                                      width: 1,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  record.title,
-                                  style: AppTypography.headingSmall.copyWith(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  statusText,
-                                  style: AppTypography.bodySmall.copyWith(
-                                    fontSize: 11,
+                                  child: Icon(
+                                    recordIcon,
                                     color: statusColor,
-                                    fontWeight: FontWeight.w600,
+                                    size: 22,
                                   ),
+                                ),
+                                const SizedBox(width: 14),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        formattedDate,
+                                        style: AppTypography.bodySmall.copyWith(
+                                          fontSize: 11,
+                                          color: AppColors.textSecondary,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        record.title,
+                                        style: AppTypography.headingSmall.copyWith(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w700,
+                                          color: AppColors.textPrimary,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        statusText,
+                                        style: AppTypography.bodySmall.copyWith(
+                                          fontSize: 11,
+                                          color: statusColor,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: AppColors.primaryMedicalTealDark,
+                                    side: BorderSide(color: AppColors.primaryMedicalTeal.withValues(alpha: 0.5)),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 8,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  child: const Text(
+                                    'View Report',
+                                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+                                  ),
+                                  onPressed: () {
+                                    screeningProvider.setActiveScreeningResult(record);
+                                    if (record.imageResult != null) {
+                                      Navigator.of(context).pushNamed(AppRoutes.medicalImageResult);
+                                    } else if (record.riskLevel == ScreeningRiskLevel.highRisk) {
+                                      Navigator.of(context).pushNamed(AppRoutes.highRiskResult);
+                                    } else {
+                                      Navigator.of(context).pushNamed(AppRoutes.noHighRiskResult);
+                                    }
+                                  },
                                 ),
                               ],
                             ),
-                          ),
-                          OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              side: const BorderSide(color: AppColors.borderSubtle),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 8,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            child: const Text(
-                              'View Report',
-                              style: TextStyle(fontSize: 11),
-                            ),
-                            onPressed: () {
-                              screeningProvider.setActiveScreeningResult(record);
-                              if (record.imageResult != null) {
-                                Navigator.of(context).pushNamed(AppRoutes.medicalImageResult);
-                              } else if (record.riskLevel == ScreeningRiskLevel.highRisk) {
-                                Navigator.of(context).pushNamed(AppRoutes.highRiskResult);
-                              } else {
-                                Navigator.of(context).pushNamed(AppRoutes.noHighRiskResult);
-                              }
-                            },
-                          ),
-                        ],
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
               ),
             ],
           ),
@@ -159,5 +169,3 @@ class ScreeningHistoryScreen extends StatelessWidget {
     );
   }
 }
-
-

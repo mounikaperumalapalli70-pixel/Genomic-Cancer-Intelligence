@@ -78,16 +78,27 @@ class _ReportsScreenState extends State<ReportsScreen> {
                       const SizedBox(height: 20),
 
                       // Report Cards List
-                      ListView.separated(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: displayedRecords.length,
-                        separatorBuilder: (context, index) => const SizedBox(height: 16),
-                        itemBuilder: (context, index) {
-                          final record = displayedRecords[index];
-                          return _buildReportCard(context, record, screeningProvider);
-                        },
-                      ),
+                      if (displayedRecords.isEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 40),
+                          child: Center(
+                            child: Text(
+                              'No reports generated yet.',
+                              style: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary),
+                            ),
+                          ),
+                        )
+                      else
+                        ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: displayedRecords.length,
+                          separatorBuilder: (context, index) => const SizedBox(height: 16),
+                          itemBuilder: (context, index) {
+                            final record = displayedRecords[index];
+                            return _buildReportCard(context, record, screeningProvider);
+                          },
+                        ),
 
                       const SizedBox(height: 24),
                     ],
@@ -111,7 +122,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.neonBlue : Colors.transparent,
+          color: isSelected ? AppColors.primaryMedicalTeal : Colors.transparent,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Center(
@@ -139,9 +150,11 @@ class _ReportsScreenState extends State<ReportsScreen> {
     return GlowContainer(
       borderRadius: 18,
       padding: const EdgeInsets.all(18),
-      backgroundColor: AppColors.surfaceCard,
-      borderGradient: isHighRisk ? AppGradients.neonBorderPink : null,
-      glowColor: isHighRisk ? AppColors.neonRed : null,
+      backgroundColor: Colors.white,
+      borderGradient: isHighRisk
+          ? const LinearGradient(colors: [AppColors.warningOrange, AppColors.alertRed])
+          : AppGradients.subtleBorder,
+      glowColor: isHighRisk ? AppColors.alertRed : AppColors.primaryMedicalTeal,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -152,17 +165,17 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 height: 40,
                 decoration: BoxDecoration(
                   color: isHighRisk
-                      ? const Color(0xFF3B1520)
-                      : const Color(0xFF0E382B),
+                      ? AppColors.alertRed.withValues(alpha: 0.12)
+                      : AppColors.mintLight,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: isHighRisk ? AppColors.neonRed : AppColors.neonGreen,
+                    color: isHighRisk ? AppColors.alertRed.withValues(alpha: 0.4) : AppColors.successGreen.withValues(alpha: 0.4),
                     width: 1,
                   ),
                 ),
                 child: Icon(
                   Icons.description_outlined,
-                  color: isHighRisk ? AppColors.neonRed : AppColors.neonGreen,
+                  color: isHighRisk ? AppColors.alertRed : AppColors.successGreen,
                   size: 20,
                 ),
               ),
@@ -176,6 +189,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                       style: AppTypography.headingSmall.copyWith(
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -207,7 +221,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
               Text(
                 isHighRisk ? 'High Risk Detected' : 'No Abnormality Detected',
                 style: AppTypography.bodySmall.copyWith(
-                  color: isHighRisk ? AppColors.neonRed : AppColors.neonGreen,
+                  color: isHighRisk ? AppColors.alertRed : AppColors.successGreen,
                   fontWeight: FontWeight.w700,
                   fontSize: 12,
                 ),
@@ -223,14 +237,14 @@ class _ReportsScreenState extends State<ReportsScreen> {
               Expanded(
                 child: OutlinedButton(
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    side: const BorderSide(color: AppColors.neonBlue),
+                    foregroundColor: AppColors.primaryMedicalTealDark,
+                    side: BorderSide(color: AppColors.primaryMedicalTeal.withValues(alpha: 0.5)),
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: const Text('View Report', style: TextStyle(fontSize: 12)),
+                  child: const Text('View Report', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
                   onPressed: () {
                     provider.setActiveScreeningResult(record);
                     if (record.imageResult != null) {
@@ -258,11 +272,11 @@ class _ReportsScreenState extends State<ReportsScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 10),
                     ),
                     icon: const Icon(Icons.file_download_outlined, size: 16),
-                    label: const Text('Download PDF', style: TextStyle(fontSize: 12)),
+                    label: const Text('Download PDF', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
                     onPressed: () {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          backgroundColor: AppColors.surfaceElevated,
+                          backgroundColor: AppColors.textPrimary,
                           content: Text('Downloading PDF report for ${record.title}...'),
                         ),
                       );
@@ -277,5 +291,3 @@ class _ReportsScreenState extends State<ReportsScreen> {
     );
   }
 }
-
-

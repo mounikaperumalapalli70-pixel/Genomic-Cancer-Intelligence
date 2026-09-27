@@ -30,11 +30,11 @@ class CancerScreeningScreen extends StatelessWidget {
               ),
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 8),
 
                       // Title & Subtitle
                       Center(
@@ -43,11 +43,11 @@ class CancerScreeningScreen extends StatelessWidget {
                             Text(
                               'Cancer Screening',
                               textAlign: TextAlign.center,
-                              style: AppTypography.headingLarge,
+                              style: AppTypography.headingLarge.copyWith(fontSize: 24),
                             ),
-                            const SizedBox(height: 6),
+                            const SizedBox(height: 4),
                             Text(
-                              'What would you like to analyze?',
+                              'Select diagnostic modality to begin AI pipeline',
                               textAlign: TextAlign.center,
                               style: AppTypography.subtitle,
                             ),
@@ -55,51 +55,50 @@ class CancerScreeningScreen extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 28),
 
                       // Option 1: Genomic Data Card
                       _buildScreeningOptionCard(
                         context: context,
-                        title: 'Genomic Data',
+                        title: 'Genomic Data (RNA-Seq)',
                         subtitle:
-                            'Upload blood / liquid-biopsy\ngenomic data for AI analysis.',
+                            'Upload blood / liquid-biopsy expression matrix for TCGA Pan-Cancer & Biomarker XAI.',
                         icon: Icons.biotech_rounded,
-                        iconColor: AppColors.neonCyan,
-                        iconBackground: const Color(0xFF0C2B4E),
-                        borderGradient: AppGradients.neonBorderCyan,
-                        glowColor: AppColors.neonCyan,
+                        iconColor: AppColors.primaryTeal,
+                        iconBackground: AppColors.surfaceMint,
+                        badgeText: 'TCGA Benchmark ML',
                         onTap: () {
                           screeningProvider.setActiveInputType(ScreeningInputType.genomicData);
                           Navigator.of(context).pushNamed(AppRoutes.genomicDataUpload);
                         },
                       ),
 
-                      const SizedBox(height: 18),
+                      const SizedBox(height: 16),
 
                       // Option 2: Medical / Biopsy Scan Card
                       _buildScreeningOptionCard(
                         context: context,
-                        title: 'Medical Image',
+                        title: 'Medical Image & Scans',
                         subtitle:
-                            'Upload a supported medical\nimage or scan for AI analysis.',
+                            'Upload CT, MRI, or Histopathology scan for Neural Lesion Detection & Grad-CAM Heatmaps.',
                         icon: Icons.image_search_rounded,
-                        iconColor: AppColors.neonPurple,
-                        iconBackground: const Color(0xFF221344),
-                        borderGradient: AppGradients.neonBorderBluePurple,
-                        glowColor: AppColors.neonPurple,
+                        iconColor: AppColors.secondaryBlue,
+                        iconBackground: AppColors.surfaceLightBlue,
+                        badgeText: 'Diagnostic Vision',
                         onTap: () {
                           screeningProvider.setActiveInputType(ScreeningInputType.medicalImage);
                           Navigator.of(context).pushNamed(AppRoutes.medicalImageUpload);
                         },
                       ),
 
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 24),
 
                       // Supported Formats Section
                       GlowContainer(
                         borderRadius: 16,
                         padding: const EdgeInsets.all(16),
                         backgroundColor: AppColors.surfaceCard,
+                        borderColor: AppColors.borderSubtle,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -107,7 +106,7 @@ class CancerScreeningScreen extends StatelessWidget {
                               children: [
                                 const Icon(
                                   Icons.layers_outlined,
-                                  color: AppColors.neonCyan,
+                                  color: AppColors.primaryTeal,
                                   size: 18,
                                 ),
                                 const SizedBox(width: 8),
@@ -116,13 +115,14 @@ class CancerScreeningScreen extends StatelessWidget {
                                   style: AppTypography.headingSmall.copyWith(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w700,
+                                    color: AppColors.textHeading,
                                   ),
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 8),
                             Text(
-                              'PDF, CSV, Excel (XLS, XLSX), TXT (Max 50MB)\nJPG, JPEG, PNG, DICOM (.dcm) (Max 50MB)',
+                              'Genomic: CSV, TSV, TXT (RNA-Seq expression values)\nImaging: PNG, JPG, JPEG, DICOM (.dcm, scans up to 50MB)',
                               style: AppTypography.bodySmall.copyWith(
                                 color: AppColors.textSecondary,
                                 height: 1.4,
@@ -132,7 +132,7 @@ class CancerScreeningScreen extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 14),
 
                       // Privacy / Guidance Note
                       GlowContainer(
@@ -141,10 +141,8 @@ class CancerScreeningScreen extends StatelessWidget {
                           horizontal: 14,
                           vertical: 12,
                         ),
-                        backgroundColor: const Color(0xFF0E1A38),
-                        borderGradient: const LinearGradient(
-                          colors: [Color(0xFF2563EB), Color(0xFF1E3A8A)],
-                        ),
+                        backgroundColor: AppColors.surfaceLightBlue,
+                        borderColor: AppColors.borderTeal.withValues(alpha: 0.3),
                         child: Row(
                           children: [
                             Container(
@@ -152,20 +150,20 @@ class CancerScreeningScreen extends StatelessWidget {
                               height: 26,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: AppColors.neonBlue.withValues(alpha: 0.25),
+                                color: AppColors.primaryTeal.withValues(alpha: 0.15),
                               ),
                               child: const Icon(
-                                Icons.info_outline_rounded,
+                                Icons.verified_user_outlined,
                                 size: 16,
-                                color: AppColors.neonCyan,
+                                color: AppColors.primaryTeal,
                               ),
                             ),
                             const SizedBox(width: 12),
                             Expanded(
                               child: Text(
-                                'Use only your own medical data. This helps us provide accurate results.',
+                                'Data is processed securely through calibrated machine learning pipelines.',
                                 style: AppTypography.bodySmall.copyWith(
-                                  color: AppColors.textSecondary,
+                                  color: AppColors.textPrimary,
                                   fontSize: 12,
                                 ),
                               ),
@@ -193,69 +191,93 @@ class CancerScreeningScreen extends StatelessWidget {
     required IconData icon,
     required Color iconColor,
     required Color iconBackground,
-    required Gradient borderGradient,
-    required Color glowColor,
+    required String badgeText,
     required VoidCallback onTap,
   }) {
     return GlowContainer(
       borderRadius: 18,
       padding: const EdgeInsets.all(18),
-      borderGradient: borderGradient,
-      glowColor: glowColor,
-      glowRadius: 14,
+      backgroundColor: AppColors.surfaceCard,
+      borderColor: AppColors.borderSubtle,
       onTap: onTap,
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 52,
-            height: 52,
-            decoration: BoxDecoration(
-              color: iconBackground,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(
-                color: iconColor.withValues(alpha: 0.5),
-                width: 1.2,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                width: 46,
+                height: 46,
+                decoration: BoxDecoration(
+                  color: iconBackground,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: iconColor.withValues(alpha: 0.3),
+                    width: 1.0,
+                  ),
+                ),
+                child: Icon(
+                  icon,
+                  color: iconColor,
+                  size: 24,
+                ),
               ),
-            ),
-            child: Icon(
-              icon,
-              color: iconColor,
-              size: 26,
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: AppTypography.headingSmall.copyWith(
-                    fontSize: 16,
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceElevated,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: AppColors.borderSubtle),
+                ),
+                child: Text(
+                  badgeText,
+                  style: AppTypography.caption.copyWith(
+                    color: AppColors.primaryTeal,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: AppTypography.bodySmall.copyWith(
-                    fontSize: 12,
-                    color: AppColors.textSecondary,
-                    height: 1.3,
-                  ),
-                ),
-              ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Text(
+            title,
+            style: AppTypography.headingSmall.copyWith(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textHeading,
             ),
           ),
-          const Icon(
-            Icons.chevron_right_rounded,
-            color: AppColors.textSecondary,
-            size: 24,
+          const SizedBox(height: 4),
+          Text(
+            subtitle,
+            style: AppTypography.bodySmall.copyWith(
+              color: AppColors.textSecondary,
+              height: 1.35,
+            ),
+          ),
+          const SizedBox(height: 14),
+          Row(
+            children: [
+              Text(
+                'Launch Pipeline',
+                style: AppTypography.buttonText.copyWith(
+                  color: AppColors.primaryTeal,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(width: 4),
+              const Icon(
+                Icons.arrow_forward_rounded,
+                color: AppColors.primaryTeal,
+                size: 15,
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 }
-
-

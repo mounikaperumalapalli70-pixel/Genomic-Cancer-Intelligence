@@ -12,8 +12,16 @@ import '../../widgets/custom_app_bar.dart';
 import '../../widgets/glow_container.dart';
 import '../../widgets/gradient_button.dart';
 
-class LanguageSelectionScreen extends StatelessWidget {
+class LanguageSelectionScreen extends StatefulWidget {
   const LanguageSelectionScreen({super.key});
+
+  @override
+  State<LanguageSelectionScreen> createState() => _LanguageSelectionScreenState();
+}
+
+class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
+  String _assistantSpeech = 'Great! 🌍\nPlease choose your preferred language to continue.';
+  bool _isAutoProgressing = false;
 
   void _openAiAssistant(BuildContext context, OnboardingProvider onboardingProvider) {
     AiVoiceAssistantSheet.show(
@@ -21,22 +29,54 @@ class LanguageSelectionScreen extends StatelessWidget {
       mode: AssistantMode.languageSelection,
       initialLanguageCode: onboardingProvider.selectedLanguageCode,
       onLanguageSelected: (langCode) {
-        onboardingProvider.selectLanguage(langCode);
+        _handleLanguageSelection(langCode, onboardingProvider, isVoice: true);
       },
       onComplete: () {
-        if (context.mounted) {
-          Navigator.of(context).pushNamed(AppRoutes.genderSelection);
+        if (mounted) {
+          Navigator.of(context).pushNamed(AppRoutes.basicInfo);
         }
       },
     );
   }
 
+  void _handleLanguageSelection(
+    String langCode,
+    OnboardingProvider onboardingProvider, {
+    bool isVoice = false,
+  }) {
+    if (_isAutoProgressing) return;
+    onboardingProvider.selectLanguage(langCode);
+
+    final lang = LanguageModel.supportedLanguages.firstWhere(
+      (l) => l.code == langCode,
+      orElse: () => LanguageModel.supportedLanguages.first,
+    );
+
+    setState(() {
+      _assistantSpeech = 'Great! ${lang.name} (${lang.nativeName}) selected. Setting up your profile...';
+      _isAutoProgressing = true;
+    });
+
+    Future.delayed(const Duration(milliseconds: 650), () {
+      if (mounted) {
+        Navigator.of(context).pushNamed(AppRoutes.basicInfo);
+        setState(() {
+          _isAutoProgressing = false;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final onboardingProvider = Provider.of<OnboardingProvider>(context);
+    final selectedCode = onboardingProvider.selectedLanguageCode;
 
     return Scaffold(
       backgroundColor: AppColors.background,
+      floatingActionButton: AiAssistantFab(
+        onTap: () => _openAiAssistant(context, onboardingProvider),
+      ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: AppGradients.backgroundAura,
@@ -50,36 +90,84 @@ class LanguageSelectionScreen extends StatelessWidget {
               ),
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     children: [
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 8),
 
-                      // Glowing Globe Wireframe Icon
+                      // Step 1 Progress indicator
                       Container(
-                        width: 72,
-                        height: 72,
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                         decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.surfaceElevated.withValues(alpha: 0.8),
-                          border: Border.all(
-                            color: AppColors.neonBlue.withValues(alpha: 0.8),
-                            width: 1.5,
+                          color: AppColors.surfaceLightBlue,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppColors.borderSubtle),
+                        ),
+                        child: Text(
+                          'Step 1 of 4 • Language',
+                          style: AppTypography.caption.copyWith(
+                            color: AppColors.primaryTeal,
+                            fontWeight: FontWeight.w700,
                           ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.neonBlue.withValues(alpha: 0.35),
-                              blurRadius: 18,
-                              spreadRadius: 2,
+                        ),
+                      ),
+
+                      const SizedBox(height: 14),
+
+                      // AI Assistant Guiding Card at Top
+                      GlowContainer(
+                        borderRadius: 18,
+                        padding: const EdgeInsets.all(16),
+                        backgroundColor: AppColors.surfaceCard,
+                        borderWidth: 1.2,
+                        borderColor: AppColors.borderTeal.withValues(alpha: 0.3),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: 44,
+                              height: 44,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: AppGradients.tealMint,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.primaryTeal.withValues(alpha: 0.25),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: const Center(
+                                child: Icon(
+                                  Icons.smart_toy_rounded,
+                                  color: Colors.white,
+                                  size: 24,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'AI Care Assistant',
+                                    style: AppTypography.headingSmall.copyWith(fontSize: 14),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    _assistantSpeech,
+                                    style: AppTypography.bodySmall.copyWith(
+                                      color: AppColors.textPrimary,
+                                      fontWeight: FontWeight.w500,
+                                      height: 1.35,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
-                        ),
-                        child: const Center(
-                          child: Icon(
-                            Icons.language_rounded,
-                            size: 38,
-                            color: AppColors.neonCyan,
-                          ),
                         ),
                       ),
 
@@ -87,114 +175,95 @@ class LanguageSelectionScreen extends StatelessWidget {
 
                       // Title & Subtitle
                       Text(
-                        'Choose Your\nLanguage',
+                        'Choose Your Language',
                         textAlign: TextAlign.center,
-                        style: AppTypography.headingLarge.copyWith(height: 1.2),
+                        style: AppTypography.headingLarge.copyWith(fontSize: 22),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 4),
                       Text(
-                        'Select your preferred language\nto continue',
+                        'You can change this anytime in settings.',
                         textAlign: TextAlign.center,
                         style: AppTypography.subtitle,
                       ),
 
-                      const SizedBox(height: 28),
+                      const SizedBox(height: 20),
 
-                      // Language List Options
-                      ListView.separated(
+                      // Language Grid Cards
+                      GridView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 2.2,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                        ),
                         itemCount: LanguageModel.supportedLanguages.length,
-                        separatorBuilder: (context, index) => const SizedBox(height: 12),
                         itemBuilder: (context, index) {
                           final language = LanguageModel.supportedLanguages[index];
-                          final isSelected =
-                              language.code == onboardingProvider.selectedLanguageCode;
+                          final isSelected = language.code == selectedCode;
 
                           return GlowContainer(
-                            isSelected: isSelected,
                             borderRadius: 14,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 14,
-                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                             backgroundColor: isSelected
-                                ? const Color(0xFF132B5C)
+                                ? AppColors.surfaceLightBlue
                                 : AppColors.surfaceCard,
-                            borderGradient: isSelected
-                                ? AppGradients.primaryButton
-                                : null,
-                            glowColor: isSelected ? AppColors.neonBlue : null,
+                            isSelected: isSelected,
+                            borderWidth: isSelected ? 1.8 : 1.0,
+                            borderColor: isSelected
+                                ? AppColors.primaryTeal
+                                : AppColors.borderSubtle,
                             onTap: () {
-                              onboardingProvider.selectLanguage(language.code);
+                              _handleLanguageSelection(language.code, onboardingProvider);
                             },
                             child: Row(
                               children: [
-                                // Icon
-                                Container(
-                                  width: 36,
-                                  height: 36,
-                                  decoration: BoxDecoration(
-                                    color: isSelected
-                                        ? AppColors.neonBlue.withValues(alpha: 0.3)
-                                        : AppColors.surface,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Icon(
-                                    index == 0
-                                        ? Icons.language
-                                        : Icons.record_voice_over_rounded,
-                                    size: 18,
-                                    color: isSelected
-                                        ? AppColors.neonCyan
-                                        : AppColors.textSecondary,
-                                  ),
-                                ),
-                                const SizedBox(width: 14),
-
-                                // Language Names
                                 Expanded(
-                                  child: Row(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
                                         language.name,
                                         style: AppTypography.bodyMedium.copyWith(
-                                          fontWeight: isSelected
-                                              ? FontWeight.w700
-                                              : FontWeight.w500,
+                                          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
                                           color: isSelected
-                                              ? Colors.white
+                                              ? AppColors.textHeading
                                               : AppColors.textPrimary,
+                                          fontSize: 14,
                                         ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
-                                      if (language.code != 'en') ...[
-                                        const SizedBox(width: 8),
-                                        Text(
-                                          '(${language.nativeName})',
-                                          style: AppTypography.bodySmall.copyWith(
-                                            color: isSelected
-                                                ? AppColors.neonCyan
-                                                : AppColors.textSecondary,
-                                          ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        language.nativeName,
+                                        style: AppTypography.bodySmall.copyWith(
+                                          color: isSelected
+                                              ? AppColors.primaryTeal
+                                              : AppColors.textSecondary,
+                                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                                          fontSize: 12,
                                         ),
-                                      ],
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                     ],
                                   ),
                                 ),
-
-                                // Checkmark Indicator
                                 if (isSelected)
                                   Container(
                                     width: 22,
                                     height: 22,
                                     decoration: const BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: AppColors.neonBlue,
+                                      color: AppColors.primaryTeal,
                                     ),
                                     child: const Icon(
-                                      Icons.check,
-                                      size: 14,
+                                      Icons.check_rounded,
                                       color: Colors.white,
+                                      size: 14,
                                     ),
                                   ),
                               ],
@@ -202,29 +271,21 @@ class LanguageSelectionScreen extends StatelessWidget {
                           );
                         },
                       ),
-                      const SizedBox(height: 18),
 
-                      // Floating AI Assistant Button
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: AiAssistantFab(
-                          onTap: () => _openAiAssistant(context, onboardingProvider),
-                        ),
+                      const SizedBox(height: 28),
+
+                      // Continue Button
+                      GradientButton(
+                        text: 'Continue',
+                        gradient: AppGradients.primaryButton,
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(AppRoutes.basicInfo);
+                        },
                       ),
-                      const SizedBox(height: 16),
+
+                      const SizedBox(height: 80),
                     ],
                   ),
-                ),
-              ),
-
-              // Bottom Action Button
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                child: GradientButton(
-                  text: 'Continue',
-                  onPressed: () {
-                    Navigator.of(context).pushNamed(AppRoutes.genderSelection);
-                  },
                 ),
               ),
             ],
@@ -234,6 +295,3 @@ class LanguageSelectionScreen extends StatelessWidget {
     );
   }
 }
-
-
-

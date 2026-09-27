@@ -37,14 +37,6 @@ class _VoiceAssistantScreenState extends State<VoiceAssistantScreen>
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     );
-
-    // IMPORTANT:
-    // Do NOT automatically speak when entering the screen.
-    //
-    // Browsers such as Chrome may block speech that starts without
-    // a user interaction.
-    //
-    // The user must explicitly press the Play button.
   }
 
   @override
@@ -227,18 +219,18 @@ class _VoiceAssistantScreenState extends State<VoiceAssistantScreen>
                         height: _isPlaying ? 104 : 84,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: AppColors.neonBlue.withValues(alpha: 0.18),
+                          color: AppColors.lightCyan,
                           border: Border.all(
-                            color: AppColors.neonCyan.withValues(alpha: 0.85),
+                            color: AppColors.primaryMedicalTeal,
                             width: 2,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.neonCyan.withValues(
-                                alpha: _isPlaying ? 0.65 : 0.35,
+                              color: AppColors.primaryMedicalTeal.withValues(
+                                alpha: _isPlaying ? 0.35 : 0.15,
                               ),
-                              blurRadius: _isPlaying ? 40 : 28,
-                              spreadRadius: _isPlaying ? 8 : 4,
+                              blurRadius: _isPlaying ? 30 : 18,
+                              spreadRadius: _isPlaying ? 6 : 2,
                             ),
                           ],
                         ),
@@ -246,7 +238,7 @@ class _VoiceAssistantScreenState extends State<VoiceAssistantScreen>
                           child: Icon(
                             Icons.record_voice_over_rounded,
                             size: 42,
-                            color: Colors.white,
+                            color: AppColors.primaryMedicalTealDark,
                           ),
                         ),
                       ),
@@ -263,6 +255,7 @@ class _VoiceAssistantScreenState extends State<VoiceAssistantScreen>
                           fontSize: 22,
                           fontWeight: FontWeight.w700,
                           height: 1.3,
+                          color: AppColors.textPrimary,
                         ),
                       ),
 
@@ -289,7 +282,7 @@ class _VoiceAssistantScreenState extends State<VoiceAssistantScreen>
                           key: ValueKey(_status),
                           style: AppTypography.bodySmall.copyWith(
                             color: _isPlaying
-                                ? AppColors.neonCyan
+                                ? AppColors.primaryMedicalTealDark
                                 : AppColors.textSecondary,
                             fontWeight: FontWeight.w600,
                           ),
@@ -333,9 +326,9 @@ class _VoiceAssistantScreenState extends State<VoiceAssistantScreen>
                             gradient: AppGradients.primaryButton,
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.neonBlue.withValues(alpha: 0.55),
-                                blurRadius: _isPlaying ? 30 : 20,
-                                spreadRadius: _isPlaying ? 4 : 2,
+                                color: AppColors.primaryMedicalTeal.withValues(alpha: 0.35),
+                                blurRadius: _isPlaying ? 24 : 14,
+                                spreadRadius: _isPlaying ? 4 : 1,
                               ),
                             ],
                           ),
@@ -365,13 +358,13 @@ class _VoiceAssistantScreenState extends State<VoiceAssistantScreen>
                           color: AppColors.surfaceCard,
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: AppColors.neonCyan.withValues(alpha: 0.4),
+                            color: AppColors.primaryMedicalTeal.withValues(alpha: 0.3),
                           ),
                         ),
                         child: Text(
                           'Voice in ${selectedLang.name}',
                           style: AppTypography.bodySmall.copyWith(
-                            color: AppColors.neonCyan,
+                            color: AppColors.primaryMedicalTealDark,
                             fontWeight: FontWeight.w600,
                             fontSize: 12,
                           ),
@@ -412,9 +405,9 @@ class _AudioWaveformPainter extends CustomPainter {
     final paint = Paint()
       ..shader = const LinearGradient(
         colors: [
-          AppColors.neonCyan,
-          AppColors.neonBlue,
-          AppColors.neonPurple,
+          AppColors.primaryMedicalTeal,
+          AppColors.secondaryBlue,
+          AppColors.mintAccent,
         ],
       ).createShader(
         Rect.fromLTWH(
@@ -452,4 +445,3 @@ class _AudioWaveformPainter extends CustomPainter {
     return oldDelegate.progress != progress || oldDelegate.isPlaying != isPlaying;
   }
 }
-
