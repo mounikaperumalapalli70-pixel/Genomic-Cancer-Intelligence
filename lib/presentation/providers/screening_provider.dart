@@ -228,7 +228,14 @@ class ScreeningProvider extends ChangeNotifier {
     _uploadedGenomicFileName = name;
     _uploadedGenomicFileSize = size;
     _uploadedGenomicFileBytes = bytes;
-    _uploadedGenomicExpression = expressionData;
+    if (expressionData != null) {
+      _uploadedGenomicExpression = expressionData;
+    } else if (bytes != null) {
+      // Eagerly parse expression map from bytes if CSV/JSON
+      _uploadedGenomicExpression = apiService.parseFileBytesToMap(name, bytes);
+    } else {
+      _uploadedGenomicExpression = null;
+    }
     _selectedCuratedSample = null;
     _hasUploadedGenomicFile = true;
     notifyListeners();
@@ -433,16 +440,31 @@ class ScreeningProvider extends ChangeNotifier {
     _activeScreeningResult = record;
     if (record.genomicResult != null) {
       _activeGenomicResult = record.genomicResult;
-      _activeTreatmentIntelligence = record.treatmentIntelligence;
-      _activeQuantumResult = record.quantumResult;
+      _activeTreatmentIntelligence = record.treatmentIntelligence ??
+          apiService.fallbackTreatmentIntelligence(record.genomicResult!.cancerType);
+      _activeQuantumResult = record.quantumResult ??
+          apiService.fallbackQuantumExperiment(record.genomicResult!.cancerType);
       _activeImageResult = null;
       _activeInputType = ScreeningInputType.genomicData;
     } else if (record.imageResult != null) {
       _activeImageResult = record.imageResult;
       _activeGenomicResult = null;
-      _activeTreatmentIntelligence = record.treatmentIntelligence ?? record.imageResult?.treatmentIntelligence;
+      _activeTreatmentIntelligence = record.treatmentIntelligence ??
+          record.imageResult?.treatmentIntelligence ??
+          (record.imageResult?.detectedCancerType != null
+              ? apiService.fallbackTreatmentIntelligence(record.imageResult!.detectedCancerType!)
+              : null);
       _activeQuantumResult = null;
       _activeInputType = ScreeningInputType.medicalImage;
+    } else {
+      // Historical record without pre-attached full payload
+      final cancerType = record.likelyCancerType ?? 'lung adenocarcinoma';
+      final isNormal = record.riskLevel == ScreeningRiskLevel.noAbnormality;
+      _activeGenomicResult = apiService.inferOfflineGenomicResult({}, cancerType: isNormal ? 'Normal / Baseline' : cancerType);
+      _activeTreatmentIntelligence = isNormal ? null : apiService.fallbackTreatmentIntelligence(cancerType);
+      _activeQuantumResult = isNormal ? null : apiService.fallbackQuantumExperiment(cancerType);
+      _activeImageResult = null;
+      _activeInputType = ScreeningInputType.genomicData;
     }
     notifyListeners();
   }
